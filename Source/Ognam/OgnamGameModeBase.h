@@ -13,5 +13,7 @@ UCLASS()
 class OGNAM_API AOgnamGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	AOgnamGameModeBase();
 };

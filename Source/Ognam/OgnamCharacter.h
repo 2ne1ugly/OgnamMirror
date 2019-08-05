@@ -11,6 +11,12 @@ class OGNAM_API AOgnamCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	class USpringArmComponent* SpringArm;
+
+	UPROPERTY(EditAnywhere)
+	class UCameraComponent* Camera;
+
 public:
 	// Sets default values for this character's properties
 	AOgnamCharacter();
