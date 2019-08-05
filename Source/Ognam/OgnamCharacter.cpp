@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/InputComponent.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -16,9 +17,11 @@ AOgnamCharacter::AOgnamCharacter()
 	SpringArm->TargetOffset = FVector(0, 0, 90);
 	SpringArm->SetRelativeRotation(FRotator(-30, 0, 0));
 	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->bUsePawnControlRotation = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+	Camera->bUsePawnControlRotation = false;
 
 	USkeletalMesh *SkMesh = LoadObject<USkeletalMesh>(NULL, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.SK_Mannequin"));
 	GetMesh()->SetSkeletalMesh(SkMesh);
@@ -44,6 +47,24 @@ void AOgnamCharacter::Tick(float DeltaTime)
 void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	PlayerInputComponent->BindAxis("MoveFoward", this, &AOgnamCharacter::MoveFoward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AOgnamCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("CameraYaw", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("CameraPitch", this, &APawn::AddControllerPitchInput);
 }
 
+void AOgnamCharacter::MoveFoward(float Amount)
+{
+	if (Controller != nullptr && Amount != 0.f)
+	{
+		AddMovementInput(GetActorForwardVector(), Amount);
+	}
+}
+
+void AOgnamCharacter::MoveRight(float Amount)
+{
+	if (Controller != nullptr && Amount != 0.f)
+	{
+		AddMovementInput(GetActorRightVector(), Amount);
+	}
+}
