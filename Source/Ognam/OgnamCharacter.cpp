@@ -6,6 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponent.h"
+#include "ConstructorHelpers.h"
+#include "Animation/AnimBlueprint.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -23,10 +25,13 @@ AOgnamCharacter::AOgnamCharacter()
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
 
-	USkeletalMesh *SkMesh = LoadObject<USkeletalMesh>(NULL, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.SK_Mannequin"));
-	GetMesh()->SetSkeletalMesh(SkMesh);
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkMesh(TEXT("SkeletalMesh'/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.SK_Mannequin'"));
+	GetMesh()->SetSkeletalMesh(SkMesh.Object);
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+
+	static ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimBP(TEXT("AnimBlueprint'/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint'"));
+	GetMesh()->SetAnimInstanceClass(AnimBP.Object->GeneratedClass);
 }
 
 // Called when the game starts or when spawned
