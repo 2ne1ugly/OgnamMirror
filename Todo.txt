@@ -1,0 +1,1 @@
+Find a way to make shaders. (not materials cuz can't access light effectiveness.
