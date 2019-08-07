@@ -22,6 +22,7 @@ class OGNAM_API AOgnamGameState : public AGameState
 
 	//Remember that list of players are provided in PlayerArray
 	//also, to send "Events" to clinets, check RPC
+	//client side Events are also done by RPC
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
