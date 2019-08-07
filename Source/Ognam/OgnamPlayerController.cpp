@@ -32,14 +32,6 @@ void AOgnamPlayerController::BeginPlay()
 	if (HUDClass && IsLocalPlayerController())
 	{
 		HUD = CreateWidget<UUserWidget>(this, HUDClass);
-		UProperty* Property = HUD->GetClass()->FindPropertyByName("Parent Controller");
-		if (Property)
-		{
-			AOgnamPlayerController* reference = Property->ContainerPtrToValuePtr<AOgnamPlayerController>(HUD);
-			reference = this;
-		}
-		else
-			UE_LOG(LogTemp, Warning, TEXT("no prop"));
 		if (HUD)
 		{
 			HUD->AddToViewport();
