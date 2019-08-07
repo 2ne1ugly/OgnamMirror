@@ -4,6 +4,8 @@
 #include "OgnamPlayerController.h"
 #include "Runtime/UMG/Public/UMG.h"
 #include "Slate.h"
+#include "Blueprint/UserWidget.h"
+#include "OgnamCharacter.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -16,6 +18,11 @@ AOgnamPlayerController::AOgnamPlayerController()
 		UE_LOG(LogTemp, Warning, TEXT("Not Loaded"));
 }
 
+AOgnamCharacter* AOgnamPlayerController::GetPossessedPawn() const
+{
+	return PossessedPawn;
+}
+
 void AOgnamPlayerController::BeginPlay()
 {
 	/*
@@ -25,6 +32,14 @@ void AOgnamPlayerController::BeginPlay()
 	if (HUDClass && IsLocalPlayerController())
 	{
 		HUD = CreateWidget<UUserWidget>(this, HUDClass);
+		UProperty* Property = HUD->GetClass()->FindPropertyByName("Parent Controller");
+		if (Property)
+		{
+			AOgnamPlayerController* reference = Property->ContainerPtrToValuePtr<AOgnamPlayerController>(HUD);
+			reference = this;
+		}
+		else
+			UE_LOG(LogTemp, Warning, TEXT("no prop"));
 		if (HUD)
 		{
 			HUD->AddToViewport();
@@ -32,4 +47,16 @@ void AOgnamPlayerController::BeginPlay()
 		else
 			UE_LOG(LogTemp, Warning, TEXT("Not hh"));
 	}
+}
+
+void AOgnamPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+	PossessedPawn = Cast<AOgnamCharacter>(InPawn);
+}
+
+void AOgnamPlayerController::OnUnPossess()
+{
+	Super::OnUnPossess();
+	PossessedPawn = nullptr;
 }

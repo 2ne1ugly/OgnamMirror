@@ -22,6 +22,15 @@ class OGNAM_API AOgnamPlayerController : public APlayerController
 
 public:
 	AOgnamPlayerController();
+
+	UFUNCTION(BlueprintCallable)
+	class AOgnamCharacter *GetPossessedPawn() const;
+
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
+
+private:
+	class AOgnamCharacter* PossessedPawn;
 };

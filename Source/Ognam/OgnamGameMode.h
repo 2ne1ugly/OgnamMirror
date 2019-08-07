@@ -13,12 +13,14 @@ UCLASS()
 class OGNAM_API AOgnamGameMode : public AGameMode
 {
 	GENERATED_BODY()
-	
+
 protected:
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual void PostLogin(class APlayerController* NewPlayer) override;
 
 	UPROPERTY()
 	TArray<class APlayerController*> PlayerControllers;
-	int32 MaxNumPlayers = 2;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxNumPlayers = 1;
 };
