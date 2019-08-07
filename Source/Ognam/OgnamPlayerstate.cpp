@@ -1,25 +1,30 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UnrealNetwork.h"
-#include "OgnamPlayerstate.h"
+#include "OgnamPlayerState.h"
 
-int ID_COUNTER = -1;
-
-AOgnamPlayerstate::AOgnamPlayerstate()
+void AOgnamPlayerState::CopyProperties(APlayerState* PlayerState)
 {
-	this->ID = ID_COUNTER;
-	ID_COUNTER++;
+	Super::CopyProperties(PlayerState);
+	if (PlayerState)
+	{
+		AOgnamPlayerState* OgnamPlayerState = Cast<AOgnamPlayerState>(PlayerState);
+		if (OgnamPlayerState)
+		{
+			OgnamPlayerState->Name = Name;
+		}
+	}
 }
 
-void AOgnamPlayerstate::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void AOgnamPlayerState::OverrideWith(APlayerState* PlayerState)
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AOgnamPlayerstate, ID);
-}
-
-int AOgnamPlayerstate::GetID() const
-{
-	return ID;
+	Super::CopyProperties(PlayerState);
+	if (PlayerState)
+	{
+		AOgnamPlayerState* OgnamPlayerState = Cast<AOgnamPlayerState>(PlayerState);
+		if (OgnamPlayerState)
+		{
+			Name = OgnamPlayerState->Name;
+		}
+	}
 }

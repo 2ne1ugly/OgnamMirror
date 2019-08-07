@@ -13,5 +13,15 @@ UCLASS()
 class OGNAM_API AOgnamPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> HUDClass;
+
+	UPROPERTY()
+	class UUserWidget* HUD;
+
+public:
+	AOgnamPlayerController();
+protected:
+	virtual void BeginPlay() override;
 };

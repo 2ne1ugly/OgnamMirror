@@ -4,24 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "OgnamPlayerstate.generated.h"
+#include "OgnamPlayerState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API AOgnamPlayerstate : public APlayerState
+class OGNAM_API AOgnamPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 
-public:
-	AOgnamPlayerstate();
+	UPROPERTY(EditAnywhere)
+	FString Name;
 
-	UPROPERTY(Replicated)
-	int ID;
+	UPROPERTY(EditAnywhere)
+	float Health;
+	//fill all the player specific data
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+protected:
+	//replication reciever kinda
+	virtual void CopyProperties(class APlayerState* PlayerState) override;
+	virtual void OverrideWith(class APlayerState* PlayerState) override;
 
-	UFUNCTION(BlueprintCallable)
-	int GetID() const;
 };
