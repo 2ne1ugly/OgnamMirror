@@ -17,11 +17,17 @@ class OGNAM_API AOgnamPlayerState : public APlayerState
 	UPROPERTY(EditAnywhere)
 	FString Name;
 
-	UPROPERTY(EditAnywhere)
-	float Health;
-	//fill all the player specific data
+	UPROPERTY(Replicated)
+	int32 NumKill;
+
+	UPROPERTY(Replicated)
+	int32 NumDeath;
+
+public:
+	AOgnamPlayerState();
 
 protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	//replication reciever kinda
 	virtual void CopyProperties(class APlayerState* PlayerState) override;
 	virtual void OverrideWith(class APlayerState* PlayerState) override;

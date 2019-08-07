@@ -8,6 +8,7 @@
 #include "Components/InputComponent.h"
 #include "ConstructorHelpers.h"
 #include "Animation/AnimBlueprint.h"
+#include "UnrealNetwork.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -32,6 +33,9 @@ AOgnamCharacter::AOgnamCharacter()
 
 	static ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimBP(TEXT("AnimBlueprint'/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint'"));
 	GetMesh()->SetAnimInstanceClass(AnimBP.Object->GeneratedClass);
+
+	Health = 100.f;
+	MaxHealth = 100.f;
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +43,14 @@ void AOgnamCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AOgnamCharacter, Health);
+	DOREPLIFETIME(AOgnamCharacter, MaxHealth);
 }
 
 // Called every frame

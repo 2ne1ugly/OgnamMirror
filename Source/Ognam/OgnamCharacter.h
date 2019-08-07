@@ -16,6 +16,14 @@ class OGNAM_API AOgnamCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, category = Camera)
 	class UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere, Replicated)
+	float Health;
+
+	UPROPERTY(EditAnywhere, Replicated)
+	float MaxHealth;
+
+
 public:
 	// Sets default values for this character's properties
 	AOgnamCharacter();
@@ -23,6 +31,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:	
 	// Called every frame

@@ -8,6 +8,8 @@ void AOgnamGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(AOgnamGameState, TeamACount);
+	DOREPLIFETIME(AOgnamGameState, TeamBCount);
 }
 
 int32 AOgnamGameState::GetTeamACount() const

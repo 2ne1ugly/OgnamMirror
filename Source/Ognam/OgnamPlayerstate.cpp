@@ -2,6 +2,22 @@
 
 
 #include "OgnamPlayerState.h"
+#include "UnrealNetwork.h"
+
+AOgnamPlayerState::AOgnamPlayerState()
+{
+	Name = "Name me";
+	NumKill = 0;
+	NumDeath = 0;
+}
+
+void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AOgnamPlayerState, NumKill);
+	DOREPLIFETIME(AOgnamPlayerState, NumDeath);
+}
 
 void AOgnamPlayerState::CopyProperties(APlayerState* PlayerState)
 {
