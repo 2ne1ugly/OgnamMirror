@@ -22,5 +22,5 @@ protected:
 	TArray<class APlayerController*> PlayerControllers;
 
 	UPROPERTY(EditAnywhere)
-	int32 MaxNumPlayers = 1;
+	int32 MaxNumPlayers = 2;
 };

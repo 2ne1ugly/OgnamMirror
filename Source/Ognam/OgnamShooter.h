@@ -30,6 +30,23 @@ public:
 public:
 	AOgnamShooter();
 
+	void Shoot();
+	void StopShoot();
+	void Reload();
+	void Aim();
+	void StopAim();
+
+	virtual void MoveForward(float Amount) override;
+	virtual void MoveRight(float Amount) override;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool IsAiming;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsShooting;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsReloading;
+
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 };

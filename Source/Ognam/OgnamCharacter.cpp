@@ -64,13 +64,16 @@ void AOgnamCharacter::Tick(float DeltaTime)
 void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveFoward", this, &AOgnamCharacter::MoveFoward);
+	PlayerInputComponent->BindAxis("MoveFoward", this, &AOgnamCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AOgnamCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("CameraYaw", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("CameraPitch", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AOgnamCharacter::Jump);
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AOgnamCharacter::Crouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AOgnamCharacter::Crouch);
 }
 
-void AOgnamCharacter::MoveFoward(float Amount)
+void AOgnamCharacter::MoveForward(float Amount)
 {
 	if (Controller != nullptr && Amount != 0.f)
 	{
@@ -85,3 +88,20 @@ void AOgnamCharacter::MoveRight(float Amount)
 		AddMovementInput(GetActorRightVector(), Amount);
 	}
 }
+
+void AOgnamCharacter::Crouch()
+{
+	ACharacter::Crouch();
+}
+
+void AOgnamCharacter::Jump()
+{
+	ACharacter::Jump();
+	IsJumping = true;
+}
+
+void AOgnamCharacter::Landed(const FHitResult& FHit)
+{
+	IsJumping = false;
+}
+

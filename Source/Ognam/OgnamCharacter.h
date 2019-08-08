@@ -23,6 +23,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void Jump() override;
+
+	virtual void Landed(const FHitResult & Hit) override;
+
+	virtual void Crouch();
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -37,7 +43,9 @@ protected:
 	UPROPERTY(EditAnywhere, Replicated)
 	float MaxHealth;
 
-private:
-	void MoveFoward(float amount);
-	void MoveRight(float amount);
+	UPROPERTY(BlueprintReadOnly)
+	bool IsJumping;
+
+	virtual void MoveForward(float amount);
+	virtual void MoveRight(float amount);
 };
