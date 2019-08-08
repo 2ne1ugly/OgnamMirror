@@ -14,9 +14,14 @@ class OGNAM_API AOgnamGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
+public:
+	AOgnamGameMode();
+
 protected:
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual void PostLogin(class APlayerController* NewPlayer) override;
+	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
+
 
 	UPROPERTY()
 	TArray<class APlayerController*> PlayerControllers;

@@ -38,6 +38,9 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UPROPERTY(EditAnywhere, Replicated)
+	int TeamID;
+
+	UPROPERTY(EditAnywhere, Replicated)
 	float Health;
 
 	UPROPERTY(EditAnywhere, Replicated)
