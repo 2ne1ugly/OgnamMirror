@@ -15,6 +15,7 @@ void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(AOgnamPlayerState, Name);
 	DOREPLIFETIME(AOgnamPlayerState, NumKill);
 	DOREPLIFETIME(AOgnamPlayerState, NumDeath);
 }

@@ -27,7 +27,7 @@ public:
 
 	virtual void Landed(const FHitResult & Hit) override;
 
-	virtual void Crouch();
+	void Crouch();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

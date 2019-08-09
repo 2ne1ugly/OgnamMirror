@@ -14,7 +14,7 @@ class OGNAM_API AOgnamPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(Replicated, EditAnywhere)
 	FString Name;
 
 	UPROPERTY(Replicated)
