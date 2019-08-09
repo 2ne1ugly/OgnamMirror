@@ -36,6 +36,8 @@ AOgnamCharacter::AOgnamCharacter()
 
 	Health = 100.f;
 	MaxHealth = 100.f;
+
+	this->bReplicates = true;
 }
 
 // Called when the game starts or when spawned

@@ -48,11 +48,13 @@ void AOgnamShooter::Reload()
 void AOgnamShooter::Aim()
 {
 	IsAiming = true;
+	ServerUpdateAiming(IsAiming);
 }
 
 void AOgnamShooter::StopAim()
 {
 	IsAiming = false;
+	ServerUpdateAiming(IsAiming);
 }
 
 
@@ -62,6 +64,9 @@ void AOgnamShooter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 
 	DOREPLIFETIME(AOgnamShooter, Ammo);
 	DOREPLIFETIME(AOgnamShooter, MaxAmmo);
+	DOREPLIFETIME(AOgnamShooter, IsAiming);
+	DOREPLIFETIME(AOgnamShooter, IsShooting);
+	DOREPLIFETIME(AOgnamShooter, IsReloading);
 }
 
 void AOgnamShooter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -87,4 +92,9 @@ void AOgnamShooter::MoveRight(float Amount)
 	if (IsAiming)
 		Amount /= 2;
 	Super::MoveRight(Amount);
+}
+
+void AOgnamShooter::ServerUpdateAiming_Implementation(float NewValue)
+{
+	IsAiming = NewValue;
 }

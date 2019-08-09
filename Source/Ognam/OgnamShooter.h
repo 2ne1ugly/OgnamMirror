@@ -39,12 +39,17 @@ public:
 	virtual void MoveForward(float Amount) override;
 	virtual void MoveRight(float Amount) override;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	bool IsAiming;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	bool IsShooting;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	bool IsReloading;
+
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void ServerUpdateAiming(float NewValue);
+	virtual bool ServerUpdateAiming_Validate(float NewValue) { return true; };
+	virtual void ServerUpdateAiming_Implementation(float NewValue);
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
