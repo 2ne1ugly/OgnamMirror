@@ -31,18 +31,27 @@ void AOgnamShooter::Shoot()
 	if (Ammo > 0)
 	{
 		IsShooting = true;
+		ServerUpdateReloading(IsShooting);
 	}
 }
 
 void AOgnamShooter::StopShoot()
 {
 	IsShooting = false;
+	ServerUpdateReloading(IsShooting);
 }
 
 
 void AOgnamShooter::Reload()
 {
 	IsReloading = true;
+	ServerUpdateReloading(IsReloading);
+}
+
+void AOgnamShooter::StopReload()
+{
+	IsReloading = false;
+	ServerUpdateReloading(IsReloading);
 }
 
 void AOgnamShooter::Aim()
@@ -94,7 +103,17 @@ void AOgnamShooter::MoveRight(float Amount)
 	Super::MoveRight(Amount);
 }
 
-void AOgnamShooter::ServerUpdateAiming_Implementation(float NewValue)
+void AOgnamShooter::ServerUpdateAiming_Implementation(bool NewValue)
 {
 	IsAiming = NewValue;
+}
+
+void AOgnamShooter::ServerUpdateShooting_Implementation(bool NewValue)
+{
+	IsShooting = NewValue;
+}
+
+void AOgnamShooter::ServerUpdateReloading_Implementation(bool NewValue)
+{
+	IsReloading = NewValue;
 }

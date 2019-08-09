@@ -33,6 +33,7 @@ public:
 	void Shoot();
 	void StopShoot();
 	void Reload();
+	void StopReload();
 	void Aim();
 	void StopAim();
 
@@ -47,9 +48,19 @@ public:
 	bool IsReloading;
 
 	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerUpdateAiming(float NewValue);
-	virtual bool ServerUpdateAiming_Validate(float NewValue) { return true; };
-	virtual void ServerUpdateAiming_Implementation(float NewValue);
+	void ServerUpdateAiming(bool NewValue);
+	virtual bool ServerUpdateAiming_Validate(bool NewValue) { return true; };
+	virtual void ServerUpdateAiming_Implementation(bool NewValue);
+
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void ServerUpdateShooting(bool NewValue);
+	virtual bool ServerUpdateShooting_Validate(bool NewValue) { return true; };
+	virtual void ServerUpdateShooting_Implementation(bool NewValue);
+
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void ServerUpdateReloading(bool NewValue);
+	virtual bool ServerUpdateReloading_Validate(bool NewValue) { return true; };
+	virtual void ServerUpdateReloading_Implementation(bool NewValue);
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
