@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/InputComponent.h"
 #include "ConstructorHelpers.h"
 #include "Animation/AnimBlueprint.h"
@@ -38,6 +39,7 @@ AOgnamCharacter::AOgnamCharacter()
 	MaxHealth = 100.f;
 
 	this->bReplicates = true;
+	this->GetCharacterMovement()->MaxWalkSpeed = 2000;
 }
 
 // Called when the game starts or when spawned

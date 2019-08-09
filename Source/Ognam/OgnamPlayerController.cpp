@@ -6,6 +6,7 @@
 #include "Slate.h"
 #include "Blueprint/UserWidget.h"
 #include "OgnamCharacter.h"
+#include "UnrealNetwork.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -39,6 +40,13 @@ void AOgnamPlayerController::BeginPlay()
 		else
 			UE_LOG(LogTemp, Warning, TEXT("Not hh"));
 	}
+}
+
+void AOgnamPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AOgnamPlayerController, PossessedPawn);
 }
 
 void AOgnamPlayerController::OnPossess(APawn* InPawn)
