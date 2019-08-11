@@ -8,6 +8,7 @@
 #include "Components/InputComponent.h"
 #include "ConstructorHelpers.h"
 #include "Animation/AnimBlueprint.h"
+#include "OgnamProjectile.h"
 #include "UnrealNetwork.h"
 
 AOgnamShooter::AOgnamShooter()
@@ -31,20 +32,23 @@ void AOgnamShooter::Shoot()
 	if (Ammo > 0)
 	{
 		IsShooting = true;
-		ServerUpdateReloading(IsShooting);
+		ServerUpdateShooting(IsShooting);
+		Ammo--;
+		ServerFireBullet();
 	}
 }
 
 void AOgnamShooter::StopShoot()
 {
 	IsShooting = false;
-	ServerUpdateReloading(IsShooting);
+	ServerUpdateShooting(IsShooting);
 }
 
 
 void AOgnamShooter::Reload()
 {
 	IsReloading = true;
+	Ammo = 12;
 	ServerUpdateReloading(IsReloading);
 }
 
@@ -66,6 +70,32 @@ void AOgnamShooter::StopAim()
 	ServerUpdateAiming(IsAiming);
 }
 
+
+void AOgnamShooter::ServerFireBullet_Implementation()
+{
+	FVector RayFrom = Camera->GetComponentLocation();
+	FVector RayTo = RayFrom + Camera->GetForwardVector() * 10000.f;
+	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
+
+	FVector From = GetMesh()->GetSocketLocation("BulletSpawn");
+	FVector To;
+	if (HitResult.bBlockingHit)
+		To = HitResult.ImpactPoint;
+	else
+		To = HitResult.TraceEnd;
+	FVector Direction = To - From;
+	Direction.Normalize();
+	FireBullet(From, Direction);
+}
+
+void AOgnamShooter::FireBullet_Implementation(FVector From, FVector Direction)
+{
+	AOgnamProjectile* Projectile = GetWorld()->SpawnActor<AOgnamProjectile>(From, Direction.Rotation());
+	Projectile->SetInitialDirection(Direction);
+	Projectile->SetController(GetController());
+}
 
 void AOgnamShooter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

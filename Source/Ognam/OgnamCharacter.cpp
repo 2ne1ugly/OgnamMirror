@@ -53,6 +53,7 @@ void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 	DOREPLIFETIME(AOgnamCharacter, Health);
 	DOREPLIFETIME(AOgnamCharacter, MaxHealth);
+	DOREPLIFETIME(AOgnamCharacter, IsJumping);
 }
 
 // Called every frame
@@ -90,6 +91,21 @@ void AOgnamCharacter::MoveRight(float Amount)
 	}
 }
 
+float AOgnamCharacter::GetHealth() const
+{
+	return Health;
+}
+
+float AOgnamCharacter::GetMaxHealth() const
+{
+	return MaxHealth;
+}
+
+void AOgnamCharacter::ServerUpdateJumping_Implementation(bool NewValue)
+{
+	IsJumping = NewValue;
+}
+
 void AOgnamCharacter::Crouch()
 {
 	ACharacter::Crouch();
@@ -104,5 +120,12 @@ void AOgnamCharacter::Jump()
 void AOgnamCharacter::Landed(const FHitResult& FHit)
 {
 	IsJumping = false;
+}
+
+float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Health -= Damage;
+	return Damage;
+	UE_LOG(LogTemp, Warning, TEXT("Damaged!"));
 }
 

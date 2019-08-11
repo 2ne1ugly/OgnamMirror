@@ -19,7 +19,7 @@ class OGNAM_API AOgnamShooter : public AOgnamCharacter
 
 	UPROPERTY(EditAnywhere, Replicated)
 	int32 MaxAmmo;
-
+	
 public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetAmmo() const;
@@ -61,6 +61,15 @@ public:
 	void ServerUpdateReloading(bool NewValue);
 	virtual bool ServerUpdateReloading_Validate(bool NewValue) { return true; };
 	virtual void ServerUpdateReloading_Implementation(bool NewValue);
+
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void ServerFireBullet();
+	virtual bool ServerFireBullet_Validate() { return true; };
+	virtual void ServerFireBullet_Implementation();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void FireBullet(FVector From, FVector Direction);
+	virtual void FireBullet_Implementation(FVector From, FVector Direction);
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

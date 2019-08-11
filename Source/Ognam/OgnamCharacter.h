@@ -11,6 +11,7 @@ class OGNAM_API AOgnamCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+protected:
 	UPROPERTY(EditAnywhere, category = Camera)
 	class USpringArmComponent* SpringArm;
 
@@ -27,10 +28,18 @@ public:
 
 	virtual void Landed(const FHitResult & Hit) override;
 
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+
 	void Crouch();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetMaxHealth() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,9 +55,14 @@ protected:
 	UPROPERTY(EditAnywhere, Replicated)
 	float MaxHealth;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	bool IsJumping;
 
 	virtual void MoveForward(float amount);
 	virtual void MoveRight(float amount);
+
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void ServerUpdateJumping(bool NewValue);
+	virtual bool ServerUpdateJumping_Validate(bool NewValue) { return true; };
+	virtual void ServerUpdateJumping_Implementation(bool NewValue);
 };
