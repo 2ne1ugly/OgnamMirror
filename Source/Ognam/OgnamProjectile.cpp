@@ -10,6 +10,7 @@
 #include "NiagaraComponent.h"
 #include "OgnamCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Utility"
 
 // Sets default values
 AOgnamProjectile::AOgnamProjectile()
@@ -23,12 +24,13 @@ AOgnamProjectile::AOgnamProjectile()
 	Bullet->SetWorldScale3D(FVector(0.1));
 	Bullet->SetStaticMesh(Sphere.Object);
 	Bullet->SetCollisionProfileName(TEXT("BlockAll"));
-	Bullet->SetVisibility(false);
+	Bullet->SetVisibility(true);
 
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> Niagara(TEXT("NiagaraSystem'/Game/Effect/BulletTrail2.BulletTrail2'"));
+	//static ConstructorHelpers::FObjectFinder<UNiagaraSystem> Niagara(TEXT("NiagaraSystem'/Game/Effect/BulletTrail2.BulletTrail2'"));
 	Trail = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Trail"));
+	//if (Niagara.Succeeded())
+	//	Trail->SetAsset(Niagara.Object);
 	Trail->SetupAttachment(Bullet);
-	Trail->SetAsset(Niagara.Object);
 	Speed = 10000;
 
 	RootComponent = Bullet;
@@ -39,7 +41,8 @@ void AOgnamProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	LifeTime = 0;
-	LifeSpan = 5;
+	LifeSpan = 1;
+
 	//Trail->Activate();
 	//SetActorLocation(FVector(0, 0, 100));
 }
