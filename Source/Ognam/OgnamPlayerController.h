@@ -26,11 +26,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	class AOgnamCharacter *GetPossessedPawn() const;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 
 private:
+	UPROPERTY(Replicated)
 	class AOgnamCharacter* PossessedPawn;
 };
