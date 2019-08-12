@@ -6,6 +6,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "ConstructorHelpers.h"
 #include "Animation/AnimBlueprint.h"
@@ -40,6 +41,7 @@ AOgnamCharacter::AOgnamCharacter()
 
 	this->bReplicates = true;
 	this->GetCharacterMovement()->MaxWalkSpeed = 2000;
+	bIsAlive = true;
 }
 
 // Called when the game starts or when spawned
@@ -73,8 +75,8 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("CameraYaw", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("CameraPitch", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AOgnamCharacter::Jump);
-	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AOgnamCharacter::Crouch);
-	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AOgnamCharacter::Crouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AOgnamCharacter::OgnamCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AOgnamCharacter::OgnamCrouch);
 }
 
 void AOgnamCharacter::MoveForward(float Amount)
@@ -103,14 +105,19 @@ float AOgnamCharacter::GetMaxHealth() const
 	return MaxHealth;
 }
 
+bool AOgnamCharacter::IsAlive() const
+{
+	return bIsAlive;
+}
+
 void AOgnamCharacter::ServerUpdateJumping_Implementation(bool NewValue)
 {
 	IsJumping = NewValue;
 }
 
-void AOgnamCharacter::Crouch()
+void AOgnamCharacter::OgnamCrouch()
 {
-	ACharacter::Crouch();
+	ACharacter::Crouch(true);
 }
 
 void AOgnamCharacter::Jump()
@@ -127,7 +134,17 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Health -= Damage;
+	if (Health <= 0)
+		Die();
 	return Damage;
-	UE_LOG(LogTemp, Warning, TEXT("Damaged!"));
 }
 
+void AOgnamCharacter::Die_Implementation()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	DisableInput(PlayerController);
+	GetMesh()->SetCollisionProfileName(TEXT("RagDoll"));
+	GetMesh()->SetSimulatePhysics(true);
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
+	bIsAlive = false;
+}

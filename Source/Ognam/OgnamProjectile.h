@@ -18,7 +18,7 @@ class OGNAM_API AOgnamProjectile : public AActor
 	class UNiagaraComponent* Trail;
 
 	UPROPERTY()
-	class AController* Controller;
+	class AController* ParentController;
 public:	
 	// Sets default values for this actor's properties
 	AOgnamProjectile();

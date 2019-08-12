@@ -15,14 +15,19 @@ class OGNAM_API AOgnamGameState : public AGameState
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, Replicated)
-	int32	TeamACount = 1;
+	int32	TeamACount;
 
 	UPROPERTY(EditAnywhere, Replicated)
-	int32	TeamBCount = 1;
+	int32	TeamBCount;
 
 	//Remember that list of players are provided in PlayerArray
 	//also, to send "Events" to clinets, check RPC
 	//client side Events are also done by RPC
+
+public:
+	AOgnamGameState();
+
+	virtual void Tick(float DeltaTime);
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -31,4 +36,5 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetTeamBCount() const;
+
 };

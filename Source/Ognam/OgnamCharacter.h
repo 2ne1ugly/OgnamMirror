@@ -30,7 +30,7 @@ public:
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
-	void Crouch();
+	void OgnamCrouch();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -40,6 +40,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool IsAlive() const;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Die();
+	void Die_Implementation();
 
 protected:
 	// Called when the game starts or when spawned
@@ -65,4 +72,7 @@ protected:
 	void ServerUpdateJumping(bool NewValue);
 	virtual bool ServerUpdateJumping_Validate(bool NewValue) { return true; };
 	virtual void ServerUpdateJumping_Implementation(bool NewValue);
+
+private:
+	bool bIsAlive;
 };

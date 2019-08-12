@@ -60,7 +60,7 @@ void AOgnamProjectile::Tick(float DeltaTime)
 	{
 		if (HitResult.Actor.IsValid())
 		{
-			UGameplayStatics::ApplyPointDamage(HitResult.Actor.Get(), 30, InitialDirection, HitResult, Controller, this, nullptr);
+			UGameplayStatics::ApplyPointDamage(HitResult.Actor.Get(), 30, InitialDirection, HitResult, ParentController, this, nullptr);
 		}
 		Destroy();
 	}
@@ -74,6 +74,6 @@ void AOgnamProjectile::SetInitialDirection(FVector Direction)
 
 void AOgnamProjectile::SetController(AController* Controller)
 {
-	Controller = Controller;
+	ParentController = Controller;
 }
 
