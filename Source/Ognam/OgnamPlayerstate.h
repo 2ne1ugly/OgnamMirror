@@ -14,7 +14,21 @@ class OGNAM_API AOgnamPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 
-	UPROPERTY(Replicated, EditAnywhere)
+public:
+	AOgnamPlayerState();
+
+	/*
+	**	Binded Functions
+	*/
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void CopyProperties(class APlayerState* PlayerState) override;
+	virtual void OverrideWith(class APlayerState* PlayerState) override;
+protected:
+
+	/*
+	**	Props
+	*/
+	UPROPERTY(Replicated)
 	FString Name;
 
 	UPROPERTY(Replicated)
@@ -22,14 +36,4 @@ class OGNAM_API AOgnamPlayerState : public APlayerState
 
 	UPROPERTY(Replicated)
 	int32 NumDeath;
-
-public:
-	AOgnamPlayerState();
-
-protected:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	//replication reciever kinda
-	virtual void CopyProperties(class APlayerState* PlayerState) override;
-	virtual void OverrideWith(class APlayerState* PlayerState) override;
-
 };

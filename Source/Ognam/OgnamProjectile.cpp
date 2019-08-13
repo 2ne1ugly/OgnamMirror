@@ -15,9 +15,9 @@
 // Sets default values
 AOgnamProjectile::AOgnamProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Set bullet property
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Sphere(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
 	Bullet = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bullet"));
 	Bullet->SetupAttachment(RootComponent);
@@ -26,6 +26,7 @@ AOgnamProjectile::AOgnamProjectile()
 	Bullet->SetCollisionProfileName(TEXT("BlockAll"));
 	Bullet->SetVisibility(true);
 
+	// Set Particle effects, being buggy.
 	//static ConstructorHelpers::FObjectFinder<UNiagaraSystem> Niagara(TEXT("NiagaraSystem'/Game/Effect/BulletTrail2.BulletTrail2'"));
 	Trail = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Trail"));
 	//if (Niagara.Succeeded())
@@ -42,20 +43,23 @@ void AOgnamProjectile::BeginPlay()
 	Super::BeginPlay();
 	LifeTime = 0;
 	LifeSpan = 1;
-
-	//Trail->Activate();
-	//SetActorLocation(FVector(0, 0, 100));
 }
 
 // Called every frame
 void AOgnamProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	LifeTime += DeltaTime;
+
+	float ElapsedTime = DeltaTime;
+	LifeTime += ElapsedTime;
+
+	//if time has passed, check only till the time it should die.
 	if (LifeSpan < LifeTime)
-		Destroy();
+		ElapsedTime -= LifeTime - LifeSpan;
+
+	//Calculate Hit registeration.
 	FHitResult HitResult;
-	SetActorLocation(GetActorLocation() + DeltaTime * InitialDirection * Speed, true, &HitResult);
+	SetActorLocation(GetActorLocation() + ElapsedTime * InitialDirection * Speed, true, &HitResult);
 	if (HitResult.bBlockingHit)
 	{
 		if (HitResult.Actor.IsValid())
@@ -64,7 +68,10 @@ void AOgnamProjectile::Tick(float DeltaTime)
 		}
 		Destroy();
 	}
-	/*not working*/
+
+	//kill if lived too long.
+	if (LifeSpan < LifeTime)
+		Destroy();
 }
 
 void AOgnamProjectile::SetInitialDirection(FVector Direction)

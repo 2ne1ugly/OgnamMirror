@@ -24,9 +24,9 @@ bool AOgnamGameMode::ReadyToStartMatch_Implementation()
 void AOgnamGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
-	PlayerControllers.Add(NewPlayer);
 }
 
 void AOgnamGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
+	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
 }

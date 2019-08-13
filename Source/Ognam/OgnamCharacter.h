@@ -6,12 +6,16 @@
 #include "GameFramework/Character.h"
 #include "OgnamCharacter.generated.h"
 
+// Contains What's common between every Character.
 UCLASS()
 class OGNAM_API AOgnamCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 protected:
+	/*
+	**	Components
+	*/
 	UPROPERTY(EditAnywhere, category = Camera)
 	class USpringArmComponent* SpringArm;
 
@@ -19,9 +23,15 @@ protected:
 	class UCameraComponent* Camera;
 
 public:
-	// Sets default values for this character's properties
 	AOgnamCharacter();
-	// Called every frame
+
+	/*
+	**	Binded Functions
+	*/
+	virtual void BeginPlay() override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Jump() override;
@@ -30,10 +40,19 @@ public:
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
+	virtual void MoveForward(float amount);
+
+	virtual void MoveRight(float amount);
+
 	void OgnamCrouch();
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	/*
+	**	Getters, Setters
+	*/
+	UFUNCTION(BlueprintCallable)
+	int32 GetTeamID() const;
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() const;
@@ -42,37 +61,42 @@ public:
 	float GetMaxHealth() const;
 
 	UFUNCTION(BlueprintCallable)
+	bool GetIsJumping() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsCrouched() const;
+
+	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
+
+protected:
+	/*
+	**	Internal functions
+	*/
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void ServerJump();
+	virtual bool ServerJump_Validate() { return true; };
+	virtual void ServerJump_Implementation();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Die();
 	void Die_Implementation();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	/*
+	**	Props
+	*/
+	UPROPERTY(Replicated)
+	int32 TeamID;
 
-	UPROPERTY(EditAnywhere, Replicated)
-	int TeamID;
-
-	UPROPERTY(EditAnywhere, Replicated)
+	UPROPERTY(Replicated)
 	float Health;
 
-	UPROPERTY(EditAnywhere, Replicated)
+	UPROPERTY(Replicated)
 	float MaxHealth;
 
-	UPROPERTY(BlueprintReadOnly, Replicated)
-	bool IsJumping;
+	UPROPERTY(Replicated)
+	bool bIsJumping;
 
-	virtual void MoveForward(float amount);
-	virtual void MoveRight(float amount);
-
-	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerUpdateJumping(bool NewValue);
-	virtual bool ServerUpdateJumping_Validate(bool NewValue) { return true; };
-	virtual void ServerUpdateJumping_Implementation(bool NewValue);
-
-private:
+	UPROPERTY(Replicated)
 	bool bIsAlive;
 };

@@ -35,7 +35,7 @@ void AOgnamPlayerState::CopyProperties(APlayerState* PlayerState)
 
 void AOgnamPlayerState::OverrideWith(APlayerState* PlayerState)
 {
-	Super::CopyProperties(PlayerState);
+	Super::OverrideWith(PlayerState);
 	if (PlayerState)
 	{
 		AOgnamPlayerState* OgnamPlayerState = Cast<AOgnamPlayerState>(PlayerState);

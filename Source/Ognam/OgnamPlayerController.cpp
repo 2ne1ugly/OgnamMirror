@@ -19,17 +19,8 @@ AOgnamPlayerController::AOgnamPlayerController()
 		UE_LOG(LogTemp, Warning, TEXT("Not Loaded"));
 }
 
-AOgnamCharacter* AOgnamPlayerController::GetPossessedPawn() const
-{
-	return PossessedPawn;
-}
-
 void AOgnamPlayerController::BeginPlay()
 {
-	/*
-	**	TODO: Have this hud thing done after postlogin.
-	**	IsLocalPlayerController isn't set propley
-	*/
 	if (HUDClass && IsLocalPlayerController())
 	{
 		HUD = CreateWidget<UUserWidget>(this, HUDClass);
@@ -37,26 +28,5 @@ void AOgnamPlayerController::BeginPlay()
 		{
 			HUD->AddToViewport();
 		}
-		else
-			UE_LOG(LogTemp, Warning, TEXT("Not hh"));
 	}
-}
-
-void AOgnamPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AOgnamPlayerController, PossessedPawn);
-}
-
-void AOgnamPlayerController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-	PossessedPawn = Cast<AOgnamCharacter>(InPawn);
-}
-
-void AOgnamPlayerController::OnUnPossess()
-{
-	Super::OnUnPossess();
-	PossessedPawn = nullptr;
 }

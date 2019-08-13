@@ -14,27 +14,33 @@ class OGNAM_API AOgnamGameState : public AGameState
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Replicated)
-	int32	TeamACount;
-
-	UPROPERTY(EditAnywhere, Replicated)
-	int32	TeamBCount;
-
-	//Remember that list of players are provided in PlayerArray
-	//also, to send "Events" to clinets, check RPC
-	//client side Events are also done by RPC
-
 public:
 	AOgnamGameState();
 
-	virtual void Tick(float DeltaTime);
-protected:
+	/*
+	**	Binded Functions
+	*/
+	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+
+	/*
+	**	Getters, Setters
+	*/
 	UFUNCTION(BlueprintCallable)
 	int32 GetTeamACount() const;
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetTeamBCount() const;
+
+protected:
+	/*
+	**	Props
+	*/
+	UPROPERTY(Replicated)
+	int32	TeamACount;
+
+	UPROPERTY(Replicated)
+	int32	TeamBCount;
 
 };

@@ -17,15 +17,17 @@ class OGNAM_API AOgnamGameMode : public AGameMode
 public:
 	AOgnamGameMode();
 
-protected:
+	/*
+	**	Binded Functions
+	*/
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual void PostLogin(class APlayerController* NewPlayer) override;
 	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 
-
+protected:
+	/*
+	**	Props
+	*/
 	UPROPERTY()
-	TArray<class APlayerController*> PlayerControllers;
-
-	UPROPERTY(EditAnywhere)
 	int32 MaxNumPlayers = 2;
 };

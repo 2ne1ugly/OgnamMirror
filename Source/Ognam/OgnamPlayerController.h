@@ -14,26 +14,26 @@ class OGNAM_API AOgnamPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "Widgets")
-	TSubclassOf<class UUserWidget> HUDClass;
-
+protected:
+	/*
+	**	Widgets
+	*/
 	UPROPERTY()
 	class UUserWidget* HUD;
 
 public:
 	AOgnamPlayerController();
 
-	UFUNCTION(BlueprintCallable)
-	class AOgnamCharacter *GetPossessedPawn() const;
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-protected:
+	/*
+	**	Binded Functions
+	*/
 	virtual void BeginPlay() override;
-	virtual void OnPossess(APawn* InPawn) override;
-	virtual void OnUnPossess() override;
 
 private:
-	UPROPERTY(Replicated)
-	class AOgnamCharacter* PossessedPawn;
+
+	/*
+	**	Props
+	*/
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> HUDClass;
 };

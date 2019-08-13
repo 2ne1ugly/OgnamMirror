@@ -15,9 +15,9 @@
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Create Spring arm and Camera
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->TargetOffset = FVector(0, 0, 90);
 	SpringArm->SetRelativeRotation(FRotator(-30, 0, 0));
@@ -28,11 +28,13 @@ AOgnamCharacter::AOgnamCharacter()
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
 
+	//Default mesh
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkMesh(TEXT("SkeletalMesh'/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.SK_Mannequin'"));
 	GetMesh()->SetSkeletalMesh(SkMesh.Object);
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 
+	//Animations for the mesh
 	static ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimBP(TEXT("AnimBlueprint'/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint'"));
 	GetMesh()->SetAnimInstanceClass(AnimBP.Object->GeneratedClass);
 
@@ -48,16 +50,17 @@ AOgnamCharacter::AOgnamCharacter()
 void AOgnamCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(AOgnamCharacter, TeamID);
 	DOREPLIFETIME(AOgnamCharacter, Health);
 	DOREPLIFETIME(AOgnamCharacter, MaxHealth);
-	DOREPLIFETIME(AOgnamCharacter, IsJumping);
+	DOREPLIFETIME(AOgnamCharacter, bIsJumping);
+	DOREPLIFETIME(AOgnamCharacter, bIsAlive);
 }
 
 // Called every frame
@@ -95,6 +98,11 @@ void AOgnamCharacter::MoveRight(float Amount)
 	}
 }
 
+int AOgnamCharacter::GetTeamID() const
+{
+	return TeamID;
+}
+
 float AOgnamCharacter::GetHealth() const
 {
 	return Health;
@@ -105,14 +113,24 @@ float AOgnamCharacter::GetMaxHealth() const
 	return MaxHealth;
 }
 
+bool AOgnamCharacter::GetIsJumping() const
+{
+	return bIsJumping;
+}
+
+bool AOgnamCharacter::GetIsCrouched() const
+{
+	return bIsCrouched;
+}
+
 bool AOgnamCharacter::IsAlive() const
 {
 	return bIsAlive;
 }
 
-void AOgnamCharacter::ServerUpdateJumping_Implementation(bool NewValue)
+void AOgnamCharacter::ServerJump_Implementation()
 {
-	IsJumping = NewValue;
+	bIsJumping = true;
 }
 
 void AOgnamCharacter::OgnamCrouch()
@@ -123,12 +141,13 @@ void AOgnamCharacter::OgnamCrouch()
 void AOgnamCharacter::Jump()
 {
 	ACharacter::Jump();
-	IsJumping = true;
+	bIsJumping = true;
+	ServerJump();
 }
 
 void AOgnamCharacter::Landed(const FHitResult& FHit)
 {
-	IsJumping = false;
+	bIsJumping = false;
 }
 
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

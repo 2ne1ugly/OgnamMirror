@@ -27,12 +27,27 @@ int32 AOgnamShooter::GetMaxAmmo() const
 	return MaxAmmo;
 }
 
+bool AOgnamShooter::GetIsAiming() const
+{
+	return bIsAiming;
+}
+
+bool AOgnamShooter::GetIsShooting() const
+{
+	return bIsShooting;
+}
+
+bool AOgnamShooter::GetIsReloading() const
+{
+	return bIsReloading;
+}
+
 void AOgnamShooter::Shoot()
 {
 	if (Ammo > 0)
 	{
-		IsShooting = true;
-		ServerUpdateShooting(IsShooting);
+		bIsShooting = true;
+		ServerSetIsShooting(bIsShooting);
 		Ammo--;
 		ServerFireBullet();
 	}
@@ -40,51 +55,54 @@ void AOgnamShooter::Shoot()
 
 void AOgnamShooter::StopShoot()
 {
-	IsShooting = false;
-	ServerUpdateShooting(IsShooting);
+	bIsShooting = false;
+	ServerSetIsShooting(bIsShooting);
 }
 
 
 void AOgnamShooter::Reload()
 {
-	IsReloading = true;
+	bIsReloading = true;
 	Ammo = 12;
-	ServerUpdateReloading(IsReloading);
+	ServerSetIsReloading(bIsReloading);
 }
 
 void AOgnamShooter::StopReload()
 {
-	IsReloading = false;
-	ServerUpdateReloading(IsReloading);
+	bIsReloading = false;
+	ServerSetIsReloading(bIsReloading);
 }
 
 void AOgnamShooter::Aim()
 {
-	IsAiming = true;
-	ServerUpdateAiming(IsAiming);
+	bIsAiming = true;
+	ServerSetIsAiming(bIsAiming);
 }
 
 void AOgnamShooter::StopAim()
 {
-	IsAiming = false;
-	ServerUpdateAiming(IsAiming);
+	bIsAiming = false;
+	ServerSetIsAiming(bIsAiming);
 }
-
 
 void AOgnamShooter::ServerFireBullet_Implementation()
 {
+	//shoot ray from camera to see where it should land.
 	FVector RayFrom = Camera->GetComponentLocation();
 	FVector RayTo = RayFrom + Camera->GetForwardVector() * 10000.f;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
 
+	//draw a ray from bullet spawn to that landing point
 	FVector From = GetMesh()->GetSocketLocation("BulletSpawn");
 	FVector To;
 	if (HitResult.bBlockingHit)
 		To = HitResult.ImpactPoint;
 	else
 		To = HitResult.TraceEnd;
+
+	//find direction to shoot bullets
 	FVector Direction = To - From;
 	Direction.Normalize();
 	FireBullet(From, Direction);
@@ -103,9 +121,9 @@ void AOgnamShooter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 
 	DOREPLIFETIME(AOgnamShooter, Ammo);
 	DOREPLIFETIME(AOgnamShooter, MaxAmmo);
-	DOREPLIFETIME(AOgnamShooter, IsAiming);
-	DOREPLIFETIME(AOgnamShooter, IsShooting);
-	DOREPLIFETIME(AOgnamShooter, IsReloading);
+	DOREPLIFETIME(AOgnamShooter, bIsAiming);
+	DOREPLIFETIME(AOgnamShooter, bIsShooting);
+	DOREPLIFETIME(AOgnamShooter, bIsReloading);
 }
 
 void AOgnamShooter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -118,32 +136,31 @@ void AOgnamShooter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AOgnamShooter::Reload);
 }
 
-
 void AOgnamShooter::MoveForward(float Amount)
 {
-	if (IsAiming)
+	if (bIsAiming)
 		Amount /= 2;
 	Super::MoveForward(Amount);
 }
 
 void AOgnamShooter::MoveRight(float Amount)
 {
-	if (IsAiming)
+	if (bIsAiming)
 		Amount /= 2;
 	Super::MoveRight(Amount);
 }
 
-void AOgnamShooter::ServerUpdateAiming_Implementation(bool NewValue)
+void AOgnamShooter::ServerSetIsAiming_Implementation(bool NewValue)
 {
-	IsAiming = NewValue;
+	bIsAiming = NewValue;
 }
 
-void AOgnamShooter::ServerUpdateShooting_Implementation(bool NewValue)
+void AOgnamShooter::ServerSetIsShooting_Implementation(bool NewValue)
 {
-	IsShooting = NewValue;
+	bIsShooting = NewValue;
 }
 
-void AOgnamShooter::ServerUpdateReloading_Implementation(bool NewValue)
+void AOgnamShooter::ServerSetIsReloading_Implementation(bool NewValue)
 {
-	IsReloading = NewValue;
+	bIsReloading = NewValue;
 }

@@ -14,6 +14,8 @@ AOgnamGameState::AOgnamGameState()
 
 void AOgnamGameState::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+	// Count number of players on both teams(maybe find a better way)
 	int32 ACount = 0;
 	int32 BCount = 0;
 	for (APlayerState* PlayerState : PlayerArray)
@@ -24,7 +26,7 @@ void AOgnamGameState::Tick(float DeltaTime)
 			ACount++;
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Tick!%d"), ACount);
+	TeamBCount = BCount;
 	TeamACount = ACount;
 }
 

@@ -11,31 +11,42 @@ class OGNAM_API AOgnamProjectile : public AActor
 {
 	GENERATED_BODY()
 
+protected:
+	/*
+	**	Components
+	*/
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* Bullet;
 
 	UPROPERTY(EditAnywhere)
 	class UNiagaraComponent* Trail;
 
-	UPROPERTY()
-	class AController* ParentController;
 public:	
-	// Sets default values for this actor's properties
 	AOgnamProjectile();
 
-protected:
-	// Called when the game starts or when spawned
+	/*
+	**	Binded Functions
+	*/
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	/*
+	**	Getters, Setters
+	*/
+	UFUNCTION(BlueprintCallable)
 	void SetInitialDirection(FVector Direction);
+
+	UFUNCTION(BlueprintCallable)
 	void SetController(class AController* Controller);
+
 private:
-	float	LifeTime;
-	float	LifeSpan;
-	float	Speed;
+	/*
+	**	Props
+	*/
+	UPROPERTY()
+	class AController* ParentController;
+	float LifeTime;
+	float LifeSpan;
+	float Speed;
 	FVector	InitialDirection;
 };

@@ -13,54 +13,56 @@ UCLASS()
 class OGNAM_API AOgnamShooter : public AOgnamCharacter
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, Replicated)
-	int32 Ammo;
-
-	UPROPERTY(EditAnywhere, Replicated)
-	int32 MaxAmmo;
 	
-public:
-	UFUNCTION(BlueprintCallable)
-	int32 GetAmmo() const;
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetMaxAmmo() const;
-
 public:
 	AOgnamShooter();
 
+	/*
+	**	Binded Functions
+	*/
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	void Shoot();
 	void StopShoot();
 	void Reload();
 	void StopReload();
 	void Aim();
 	void StopAim();
-
 	virtual void MoveForward(float Amount) override;
 	virtual void MoveRight(float Amount) override;
 
-	UPROPERTY(BlueprintReadOnly, Replicated)
-	bool IsAiming;
-	UPROPERTY(BlueprintReadOnly, Replicated)
-	bool IsShooting;
-	UPROPERTY(BlueprintReadOnly, Replicated)
-	bool IsReloading;
+	/*
+	**	Getters, Setters
+	*/
+	UFUNCTION(BlueprintCallable)
+	int32 GetAmmo() const;
+	UFUNCTION(BlueprintCallable)
+	int32 GetMaxAmmo() const;
+	UFUNCTION(BlueprintCallable)
+	bool GetIsAiming() const;
+	UFUNCTION(BlueprintCallable)
+	bool GetIsShooting() const;
+	UFUNCTION(BlueprintCallable)
+	bool GetIsReloading() const;
+
+protected:
+	/*
+	**	Internal functions
+	*/
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void ServerSetIsAiming(bool NewValue);
+	virtual bool ServerSetIsAiming_Validate(bool NewValue) { return true; };
+	virtual void ServerSetIsAiming_Implementation(bool NewValue);
 
 	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerUpdateAiming(bool NewValue);
-	virtual bool ServerUpdateAiming_Validate(bool NewValue) { return true; };
-	virtual void ServerUpdateAiming_Implementation(bool NewValue);
+	void ServerSetIsShooting(bool NewValue);
+	virtual bool ServerSetIsShooting_Validate(bool NewValue) { return true; };
+	virtual void ServerSetIsShooting_Implementation(bool NewValue);
 
 	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerUpdateShooting(bool NewValue);
-	virtual bool ServerUpdateShooting_Validate(bool NewValue) { return true; };
-	virtual void ServerUpdateShooting_Implementation(bool NewValue);
-
-	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerUpdateReloading(bool NewValue);
-	virtual bool ServerUpdateReloading_Validate(bool NewValue) { return true; };
-	virtual void ServerUpdateReloading_Implementation(bool NewValue);
+	void ServerSetIsReloading(bool NewValue);
+	virtual bool ServerSetIsReloading_Validate(bool NewValue) { return true; };
+	virtual void ServerSetIsReloading_Implementation(bool NewValue);
 
 	UFUNCTION(Server, Unreliable, WithValidation)
 	void ServerFireBullet();
@@ -71,7 +73,17 @@ public:
 	void FireBullet(FVector From, FVector Direction);
 	virtual void FireBullet_Implementation(FVector From, FVector Direction);
 
-protected:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	/*
+	**	Props
+	*/
+	UPROPERTY(Replicated)
+	int32 Ammo;
+	UPROPERTY(Replicated)
+	int32 MaxAmmo;
+	UPROPERTY(Replicated)
+	bool bIsAiming;
+	UPROPERTY(Replicated)
+	bool bIsShooting;
+	UPROPERTY(Replicated)
+	bool bIsReloading;
 };
