@@ -7,7 +7,7 @@
 #include "OgnamGameMode.generated.h"
 
 /**
- * 
+ *	Place things that are generic between game modes.
  */
 UCLASS()
 class OGNAM_API AOgnamGameMode : public AGameMode
@@ -23,11 +23,4 @@ public:
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual void PostLogin(class APlayerController* NewPlayer) override;
 	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
-
-protected:
-	/*
-	**	Props
-	*/
-	UPROPERTY()
-	int32 MaxNumPlayers = 2;
 };
