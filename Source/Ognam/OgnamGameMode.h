@@ -8,6 +8,8 @@
 
 /**
  *	Place things that are generic between game modes.
+ *	The reason is because reducing code repeation.
+ *	Also, Don't implement functions for "Getting ready" that should be handled in child classes.
  */
 UCLASS()
 class OGNAM_API AOgnamGameMode : public AGameMode
@@ -16,11 +18,17 @@ class OGNAM_API AOgnamGameMode : public AGameMode
 
 public:
 	AOgnamGameMode();
-
+	
 	/*
 	**	Binded Functions
 	*/
-	virtual bool ReadyToStartMatch_Implementation() override;
-	virtual void PostLogin(class APlayerController* NewPlayer) override;
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
+
+protected:
+
+	/*
+	**	Props
+	*/
+	int32 MaxNumPlayers;
 };

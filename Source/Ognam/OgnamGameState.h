@@ -7,7 +7,8 @@
 #include "OgnamGameState.generated.h"
 
 /**
- * 
+ *	This state should never be used.
+ *	Not even meant for inheritance
  */
 UCLASS()
 class OGNAM_API AOgnamGameState : public AGameState

@@ -16,6 +16,8 @@ class OGNAM_API ARitualAcolyte : public AActor
 	*/
 	UPROPERTY(EditAnywhere)
 	class USkeletalMeshComponent* SkeletalMesh;
+	UPROPERTY(EditAnywhere)
+	class UCapsuleComponent* Capsule;
 public:	
 	ARitualAcolyte();
 

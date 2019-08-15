@@ -35,7 +35,7 @@ void ARitualShrine::BeginPlay()
 	/*
 	** Make sure if there aren't multiple acolytes.
 	*/
-	SpawnAcolytes(2);
+	SpawnAcolytes(3);
 }
 
 // Called every frame
@@ -49,15 +49,17 @@ void ARitualShrine::SpawnAcolytes_Implementation(int32 Count)
 {
 	//Spawn Acolytes around shrine.
 
-	const float Distance = 100.f;
+	const float Distance = 200.f;
 	float Angle = 0.f;
 	for (int i = 0; i < Count; i++)
 	{
 		//find spawn position
-		FVector Location(cos(Angle) * Distance, sin(Angle) * Distance, 0);
-		Location = GetTransform().GetLocation() + GetTransform().TransformPosition(Location);
+		FVector Location(cos(Angle) * Distance, sin(Angle) * Distance, -25);
 
+
+		Location = GetTransform().TransformPosition(Location);
 		ARitualAcolyte* Acolyte = GetWorld()->SpawnActor<ARitualAcolyte>(Location, FRotator::ZeroRotator);
+		Acolyte->AddActorLocalOffset(FVector(0, 0, -100), true);
 		Acolyte->SetParentShrine(this);
 		Acolytes.Push(Acolyte);
 		Angle += (1.f / Count) * 2 * PI ;

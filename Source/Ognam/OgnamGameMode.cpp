@@ -15,18 +15,27 @@ AOgnamGameMode::AOgnamGameMode()
 	PlayerStateClass = AOgnamPlayerState::StaticClass();
 }
 
-bool AOgnamGameMode::ReadyToStartMatch_Implementation()
+void AOgnamGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
-	Super::ReadyToStartMatch_Implementation();
-	return true;
-}
-
-void AOgnamGameMode::PostLogin(APlayerController* NewPlayer)
-{
-	Super::PostLogin(NewPlayer);
+	Super::InitGame(MapName, Options, ErrorMessage);
+	if (!ErrorMessage.IsEmpty())
+	{
+		return;
+	}
+	//0 means Infinite
+	MaxNumPlayers = 0;
 }
 
 void AOgnamGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
 	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
+	if (!ErrorMessage.IsEmpty())
+	{
+		return;
+	}
+	if (MaxNumPlayers && NumPlayers >= MaxNumPlayers)
+	{
+		ErrorMessage = "Match Full";
+		return;
+	}
 }
