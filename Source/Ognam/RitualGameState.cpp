@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "RitualGameState.h"
+#include "RitualGameMode.h"
 #include "RitualPlayerState.h"
 #include "UnrealNetwork.h"
 
@@ -27,6 +28,7 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 void ARitualGameState::HandleMatchHasStarted()
 {
 	//distribute Teams, it is not replicated func bc it should be always synced.
+	int i = 0;
 	for (APlayerState* PlayerState : PlayerArray)
 	{
 		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
@@ -39,18 +41,28 @@ void ARitualGameState::HandleMatchHasStarted()
 			//Set team recieves Fname which is basically hash mapped comparison.
 			if (GreenPlayers.Num() > BluePlayers.Num())
 			{
-				RitualPlayerState->SetTeam(TEXT("Green"));
+				RitualPlayerState->SetTeam(GreenName);
 			}
 			else
 			{
-				RitualPlayerState->SetTeam(TEXT("Blue"));
+				RitualPlayerState->SetTeam(BlueName);
 			}
 		}
 	}
 
 	//Init attack and defense
-	CurrentOffenseTeam = TEXT("Green");
-	CurrentDefenseTeam = TEXT("Blue");
+	CurrentOffenseTeam = GreenName;
+	CurrentDefenseTeam = BlueName;
+
+	//Respawn everyone.
+	ARitualGameMode* GameMode = Cast<ARitualGameMode>(AuthorityGameMode);
+	if (HasAuthority())
+	{
+		for (APlayerState* PlayerState : PlayerArray)
+		{
+			GameMode->RestartPlayer(PlayerState->GetInstigatorController());
+		}
+	}
 }
 
 FName ARitualGameState::GetCurrentOffenseTeam() const

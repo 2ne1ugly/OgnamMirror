@@ -32,13 +32,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FName GetCurrentDefenseTeam() const;
 
-protected:
-
 	/*
-	**	Props
+	**	Exported Props
 	*/
+	const FName GreenName = TEXT("Green");
+	const FName BlueName = TEXT("Blue");
 	TArray<class ARitualPlayerState*>	GreenPlayers;
 	TArray<class ARitualPlayerState*>	BluePlayers;
+protected:
 
 	//Required number score to win
 	UPROPERTY(Replicated)
@@ -59,4 +60,5 @@ protected:
 
 	UPROPERTY(Replicated)
 	FName CurrentDefenseTeam;
+
 };

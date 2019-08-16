@@ -3,6 +3,8 @@
 #include "RitualGameMode.h"
 #include "RitualGameState.h"
 #include "RitualPlayerState.h"
+#include "GameFramework/PlayerStart.h"
+#include "EngineUtils.h"
 
 ARitualGameMode::ARitualGameMode()
 {
@@ -44,22 +46,28 @@ void ARitualGameMode::PreLogin(const FString& Options, const FString& Address, c
 	}
 }
 
-AActor* ARitualGameMode::ChoosePlayerStart_Implementation(AController* Player)
+AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)
 {
+	//get states
 	ARitualPlayerState* PlayerState = Player->GetPlayerState<ARitualPlayerState>();
 	ARitualGameState* GameState = GetGameState< ARitualGameState>();
 	if (PlayerState == nullptr || GameState == nullptr)
 	{
-		return nullptr;
+		return Super::FindPlayerStart_Implementation(Player, IncomingName);
 	}
-	FName Team = PlayerState->GetTeam();
-	if (Team == GameState->GetCurrentOffenseTeam())
-	{
-		
-	}
-	else if (Team == GameState->GetCurrentDefenseTeam())
-	{
 
+	//iterate through player state and find its own
+	FName Team = PlayerState->GetTeam();
+	int32 GivenIndex = PlayerState->GetTeamIndex();
+	int32 CurrentIndex = 0;
+	for (TActorIterator<APlayerStart> itr(GetWorld()); itr; ++itr)
+	{
+		if (itr->PlayerStartTag.IsEqual(Team))
+		{
+			if (CurrentIndex == GivenIndex)
+				return *itr;
+			CurrentIndex++;
+		}
 	}
-	return nullptr;
+	return Super::FindPlayerStart_Implementation(Player, IncomingName);
 }

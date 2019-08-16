@@ -31,6 +31,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FName GetTeam() const;
 
+	/*
+	**	Exported Function
+	*/
+
+	//Grabs index from Team array
+	UFUNCTION(BlueprintCallable)
+	int32 GetTeamIndex();
+
 protected:
 	/*
 	**	Props
