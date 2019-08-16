@@ -21,7 +21,6 @@ public:
 	**	Binded Functions
 	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void HandleMatchHasStarted() override;
 
 	/*
 	**	Getters, Setters
@@ -37,7 +36,12 @@ public:
 	*/
 	const FName GreenName = TEXT("Green");
 	const FName BlueName = TEXT("Blue");
+	const FName DefenseName = TEXT("Defense");
+	const FName OffenseName = TEXT("Offense");
+
+	UPROPERTY(Replicated, VisibleAnywhere)
 	TArray<class ARitualPlayerState*>	GreenPlayers;
+	UPROPERTY(Replicated, VisibleAnywhere)
 	TArray<class ARitualPlayerState*>	BluePlayers;
 protected:
 
@@ -55,10 +59,10 @@ protected:
 	UPROPERTY(Replicated)
 	int32 BlueScore;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated)
 	FName CurrentOffenseTeam;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated)
 	FName CurrentDefenseTeam;
 
 };

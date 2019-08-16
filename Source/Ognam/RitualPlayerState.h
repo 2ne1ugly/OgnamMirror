@@ -31,18 +31,26 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FName GetTeam() const;
 
+	UFUNCTION(BlueprintCallable)
+	void SetTeamIndex(int32 index);
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetTeamIndex() const;
+
 	/*
 	**	Exported Function
 	*/
-
-	//Grabs index from Team array
+	//Gets if offense or not
 	UFUNCTION(BlueprintCallable)
-	int32 GetTeamIndex();
+	FName GetSide() const;
 
 protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Replicated, VisibleAnywhere)
 	FName Team;
+
+	UPROPERTY(Replicated)
+	int32 TeamIndex;
 };

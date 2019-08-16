@@ -30,4 +30,8 @@ public:
 	virtual void PostLogin(class APlayerController* NewPlayer) override;
 	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 	virtual AActor* FindPlayerStart_Implementation(AController* Player, const FString& IncomingName) override;
+	virtual void HandleMatchHasStarted() override;
+
+protected:
+	TArray<class ARitualPlayerController*> PlayerControllers;
 };

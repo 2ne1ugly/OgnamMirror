@@ -11,6 +11,8 @@ ARitualGameState::ARitualGameState()
 	RequiredScore = 3;
 	GreenScore = 0;
 	BlueScore = 0;
+	CurrentOffenseTeam = GreenName;
+	CurrentDefenseTeam = BlueName;
 }
 
 void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -23,46 +25,8 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ARitualGameState, BlueScore);
 	DOREPLIFETIME(ARitualGameState, CurrentOffenseTeam);
 	DOREPLIFETIME(ARitualGameState, CurrentDefenseTeam);
-}
-
-void ARitualGameState::HandleMatchHasStarted()
-{
-	//distribute Teams, it is not replicated func bc it should be always synced.
-	int i = 0;
-	for (APlayerState* PlayerState : PlayerArray)
-	{
-		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
-		if (RitualPlayerState == nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Some one is not a Ritual Player State!"));
-		}
-		else
-		{
-			//Set team recieves Fname which is basically hash mapped comparison.
-			if (GreenPlayers.Num() > BluePlayers.Num())
-			{
-				RitualPlayerState->SetTeam(GreenName);
-			}
-			else
-			{
-				RitualPlayerState->SetTeam(BlueName);
-			}
-		}
-	}
-
-	//Init attack and defense
-	CurrentOffenseTeam = GreenName;
-	CurrentDefenseTeam = BlueName;
-
-	//Respawn everyone.
-	ARitualGameMode* GameMode = Cast<ARitualGameMode>(AuthorityGameMode);
-	if (HasAuthority())
-	{
-		for (APlayerState* PlayerState : PlayerArray)
-		{
-			GameMode->RestartPlayer(PlayerState->GetInstigatorController());
-		}
-	}
+	DOREPLIFETIME(ARitualGameState, GreenPlayers);
+	DOREPLIFETIME(ARitualGameState, BluePlayers);
 }
 
 FName ARitualGameState::GetCurrentOffenseTeam() const
