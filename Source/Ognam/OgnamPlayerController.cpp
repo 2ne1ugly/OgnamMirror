@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "OgnamCharacter.h"
 #include "UnrealNetwork.h"
+#include "OgnamCharacter.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -29,4 +30,10 @@ void AOgnamPlayerController::BeginPlay()
 			HUD->AddToViewport();
 		}
 	}
+}
+
+void AOgnamPlayerController::Die()
+{
+	//AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetPawn());
+	//Character->Die();
 }

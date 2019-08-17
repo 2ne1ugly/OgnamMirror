@@ -29,6 +29,12 @@ public:
 	*/
 	virtual void BeginPlay() override;
 
+	/*
+	**	Exported Functions
+	*/
+	//Meant to be only called from server
+	virtual void Die();
+
 private:
 
 	/*

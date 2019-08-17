@@ -11,6 +11,7 @@
 #include "ConstructorHelpers.h"
 #include "Animation/AnimBlueprint.h"
 #include "UnrealNetwork.h"
+#include "OgnamPlayerController.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -153,8 +154,18 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Health -= Damage;
-	if (Health <= 0)
-		Die();
+	if (Health <= 0 && HasAuthority())
+	{
+		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(GetController());
+		if (PlayerController != nullptr)
+		{
+			PlayerController->Die();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Not Ognam Player Controller"));
+		}
+	}
 	return Damage;
 }
 

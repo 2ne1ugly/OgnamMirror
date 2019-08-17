@@ -16,51 +16,7 @@ class OGNAM_API ARitualPlayerController : public AOgnamPlayerController
 
 public:
 	/*
-	**	Getters, Setters
+	**	Overritten Function
 	*/
-	UFUNCTION(BlueprintCallable)
-	bool GetIsReady() const;
-
-	UFUNCTION(BlueprintCallable)
-	FName GetTeam() const;
-
-	UFUNCTION(BlueprintCallable)
-	void SetTeam(FName name);
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetTeamIndex() const;
-
-	UFUNCTION(BlueprintCallable)
-	void SetTeamIndex(int32 index);
-
-	/*
-	**	Exported Function
-	*/
-	UFUNCTION(Client, Reliable)
-	void GetReady(int32 index, FName Team);
-	void GetReady_Implementation(int32 index, FName Team);
-
-	UFUNCTION(Server, WithValidation, Reliable)
-	void ServerReady();
-	bool ServerReady_Validate() { return true; };
-	void ServerReady_Implementation();
-
-	//Gets if offense or not
-	UFUNCTION(BlueprintCallable)
-	FName GetSide() const;
-
-protected:
-	/*
-	**	Props
-	*/
-	UPROPERTY(VisibleAnywhere)
-	FName Team;
-
-	UPROPERTY(VisibleAnywhere)
-	int32 TeamIndex;
-
-	/*
-	**	Props
-	*/
-	bool bIsReady;
+	virtual void Die() override;
 };

@@ -69,6 +69,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
 
+	/*
+	**	Exported functions
+	*/
+	UFUNCTION(NetMulticast, Reliable)
+	void Die();
+	virtual void Die_Implementation();
+
 protected:
 	/*
 	**	Internal functions
@@ -77,10 +84,6 @@ protected:
 	void ServerJump();
 	virtual bool ServerJump_Validate() { return true; };
 	virtual void ServerJump_Implementation();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void Die();
-	void Die_Implementation();
 
 	/*
 	**	Props

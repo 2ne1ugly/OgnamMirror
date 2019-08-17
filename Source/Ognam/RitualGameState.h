@@ -21,6 +21,7 @@ public:
 	**	Binded Functions
 	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void Tick(float DeltaTime) override;
 
 	/*
 	**	Getters, Setters
@@ -31,6 +32,42 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FName GetCurrentDefenseTeam() const;
 
+	UFUNCTION(BlueprintCallable)
+	int32 GetGreenAliveCount() const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetBlueAliveCount() const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetGreenScore() const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetBlueScore() const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetNumGreenPlayers() const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetNumBluePlayers() const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetCurrentRound() const;
+
+	UFUNCTION(BlueprintCallable)
+	void IncNumGreenPlayers();
+
+	UFUNCTION(BlueprintCallable)
+	void IncNumBluePlayers();
+
+	/*
+	**	Exported Functions
+	*/
+	//Only Used for server internally
+	void StartRound();
+	//Only Used for server internally
+	void KillPlayer(class ARitualPlayerController* PlayerController);
+
+
 	/*
 	**	Exported Props
 	*/
@@ -38,12 +75,11 @@ public:
 	const FName BlueName = TEXT("Blue");
 	const FName DefenseName = TEXT("Defense");
 	const FName OffenseName = TEXT("Offense");
-
-	UPROPERTY(Replicated, VisibleAnywhere)
-	TArray<class ARitualPlayerState*>	GreenPlayers;
-	UPROPERTY(Replicated, VisibleAnywhere)
-	TArray<class ARitualPlayerState*>	BluePlayers;
 protected:
+	/*
+	**	Internal Functions
+	*/
+	void EndRound();
 
 	//Required number score to win
 	UPROPERTY(Replicated)
@@ -64,5 +100,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	FName CurrentDefenseTeam;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	int32 NumGreenPlayers;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	int32 NumBluePlayers;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	int32 GreenAliveCount;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	int32 BlueAliveCount;
 
 };

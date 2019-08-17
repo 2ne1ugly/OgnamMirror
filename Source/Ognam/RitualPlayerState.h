@@ -21,7 +21,7 @@ public:
 	**	Binded Function
 	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
+	virtual void Tick(float DeltaTime) override;
 	/*
 	**	Getters, Setters
 	*/
@@ -37,6 +37,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetTeamIndex() const;
 
+	UFUNCTION(BlueprintCallable)
+	void SetIsAlive(bool Value);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsAlive() const;
+	
 	/*
 	**	Exported Function
 	*/
@@ -53,4 +59,7 @@ protected:
 
 	UPROPERTY(Replicated)
 	int32 TeamIndex;
+
+	UPROPERTY(Replicated)
+	bool bIsAlive;
 };

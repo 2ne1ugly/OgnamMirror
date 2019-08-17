@@ -28,15 +28,10 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 bool ARitualGameMode::ReadyToStartMatch_Implementation()
 {
 	// if everyone's in and everyone is ready
-	if (NumPlayers == MaxNumPlayers)
+	// Num Players contains non initialized players.
+	// use Num to make it safe
+	if (PlayerControllers.Num() == MaxNumPlayers)
 	{
-		for (ARitualPlayerController* PlayerController : PlayerControllers)
-		{
-			if (!PlayerController->GetIsReady())
-			{
-				return false;
-			}
-		}
 		return true;
 	}
 	return false;
@@ -44,10 +39,13 @@ bool ARitualGameMode::ReadyToStartMatch_Implementation()
 
 void ARitualGameMode::HandleMatchHasStarted()
 {
-	for (ARitualPlayerController* PlayerController : PlayerControllers)
+	ARitualGameState* GameState = GetGameState<ARitualGameState>();
+	if (GameState == nullptr)
 	{
-		RestartPlayer(PlayerController);
+		UE_LOG(LogTemp, Warning, TEXT("Not a Ritual Gamestate"));
+		return;
 	}
+	GameState->StartRound();
 }
 
 void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
@@ -63,23 +61,17 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 	else
 	{
-		if (GameState->GreenPlayers.Num() < GameState->BluePlayers.Num())
+		if (GameState->GetNumGreenPlayers() <= GameState->GetNumBluePlayers())
 		{
 			RitualPlayerState->SetTeam(GameState->GreenName);
-			RitualPlayerState->SetTeamIndex(GameState->GreenPlayers.Num());
-			PlayerController->SetTeam(GameState->GreenName);
-			PlayerController->SetTeamIndex(GameState->GreenPlayers.Num());
-			PlayerController->GetReady(GameState->GreenPlayers.Num(), GameState->GreenName);
-			GameState->GreenPlayers.Push(RitualPlayerState);
+			RitualPlayerState->SetTeamIndex(GameState->GetNumGreenPlayers());
+			GameState->IncNumGreenPlayers();
 		}
 		else
 		{
 			RitualPlayerState->SetTeam(GameState->BlueName);
-			RitualPlayerState->SetTeamIndex(GameState->BluePlayers.Num());
-			PlayerController->SetTeam(GameState->BlueName);
-			PlayerController->SetTeamIndex(GameState->BluePlayers.Num());
-			PlayerController->GetReady(GameState->BluePlayers.Num(), GameState->BlueName);
-			GameState->BluePlayers.Push(RitualPlayerState);
+			RitualPlayerState->SetTeamIndex(GameState->GetNumBluePlayers());
+			GameState->IncNumBluePlayers();
 		}
 		PlayerControllers.Push(PlayerController);
 	}
@@ -92,21 +84,27 @@ void ARitualGameMode::PreLogin(const FString& Options, const FString& Address, c
 	{
 		return;
 	}
+	if (NumPlayers == MaxNumPlayers)
+	{
+		ErrorMessage = TEXT("Match Full");
+	}
 }
 
 AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)
 {
+	if (!HasMatchStarted())
+		return Super::FindPlayerStart_Implementation(Player, IncomingName);
 	//get states
-	ARitualPlayerController* PlayerController = Cast<ARitualPlayerController>(Player);
-	if (PlayerController == nullptr)
+	ARitualPlayerState* PlayerState = Player->GetPlayerState<ARitualPlayerState>();
+	if (PlayerState == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GameState or ARitualPlayerController invalid"));
 		return nullptr;
 	}
 
 	//find right n'th index
-	FName Side = PlayerController->GetSide();
-	int32 GivenIndex = PlayerController->GetTeamIndex();
+	FName Side = PlayerState->GetSide();
+	int32 GivenIndex = PlayerState->GetTeamIndex();
 	int32 CurrentIndex = 0;
 	for (TActorIterator<APlayerStart> itr(GetWorld()); itr; ++itr)
 	{
@@ -114,7 +112,6 @@ AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, con
 		{
 			if (CurrentIndex == GivenIndex)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("%s"), *itr->PlayerStartTag.ToString());
 				return *itr;
 			}
 			CurrentIndex++;
@@ -122,4 +119,51 @@ AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, con
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Not enough Spawn points"));
 	return Super::FindPlayerStart_Implementation(Player, IncomingName);
+}
+
+void ARitualGameMode::RestartPlayerAtPlayerStart(AController* NewPlayer, AActor* StartSpot)
+{
+	if (NewPlayer == nullptr || NewPlayer->IsPendingKillPending())
+	{
+		return;
+	}
+	if (!StartSpot)
+	{
+		UE_LOG(LogGameMode, Warning, TEXT("RestartPlayerAtPlayerStart: Player start not found"));
+		return;
+	}
+
+	FRotator SpawnRotation = StartSpot->GetActorRotation();
+
+	UE_LOG(LogGameMode, Verbose, TEXT("RestartPlayerAtPlayerStart %s"), (NewPlayer && NewPlayer->PlayerState) ? *NewPlayer->PlayerState->GetPlayerName() : TEXT("Unknown"));
+
+	if (MustSpectate(Cast<APlayerController>(NewPlayer)))
+	{
+		UE_LOG(LogGameMode, Verbose, TEXT("RestartPlayerAtPlayerStart: Tried to restart a spectator-only player!"));
+		return;
+	}
+
+	if (NewPlayer->GetPawn() != nullptr)
+	{
+		APawn* Pawn = NewPlayer->GetPawn();
+		NewPlayer->UnPossess();
+		Pawn->Destroy();
+	}
+	if (GetDefaultPawnClassForController(NewPlayer) != nullptr)
+	{
+		// Try to create a pawn to use of the default class for this player
+		NewPlayer->SetPawn(SpawnDefaultPawnFor(NewPlayer, StartSpot));
+	}
+
+	if (NewPlayer->GetPawn() == nullptr)
+	{
+		NewPlayer->FailedToSpawnPawn();
+	}
+	else
+	{
+		// Tell the start spot it was used
+		InitStartSpot(StartSpot, NewPlayer);
+
+		FinishRestartPlayer(NewPlayer, SpawnRotation);
+	}
 }
