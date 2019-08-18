@@ -39,20 +39,20 @@ bool ARitualGameMode::ReadyToStartMatch_Implementation()
 
 void ARitualGameMode::HandleMatchHasStarted()
 {
-	ARitualGameState* GameState = GetGameState<ARitualGameState>();
-	if (GameState == nullptr)
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (RitualGameState == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Not a Ritual Gamestate"));
 		return;
 	}
-	GameState->StartRound();
+	RitualGameState->StartRound();
 }
 
 void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 	ARitualPlayerController *PlayerController = Cast<ARitualPlayerController>(NewPlayer);
-	ARitualGameState* GameState = GetGameState<ARitualGameState>();
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
 	//Assign Team
 	if (RitualPlayerState == nullptr)
@@ -61,17 +61,17 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 	else
 	{
-		if (GameState->GetNumGreenPlayers() <= GameState->GetNumBluePlayers())
+		if (RitualGameState->GetNumGreenPlayers() <= RitualGameState->GetNumBluePlayers())
 		{
-			RitualPlayerState->SetTeam(GameState->GreenName);
-			RitualPlayerState->SetTeamIndex(GameState->GetNumGreenPlayers());
-			GameState->IncNumGreenPlayers();
+			RitualPlayerState->SetTeam(RitualGameState->GreenName);
+			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumGreenPlayers());
+			RitualGameState->IncNumGreenPlayers();
 		}
 		else
 		{
-			RitualPlayerState->SetTeam(GameState->BlueName);
-			RitualPlayerState->SetTeamIndex(GameState->GetNumBluePlayers());
-			GameState->IncNumBluePlayers();
+			RitualPlayerState->SetTeam(RitualGameState->BlueName);
+			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumBluePlayers());
+			RitualGameState->IncNumBluePlayers();
 		}
 		PlayerControllers.Push(PlayerController);
 	}
@@ -166,4 +166,10 @@ void ARitualGameMode::RestartPlayerAtPlayerStart(AController* NewPlayer, AActor*
 
 		FinishRestartPlayer(NewPlayer, SpawnRotation);
 	}
+}
+
+UClass* ARitualGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
+{
+	ARitualPlayerState* PlayerState = InController->GetPlayerState<ARitualPlayerState>();
+	return PlayerState->GetPawnClass();
 }

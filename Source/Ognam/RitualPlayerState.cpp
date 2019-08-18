@@ -3,6 +3,7 @@
 
 #include "RitualPlayerState.h"
 #include "RitualGameState.h"
+#include "OgnamShooter.h"
 #include "OgnamCharacter.h"
 #include "Engine/World.h"
 #include "UnrealNetwork.h"
@@ -11,6 +12,7 @@ ARitualPlayerState::ARitualPlayerState()
 {
 	Team = TEXT("Undefined");
 	bIsAlive = false;
+	PawnClass = AOgnamShooter::StaticClass();
 }
 
 void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -18,6 +20,7 @@ void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ARitualPlayerState, Team);
+	DOREPLIFETIME(ARitualPlayerState, PawnClass);
 }
 
 void ARitualPlayerState::Tick(float DeltaTime)
@@ -64,6 +67,16 @@ void ARitualPlayerState::SetIsAlive(bool Value)
 bool ARitualPlayerState::IsAlive() const
 {
 	return bIsAlive;
+}
+
+UClass* ARitualPlayerState::GetPawnClass()
+{
+	return PawnClass;
+}
+
+void ARitualPlayerState::SetPawnClass(UClass* Pawn)
+{
+	PawnClass = Pawn;
 }
 
 FName ARitualPlayerState::GetSide() const

@@ -6,6 +6,7 @@
 #include "RitualPlayerController.h"
 #include "OgnamCharacter.h"
 #include "UnrealNetwork.h"
+#include "Engine/World.h"
 
 ARitualGameState::ARitualGameState()
 {
@@ -19,6 +20,9 @@ ARitualGameState::ARitualGameState()
 	GreenAliveCount = 0;
 	CurrentOffenseTeam = BlueName;
 	CurrentDefenseTeam = GreenName;
+	RoundStartTime = 0;
+	PhaseStartTime = 0;
+	PhaseGivenTime = 0;
 }
 
 void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -35,6 +39,9 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ARitualGameState, NumGreenPlayers);
 	DOREPLIFETIME(ARitualGameState, GreenAliveCount);
 	DOREPLIFETIME(ARitualGameState, BlueAliveCount);
+	DOREPLIFETIME(ARitualGameState, RoundStartTime);
+	DOREPLIFETIME(ARitualGameState, PhaseStartTime);
+	DOREPLIFETIME(ARitualGameState, PhaseGivenTime);
 }
 
 void ARitualGameState::Tick(float DeltaTime)
@@ -45,7 +52,8 @@ void ARitualGameState::Tick(float DeltaTime)
 	//Check Round ending condition
 	if (HasAuthority())
 	{
-		if (GreenAliveCount == 0 || BlueAliveCount == 0)
+		//If etiher of the side is all dead or time ran out
+		if (GreenAliveCount == 0 || BlueAliveCount == 0 || GetPhaseRemainingTime() <= 0)
 		{
 			EndRound();
 		}
@@ -95,6 +103,21 @@ int32 ARitualGameState::GetNumBluePlayers() const
 int32 ARitualGameState::GetCurrentRound() const
 {
 	return CurrentRound;
+}
+
+float ARitualGameState::GetRoundStartTime() const
+{
+	return RoundStartTime;
+}
+
+float ARitualGameState::GetPhaseStartTime() const
+{
+	return PhaseStartTime;
+}
+
+float ARitualGameState::GetPhaseGivenTime() const
+{
+	return PhaseGivenTime;
 }
 
 void ARitualGameState::IncNumGreenPlayers()
@@ -147,6 +170,13 @@ void ARitualGameState::StartRound()
 		FName Temp = CurrentOffenseTeam;
 		CurrentOffenseTeam = CurrentDefenseTeam;
 		CurrentDefenseTeam = Temp;
+
+		//Reset Round time
+		RoundStartTime = GetWorld()->GetTimeSeconds();
+
+		//Start Phase 1
+		PhaseStartTime = GetWorld()->GetTimeSeconds();
+		PhaseGivenTime = 10;
 	}
 	else
 	{
@@ -190,27 +220,57 @@ void ARitualGameState::KillPlayer(ARitualPlayerController* PlayerController)
 	}
 }
 
+float ARitualGameState::GetPhaseRemainingTime() const
+{
+	float CurrentTime;
+	if (HasAuthority())
+	{
+		CurrentTime = GetWorld()->GetTimeSeconds();
+	}
+	else
+	{
+		CurrentTime = GetServerWorldTimeSeconds();
+	}
+
+	return	PhaseGivenTime - (CurrentTime - PhaseStartTime);
+}
+
 void ARitualGameState::EndRound()
 {
 	if (HasAuthority())
 	{
 		ARitualGameMode* GameMode = Cast<ARitualGameMode>(AuthorityGameMode);
-		if (GreenAliveCount != 0)
+
+		if (GetPhaseRemainingTime() <= 0)
+		{
+			if (CurrentDefenseTeam == GreenName)
+			{
+				GreenScore++;
+			}
+			else if (CurrentDefenseTeam == BlueName)
+			{
+				BlueScore++;
+			}
+		}
+		else if (GreenAliveCount != 0)
 		{
 			GreenScore++;
-			if (GreenScore == RequiredScore)
-			{
-				GameMode->EndMatch();
-			}
 		}
 		else if (BlueAliveCount != 0)
 		{
 			BlueScore++;
-			if (BlueScore == RequiredScore)
-			{
-				GameMode->EndMatch();
+		}
 
-			}
+		// Deal with this problem later
+		if (GreenScore == RequiredScore)
+		{
+			GameMode->EndMatch();
+			return;
+		}
+		else if (BlueScore == RequiredScore)
+		{
+			GameMode->EndMatch();
+			return;
 		}
 		StartRound();
 	}

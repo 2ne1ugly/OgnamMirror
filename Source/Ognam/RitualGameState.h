@@ -54,6 +54,15 @@ public:
 	int32 GetCurrentRound() const;
 
 	UFUNCTION(BlueprintCallable)
+	float GetRoundStartTime() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetPhaseStartTime() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetPhaseGivenTime() const;
+
+	UFUNCTION(BlueprintCallable)
 	void IncNumGreenPlayers();
 
 	UFUNCTION(BlueprintCallable)
@@ -67,6 +76,8 @@ public:
 	//Only Used for server internally
 	void KillPlayer(class ARitualPlayerController* PlayerController);
 
+	UFUNCTION(BlueprintCallable)
+	float GetPhaseRemainingTime() const;
 
 	/*
 	**	Exported Props
@@ -113,4 +124,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Replicated)
 	int32 BlueAliveCount;
 
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float RoundStartTime;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float PhaseStartTime;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float PhaseGivenTime;
 };

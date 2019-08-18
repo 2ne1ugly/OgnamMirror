@@ -42,10 +42,17 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
-	
+
+	UFUNCTION(BlueprintCallable)
+	UClass* GetPawnClass();
+
+	UFUNCTION(BlueprintCallable)
+	void SetPawnClass(UClass* Pawn);
+
 	/*
 	**	Exported Function
 	*/
+
 	//Gets if offense or not
 	UFUNCTION(BlueprintCallable)
 	FName GetSide() const;
@@ -62,4 +69,7 @@ protected:
 
 	UPROPERTY(Replicated)
 	bool bIsAlive;
+
+	UPROPERTY(Replicated)
+	UClass* PawnClass;
 };

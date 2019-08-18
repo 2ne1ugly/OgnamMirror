@@ -29,8 +29,12 @@ public:
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual void PostLogin(class APlayerController* NewPlayer) override;
 	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
+
+	// TODO: Make this into a single Respawn to correct pawn instead of overriding this shit
 	virtual AActor* FindPlayerStart_Implementation(AController* Player, const FString& IncomingName) override;
 	virtual void RestartPlayerAtPlayerStart(AController* NewPlayer, AActor* StartSpot) override;
+	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+
 	//We Handle this here bc we want to make sure that this is called only from server.
 	virtual void HandleMatchHasStarted() override;
 

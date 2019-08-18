@@ -14,7 +14,7 @@ AOgnamPlayerController::AOgnamPlayerController()
 	static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder(TEXT("/Game/UI/OgnamHUD"));
 	if (HUDFinder.Succeeded())
 	{
-		HUDClass = HUDFinder.Class;
+		OgnamHUDClass = HUDFinder.Class;
 	}
 	else
 		UE_LOG(LogTemp, Warning, TEXT("Not Loaded"));
@@ -22,12 +22,14 @@ AOgnamPlayerController::AOgnamPlayerController()
 
 void AOgnamPlayerController::BeginPlay()
 {
-	if (HUDClass && IsLocalPlayerController())
+	if (OgnamHUDClass && IsLocalPlayerController())
 	{
-		HUD = CreateWidget<UUserWidget>(this, HUDClass);
-		if (HUD)
+		OgnamHUD = CreateWidget<UUserWidget>(this, OgnamHUDClass);
+
+		//This part should be chosen properly
+		if (OgnamHUD)
 		{
-			HUD->AddToViewport();
+			OgnamHUD->AddToViewport();
 		}
 	}
 }
@@ -37,3 +39,9 @@ void AOgnamPlayerController::Die()
 	//AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetPawn());
 	//Character->Die();
 }
+
+void AOgnamPlayerController::ServerChangeCharacter_Implementation(UClass* PawnClass)
+{
+	//Implementation, meant to be overwritten
+}
+
