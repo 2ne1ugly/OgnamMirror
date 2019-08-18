@@ -7,8 +7,6 @@
 #include "RitualGameMode.h"
 #include "Engine/World.h"
 #include "ConstructorHelpers.h"
-#include "Runtime/UMG/Public/UMG.h"
-#include "Slate.h"
 #include "Blueprint/UserWidget.h"
 	
 ARitualPlayerController::ARitualPlayerController()
@@ -67,11 +65,11 @@ void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* PawnC
 
 void ARitualPlayerController::ShowCharacterSelection()
 {
+	//Find a better way to set input mode
 	CharacterSelectionHUD->AddToViewport();
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
-	if (GetPawn())
-		GetPawn()->DisableInput(this);
+	SetInputMode(FInputModeUIOnly());
 }
 
 void ARitualPlayerController::HideCharacterSelection()
@@ -79,8 +77,7 @@ void ARitualPlayerController::HideCharacterSelection()
 	CharacterSelectionHUD->RemoveFromViewport();
 	bShowMouseCursor = false;
 	bEnableClickEvents = false;
-	if (GetPawn())
-		GetPawn()->EnableInput(this);
+	SetInputMode(FInputModeGameOnly());
 }
 
 void ARitualPlayerController::ToggleChangeCharacterUI()
