@@ -87,13 +87,8 @@ void AOgnamShooter::StopAim()
 
 void AOgnamShooter::ServerFireBullet_Implementation()
 {
-	//shoot ray from camera to see where it should land.
-	//Potentially change this to Hit registeration from screen position
-	FVector RayFrom = Camera->GetComponentLocation();
-	FVector RayTo = RayFrom + Camera->GetForwardVector() * 10000.f;
-	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
+	GetAimHitResult(HitResult);
 
 	//draw a ray from bullet spawn to that landing point
 	FVector From = GetMesh()->GetSocketLocation("BulletSpawn");

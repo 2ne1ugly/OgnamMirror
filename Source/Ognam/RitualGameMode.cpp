@@ -108,7 +108,7 @@ AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, con
 	int32 CurrentIndex = 0;
 	for (TActorIterator<APlayerStart> itr(GetWorld()); itr; ++itr)
 	{
-		if (itr->PlayerStartTag.IsEqual(Side))
+		if (itr->PlayerStartTag == Side)
 		{
 			if (CurrentIndex == GivenIndex)
 			{

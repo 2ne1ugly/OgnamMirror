@@ -75,6 +75,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Die();
 	virtual void Die_Implementation();
+	void GetAimHitResult(FHitResult& HitResult);
 
 protected:
 	/*

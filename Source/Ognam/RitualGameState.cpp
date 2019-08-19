@@ -142,6 +142,11 @@ void ARitualGameState::StartRound()
 			UE_LOG(LogTemp, Warning, TEXT("Not ritual gamemode"));
 		}
 
+		//Switch Offense/Defense
+		FName Temp = CurrentOffenseTeam;
+		CurrentOffenseTeam = CurrentDefenseTeam;
+		CurrentDefenseTeam = Temp;
+
 		//Restart all player and set them to alive, meanwhile set Alive count to correct number
 		int32 GreenCount = 0;
 		int32 BlueCount = 0;
@@ -163,20 +168,16 @@ void ARitualGameState::StartRound()
 				UE_LOG(LogTemp, Warning, TEXT("Invalid Name!"));
 			}
 		}
+
 		GreenAliveCount = GreenCount;
 		BlueAliveCount = BlueCount;
-
-		//Switch Offense/Defense
-		FName Temp = CurrentOffenseTeam;
-		CurrentOffenseTeam = CurrentDefenseTeam;
-		CurrentDefenseTeam = Temp;
 
 		//Reset Round time
 		RoundStartTime = GetWorld()->GetTimeSeconds();
 
 		//Start Phase 1
 		PhaseStartTime = GetWorld()->GetTimeSeconds();
-		PhaseGivenTime = 10;
+		PhaseGivenTime = 30;
 	}
 	else
 	{

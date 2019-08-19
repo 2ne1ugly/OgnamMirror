@@ -35,9 +35,19 @@ AOgnamCharacter::AOgnamCharacter()
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 
-	//Animations for the mesh
-	static ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimBP(TEXT("AnimBlueprint'/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint'"));
-	GetMesh()->SetAnimInstanceClass(AnimBP.Object->GeneratedClass);
+	//Animations for the mesh, if animation starts to get buggy, check if this code is right.
+	static ConstructorHelpers::FObjectFinder<UClass> AnimBP(
+		TEXT("/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint_C"));
+	//static ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimBP_PIE(
+	//	TEXT("AnimBlueprint'/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint'"));
+	//if (AnimBP_PIE.Object != nullptr)
+	//{
+	//	GetMesh()->SetAnimInstanceClass(AnimBP_PIE.Object->GeneratedClass);
+	//}
+	//else
+	//{
+		GetMesh()->SetAnimInstanceClass(AnimBP.Object);
+	//}
 
 	Health = 100.f;
 	MaxHealth = 100.f;
@@ -127,6 +137,16 @@ bool AOgnamCharacter::GetIsCrouched() const
 bool AOgnamCharacter::IsAlive() const
 {
 	return bIsAlive;
+}
+
+void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult)
+{
+	//shoot ray from camera to see where it should land.
+	//Potentially change this to Hit registeration from screen position
+	FVector RayFrom = Camera->GetComponentLocation();
+	FVector RayTo = RayFrom + Camera->GetForwardVector() * 10000.f;
+	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
+	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
 }
 
 void AOgnamCharacter::ServerJump_Implementation()
