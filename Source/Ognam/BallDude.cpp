@@ -127,7 +127,6 @@ void ABallDude::StopThrowLeft()
 		Trajectory[i]->SetVisibility(false);
 	}
 	ServerThrowLeft(ChargeTime);
-	UseBalls();
 }
 
 void ABallDude::ServerThrowLeft_Implementation(float Charge)
@@ -137,6 +136,7 @@ void ABallDude::ServerThrowLeft_Implementation(float Charge)
 
 void ABallDude::MultiCastThrowLeft_Implementation(float Charge)
 {
+	UseBalls();
 	ABallDudeProjectile* Projectile = GetWorld()->SpawnActor<ABallDudeProjectile>(GetActorLocation(), FRotator::ZeroRotator);
 	Projectile->SetAcceleration(Camera->GetComponentTransform().TransformVector(FVector(0, 1, -1) * 2000));
 	Projectile->SetInitialVelocity(Camera->GetComponentTransform().TransformVector(FVector(6, -1, 1) * 500));
