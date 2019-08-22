@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "OgnamCharacter.h"
+#include "Engine.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -12,6 +12,7 @@
 #include "Animation/AnimBlueprint.h"
 #include "UnrealNetwork.h"
 #include "OgnamPlayerController.h"
+#include "InteractComponent.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -78,6 +79,8 @@ void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 void AOgnamCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	CheckForInteract();
 }
 
 // Called to bind functionality to input
@@ -106,6 +109,20 @@ void AOgnamCharacter::MoveRight(float Amount)
 	if (Controller != nullptr && Amount != 0.f)
 	{
 		AddMovementInput(GetActorRightVector(), Amount);
+	}
+}
+
+void AOgnamCharacter::CheckForInteract()
+{
+	FHitResult HitResult;
+	GetAimHitResult(HitResult, 500);
+	bCanInteract = false;
+	if (HitResult.bBlockingHit)
+	{
+		AActor* Actor = HitResult.GetActor();
+		UInteractComponent* Interact = Actor->FindComponentByClass<UInteractComponent>();
+		if (Interact)
+			bCanInteract = true;
 	}
 }
 
@@ -139,12 +156,17 @@ bool AOgnamCharacter::IsAlive() const
 	return bIsAlive;
 }
 
-void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult)
+bool AOgnamCharacter::CanInteract() const
+{
+	return bCanInteract;
+}
+
+void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float Dist)
 {
 	//shoot ray from camera to see where it should land.
 	//Potentially change this to Hit registeration from screen position
 	FVector RayFrom = Camera->GetComponentLocation();
-	FVector RayTo = RayFrom + Camera->GetForwardVector() * 10000.f;
+	FVector RayTo = RayFrom + Camera->GetForwardVector() * Dist;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
 }

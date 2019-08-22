@@ -44,6 +44,9 @@ public:
 	bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable)
+	bool CanInteract() const;
+
+	UFUNCTION(BlueprintCallable)
 	UClass* GetPawnClass();
 
 	UFUNCTION(BlueprintCallable)
@@ -72,4 +75,7 @@ protected:
 
 	UPROPERTY(Replicated)
 	UClass* PawnClass;
+
+	UPROPERTY(Replicated)
+	bool bCanInteract;
 };

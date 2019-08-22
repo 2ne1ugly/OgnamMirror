@@ -39,4 +39,6 @@ protected:
 	*/
 	UPROPERTY()
 	class ARitualShrine* ParentShrine;
+
+	class UInteractComponent* InteractComponent;
 };

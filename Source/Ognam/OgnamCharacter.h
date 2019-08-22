@@ -69,13 +69,24 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool CanInteract() const;
+
 	/*
 	**	Exported functions
 	*/
 	UFUNCTION(NetMulticast, Reliable)
 	void Die();
 	virtual void Die_Implementation();
-	void GetAimHitResult(FHitResult& HitResult);
+
+	void GetAimHitResult(FHitResult& HitResult, float Dist);
+
+	/*
+	** Uses GetAimHitResult() to attempt to find something it can interact with.
+	** If it is successful, bCanInteract is set to true
+	*/
+	void CheckForInteract();
+
 
 protected:
 	/*
@@ -103,4 +114,6 @@ protected:
 
 	UPROPERTY(Replicated)
 	bool bIsAlive;
+
+	bool bCanInteract;
 };
