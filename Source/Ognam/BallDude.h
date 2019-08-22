@@ -24,6 +24,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UArrowComponent* BallSpinner;
 
+	UPROPERTY(VisibleAnywhere)
+	class USceneComponent* TrajectoryHost;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<class UStaticMeshComponent*> Trajectory;
+
 public:
 	ABallDude();
 
@@ -39,24 +45,30 @@ protected:
 	**	Internal Functions
 	*/
 	void ThrowLeft();
+	void StopThrowLeft();
 
 	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerThrowLeft();
-	bool ServerThrowLeft_Validate() { return true; };
-	void ServerThrowLeft_Implementation();
+	void ServerThrowLeft(float Charge);
+	bool ServerThrowLeft_Validate(float Charge) { return true; };
+	void ServerThrowLeft_Implementation(float Charge);
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void MultiCastThrowLeft();
-	void MultiCastThrowLeft_Implementation();
+	void MultiCastThrowLeft(float Charge);
+	void MultiCastThrowLeft_Implementation(float Charge);
 
+	void AddBalls();
+	void UseBalls();
 
+	FVector CalculateTrajectoryPosition(float Time, float Charge);
 	/*
-	**	Components
+	**	Props
 	*/
 	int32 NumBalls;
 	int32 MaxNumBalls;
-	float ChargeTime;
-	float ChargeTimePerBall;
+	float BallChargeTime;
+	float BallChargeTimePerBall;
 	float BallRotation;
 	float BallRotationSpeed;
+	bool bIsCharging;
+	float ChargeTime;
 };

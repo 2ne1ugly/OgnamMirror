@@ -20,7 +20,7 @@ AOgnamCharacter::AOgnamCharacter()
 
 	//Create Spring arm and Camera
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm->TargetOffset = FVector(0, 0, 90);
+	SpringArm->TargetOffset = FVector(0, 0, 120);
 	SpringArm->SetRelativeRotation(FRotator(-30, 0, 0));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->bUsePawnControlRotation = true;

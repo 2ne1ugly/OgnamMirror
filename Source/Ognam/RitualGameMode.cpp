@@ -52,6 +52,8 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 	ARitualPlayerController *PlayerController = Cast<ARitualPlayerController>(NewPlayer);
+	if (PlayerController == nullptr)
+		return;
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
 	//Assign Team
