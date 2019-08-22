@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "RitualShrine.h"
+#include "InteractComponent.h"
 
 // Sets default values
 ARitualAcolyte::ARitualAcolyte()
@@ -31,6 +32,9 @@ ARitualAcolyte::ARitualAcolyte()
 	SkeletalMesh->SetWorldScale3D(FVector(.5, .5, .5));
 	SkeletalMesh->SetupAttachment(Capsule);
 	SkeletalMesh->SetCollisionProfileName(TEXT("CharacterMesh"));
+
+	InteractComponent = CreateDefaultSubobject<UInteractComponent>(TEXT("Interact"));
+	AddOwnedComponent(InteractComponent);
 
 	RootComponent = Capsule;
 }

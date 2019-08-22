@@ -21,6 +21,7 @@ void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	DOREPLIFETIME(ARitualPlayerState, Team);
 	DOREPLIFETIME(ARitualPlayerState, PawnClass);
+	DOREPLIFETIME(ARitualPlayerState, bCanInteract);
 }
 
 void ARitualPlayerState::Tick(float DeltaTime)
@@ -35,6 +36,10 @@ void ARitualPlayerState::Tick(float DeltaTime)
 	else
 	{
 		bIsAlive = false;
+	}
+	if (Character != nullptr)
+	{
+		bCanInteract = Character->CanInteract();
 	}
 
 }
@@ -67,6 +72,11 @@ void ARitualPlayerState::SetIsAlive(bool Value)
 bool ARitualPlayerState::IsAlive() const
 {
 	return bIsAlive;
+}
+
+bool ARitualPlayerState::CanInteract() const
+{
+	return bCanInteract;
 }
 
 UClass* ARitualPlayerState::GetPawnClass()
