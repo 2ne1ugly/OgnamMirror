@@ -4,14 +4,33 @@
 #include "RitualGameState.h"
 #include "RitualPlayerState.h"
 #include "RitualPlayerController.h"
+#include "OgnamCharacter.h"
 #include "GameFramework/PlayerStart.h"
 #include "EngineUtils.h"
 
 ARitualGameMode::ARitualGameMode()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	GameStateClass = ARitualGameState::StaticClass();
 	PlayerStateClass = ARitualPlayerState::StaticClass();
 	PlayerControllerClass = ARitualPlayerController::StaticClass();
+}
+
+void ARitualGameMode::Tick(float DeltaTime)
+{
+	if (!HasMatchStarted())
+	{
+		return ;
+	}
+
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (RitualGameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not a Ritual Gamestate"));
+		return;
+	}
+	RitualGameState->UpdateProperties();
 }
 
 // This is where you init game based on options and Maps
@@ -45,7 +64,94 @@ void ARitualGameMode::HandleMatchHasStarted()
 		UE_LOG(LogTemp, Warning, TEXT("Not a Ritual Gamestate"));
 		return;
 	}
-	RitualGameState->StartRound();
+	StartFirstRound();
+}
+
+void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
+{
+	//Kill pawn
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(PlayerController->GetPawn());
+	if (Character != nullptr)
+	{
+		Character->Die();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Player Controller"));
+	}
+
+	//Set states
+	ARitualPlayerState* PlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
+	if (PlayerState != nullptr)
+	{
+		PlayerState->SetIsAlive(false);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Player Controller"));
+	}
+}
+
+void ARitualGameMode::RespawnPlayer(ARitualPlayerController* PlayerController)
+{
+}
+
+void ARitualGameMode::RespawnAllPlayer()
+{
+	//Restart all player and set them to alive
+	for (ARitualPlayerController* PlayerController : PlayerControllers)
+	{
+		RestartPlayer(PlayerController);
+		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
+		RitualPlayerState->SetIsAlive(true);
+	}
+}
+
+void ARitualGameMode::StartFirstRound()
+{
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (GameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Gamestate"));
+		return;
+	}
+
+	RespawnAllPlayer();
+	RitualGameState->StartNewRound();
+}
+
+void ARitualGameMode::RestartRound()
+{
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (GameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Gamestate"));
+		return;
+	}
+
+	RespawnAllPlayer();
+	RitualGameState->SwitchSides();
+	RitualGameState->StartNewRound();
+}
+
+void ARitualGameMode::EndRound()
+{
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (GameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Gamestate"));
+		return;
+	}
+
+	//Decide Round Winnder;
+	RitualGameState->DecideRoundWinner();
+
+	//If Match should be done End match
+	if (RitualGameState->ShouldEndMatch())
+		EndMatch();
+
+	//Start round no matter what for testing purpose
+	RestartRound();
 }
 
 void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
@@ -67,13 +173,11 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 		{
 			RitualPlayerState->SetTeam(RitualGameState->GreenName);
 			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumGreenPlayers());
-			RitualGameState->IncNumGreenPlayers();
 		}
 		else
 		{
 			RitualPlayerState->SetTeam(RitualGameState->BlueName);
 			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumBluePlayers());
-			RitualGameState->IncNumBluePlayers();
 		}
 		PlayerControllers.Push(PlayerController);
 	}

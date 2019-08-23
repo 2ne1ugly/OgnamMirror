@@ -13,6 +13,7 @@
 #include "UnrealNetwork.h"
 #include "OgnamPlayerController.h"
 #include "InteractComponent.h"
+#include "OgnamControllerInterface.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -164,7 +165,6 @@ bool AOgnamCharacter::CanInteract() const
 void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float Dist)
 {
 	//shoot ray from camera to see where it should land.
-	//Potentially change this to Hit registeration from screen position
 	FVector RayFrom = Camera->GetComponentLocation();
 	FVector RayTo = RayFrom + Camera->GetForwardVector() * Dist;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
@@ -196,27 +196,30 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Health -= Damage;
-	if (Health <= 0 && HasAuthority())
+	if (Health <= 0)
 	{
-		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(GetController());
-		if (PlayerController != nullptr)
-		{
-			PlayerController->Die();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Not Ognam Player Controller"));
-		}
+		Die();
 	}
 	return Damage;
 }
 
 void AOgnamCharacter::Die_Implementation()
 {
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	DisableInput(PlayerController);
 	GetMesh()->SetCollisionProfileName(TEXT("RagDoll"));
 	GetMesh()->SetSimulatePhysics(true);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 	bIsAlive = false;
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Ognam Player Controller"));
+	}
+	DisableInput(PlayerController);
+
+	IOgnamControllerInterface* DieableController = Cast<IOgnamControllerInterface>(PlayerController);
+	if (DieableController != nullptr)
+	{
+		DieableController->OnPawnDeath();
+	}
 }

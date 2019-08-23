@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "OgnamPlayerController.h"
+#include "OgnamControllerInterface.h"
 #include "RitualPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API ARitualPlayerController : public AOgnamPlayerController
+class OGNAM_API ARitualPlayerController : public AOgnamPlayerController, public IOgnamControllerInterface
 {
 	GENERATED_BODY()
 
@@ -24,10 +25,9 @@ public:
 	virtual void BeginPlay() override;
 
 	/*
-	**	Overritten Function
+	**	Interface Function
 	*/
-	virtual void Die() override;
-	virtual void ServerChangeCharacter_Implementation(UClass* Character);
+	virtual void OnPawnDeath() override;
 
 	/*
 	**	Exported Function
@@ -43,6 +43,11 @@ protected:
 	**	Internal Function
 	*/
 	void ToggleChangeCharacterUI();
+
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerChangeCharacter(UClass* CharacterClass);
+	bool ServerChangeCharacter_Validate(UClass* CharacterClass) { return true; };
+	void ServerChangeCharacter_Implementation(UClass* CharacterClass);
 
 	/*
 	**	Props

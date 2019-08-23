@@ -21,7 +21,7 @@ public:
 	**	Binded Function
 	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void Tick(float DeltaTime) override;
+
 	/*
 	**	Getters, Setters
 	*/
@@ -44,19 +44,11 @@ public:
 	bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable)
-	bool CanInteract() const;
-
-	UFUNCTION(BlueprintCallable)
 	UClass* GetPawnClass();
 
 	UFUNCTION(BlueprintCallable)
 	void SetPawnClass(UClass* Pawn);
 
-	/*
-	**	Exported Function
-	*/
-
-	//Gets if offense or not
 	UFUNCTION(BlueprintCallable)
 	FName GetSide() const;
 
@@ -75,7 +67,4 @@ protected:
 
 	UPROPERTY(Replicated)
 	UClass* PawnClass;
-
-	UPROPERTY(Replicated)
-	bool bCanInteract;
 };

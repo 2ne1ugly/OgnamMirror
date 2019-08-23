@@ -21,7 +21,6 @@ public:
 	**	Binded Functions
 	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void Tick(float DeltaTime) override;
 
 	/*
 	**	Getters, Setters
@@ -63,21 +62,17 @@ public:
 	float GetPhaseGivenTime() const;
 
 	UFUNCTION(BlueprintCallable)
-	void IncNumGreenPlayers();
-
-	UFUNCTION(BlueprintCallable)
-	void IncNumBluePlayers();
+	float GetPhaseRemainingTime() const;
 
 	/*
 	**	Exported Functions
 	*/
-	//Only Used for server internally
-	void StartRound();
-	//Only Used for server internally
-	void KillPlayer(class ARitualPlayerController* PlayerController);
-
-	UFUNCTION(BlueprintCallable)
-	float GetPhaseRemainingTime() const;
+	void StartNewRound();
+	void SwitchSides();
+	bool ShouldEndMatch();
+	bool ShouldEndRound();
+	void DecideRoundWinner();
+	void UpdateProperties();
 
 	/*
 	**	Exported Props
@@ -86,11 +81,11 @@ public:
 	const FName BlueName = TEXT("Blue");
 	const FName DefenseName = TEXT("Defense");
 	const FName OffenseName = TEXT("Offense");
+
 protected:
 	/*
 	**	Internal Functions
 	*/
-	void EndRound();
 
 	//Required number score to win
 	UPROPERTY(Replicated)

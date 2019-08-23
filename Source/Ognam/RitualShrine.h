@@ -19,6 +19,7 @@ class OGNAM_API ARitualShrine : public AActor
 
 	UPROPERTY(EditAnywhere)
 	class UArrowComponent* Arrow;
+
 public:	
 	ARitualShrine();
 

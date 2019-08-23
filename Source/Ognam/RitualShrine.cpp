@@ -27,7 +27,6 @@ ARitualShrine::ARitualShrine()
 	RootComponent = StaticMesh;
 }
 
-// Called when the game starts or when spawned
 void ARitualShrine::BeginPlay()
 {
 	Super::BeginPlay();

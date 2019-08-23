@@ -36,27 +36,22 @@ void ARitualPlayerController::BeginPlay()
 	}
 }
 
-void ARitualPlayerController::Die()
+void ARitualPlayerController::OnPawnDeath()
 {
-	if (!HasAuthority())
+	ARitualPlayerState* RitualPlayerState = GetPlayerState<ARitualPlayerState>();
+	if (RitualPlayerState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Non Authoral call"));
+		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Player State"));
 		return;
 	}
-	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();
-	if (GameState == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ritual GameState"));
-		return;
-	}
-	GameState->KillPlayer(this);
+	RitualPlayerState->SetIsAlive(false);
 }
 
-void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* PawnClass)
+void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* CharacterClass)
 {
 	//Set pawn class
 	ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
-	RitualPlayerState->SetPawnClass(PawnClass);
+	RitualPlayerState->SetPawnClass(CharacterClass);
 
 	//respawn character
 	ARitualGameMode* GameMode = Cast<ARitualGameMode>(GetWorld()->GetGameState()->AuthorityGameMode);

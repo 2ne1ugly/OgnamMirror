@@ -34,14 +34,4 @@ void AOgnamPlayerController::BeginPlay()
 	}
 }
 
-void AOgnamPlayerController::Die()
-{
-	//AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetPawn());
-	//Character->Die();
-}
-
-void AOgnamPlayerController::ServerChangeCharacter_Implementation(UClass* PawnClass)
-{
-	//Implementation, meant to be overwritten
-}
 

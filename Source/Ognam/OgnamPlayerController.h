@@ -27,18 +27,6 @@ public:
 	*/
 	virtual void BeginPlay() override;
 
-	/*
-	**	Exported Functions
-	*/
-	//Meant to be only called from server
-	virtual void Die();
-
-	//Ask server to change character
-	UFUNCTION(Server, Reliable, BlueprintCallable, WithValidation)
-	void ServerChangeCharacter(UClass* PawnClass);
-	virtual bool ServerChangeCharacter_Validate(UClass* PawnClass) { return true; };
-	virtual void ServerChangeCharacter_Implementation(UClass* PawnClass);
-
 private:
 
 	/*

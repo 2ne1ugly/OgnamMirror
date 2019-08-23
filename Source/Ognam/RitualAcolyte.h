@@ -18,6 +18,9 @@ class OGNAM_API ARitualAcolyte : public AActor
 	class USkeletalMeshComponent* SkeletalMesh;
 	UPROPERTY(EditAnywhere)
 	class UCapsuleComponent* Capsule;
+	UPROPERTY(EditAnywhere)
+	class UInteractComponent* InteractComponent;
+
 public:	
 	ARitualAcolyte();
 
@@ -39,6 +42,4 @@ protected:
 	*/
 	UPROPERTY()
 	class ARitualShrine* ParentShrine;
-
-	class UInteractComponent* InteractComponent;
 };

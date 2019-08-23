@@ -18,8 +18,8 @@ ARitualGameState::ARitualGameState()
 	BlueScore = 0;
 	BlueAliveCount = 0;
 	GreenAliveCount = 0;
-	CurrentOffenseTeam = BlueName;
-	CurrentDefenseTeam = GreenName;
+	CurrentOffenseTeam = GreenName;
+	CurrentDefenseTeam = BlueName;
 	RoundStartTime = 0;
 	PhaseStartTime = 0;
 	PhaseGivenTime = 0;
@@ -42,22 +42,6 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ARitualGameState, RoundStartTime);
 	DOREPLIFETIME(ARitualGameState, PhaseStartTime);
 	DOREPLIFETIME(ARitualGameState, PhaseGivenTime);
-}
-
-void ARitualGameState::Tick(float DeltaTime)
-{
-	if (!HasMatchStarted())
-		return;
-
-	//Check Round ending condition
-	if (HasAuthority())
-	{
-		//If etiher of the side is all dead or time ran out
-		if (GreenAliveCount == 0 || BlueAliveCount == 0 || GetPhaseRemainingTime() <= 0)
-		{
-			EndRound();
-		}
-	}
 }
 
 FName ARitualGameState::GetCurrentOffenseTeam() const
@@ -120,107 +104,6 @@ float ARitualGameState::GetPhaseGivenTime() const
 	return PhaseGivenTime;
 }
 
-void ARitualGameState::IncNumGreenPlayers()
-{
-	NumGreenPlayers++;
-}
-
-void ARitualGameState::IncNumBluePlayers()
-{
-	NumBluePlayers++;
-}
-
-void ARitualGameState::StartRound()
-{
-	if (HasAuthority())
-	{
-		//Increase Current Round
-		CurrentRound++;
-		ARitualGameMode* GameMode = Cast<ARitualGameMode>(AuthorityGameMode);
-		if (GameMode == nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Not ritual gamemode"));
-		}
-
-		//Switch Offense/Defense
-		FName Temp = CurrentOffenseTeam;
-		CurrentOffenseTeam = CurrentDefenseTeam;
-		CurrentDefenseTeam = Temp;
-
-		//Restart all player and set them to alive, meanwhile set Alive count to correct number
-		int32 GreenCount = 0;
-		int32 BlueCount = 0;
-		for (ARitualPlayerController* PlayerController : GameMode->PlayerControllers)
-		{
-			GameMode->RestartPlayer(PlayerController);
-			ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
-			RitualPlayerState->SetIsAlive(true);
-			if (RitualPlayerState->GetTeam() == GreenName)
-			{
-				GreenCount++;
-			}
-			else if (RitualPlayerState->GetTeam() == BlueName)
-			{
-				BlueCount++;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Invalid Name!"));
-			}
-		}
-
-		GreenAliveCount = GreenCount;
-		BlueAliveCount = BlueCount;
-
-		//Reset Round time
-		RoundStartTime = GetWorld()->GetTimeSeconds();
-
-		//Start Phase 1
-		PhaseStartTime = GetWorld()->GetTimeSeconds();
-		PhaseGivenTime = 30;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Non Authoral call of Start Round"));
-	}
-}
-
-void ARitualGameState::KillPlayer(ARitualPlayerController* PlayerController)
-{
-	if (!HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Non Authoral call"));
-		return;
-	}
-
-	//Kill pawn
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(PlayerController->GetPawn());
-	if (Character != nullptr)
-	{
-		Character->Die();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Player Controller"));
-	}
-
-	//Set states
-	ARitualPlayerState* PlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
-	PlayerState->SetIsAlive(false);
-	if (PlayerState->GetTeam() == GreenName)
-	{
-		GreenAliveCount--;
-	}
-	else if (PlayerState->GetTeam() == BlueName)
-	{
-		BlueAliveCount--;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid Team name"));
-	}
-}
-
 float ARitualGameState::GetPhaseRemainingTime() const
 {
 	float CurrentTime;
@@ -236,47 +119,108 @@ float ARitualGameState::GetPhaseRemainingTime() const
 	return	PhaseGivenTime - (CurrentTime - PhaseStartTime);
 }
 
-void ARitualGameState::EndRound()
+void ARitualGameState::StartNewRound()
 {
-	if (HasAuthority())
-	{
-		ARitualGameMode* GameMode = Cast<ARitualGameMode>(AuthorityGameMode);
+	//Increase Current Round
+	CurrentRound++;
 
-		if (GetPhaseRemainingTime() <= 0)
-		{
-			if (CurrentDefenseTeam == GreenName)
-			{
-				GreenScore++;
-			}
-			else if (CurrentDefenseTeam == BlueName)
-			{
-				BlueScore++;
-			}
-		}
-		else if (GreenAliveCount != 0)
+	//Reset Round time
+	RoundStartTime = GetWorld()->GetTimeSeconds();
+
+	//Start Phase 1
+	PhaseStartTime = GetWorld()->GetTimeSeconds();
+	PhaseGivenTime = 30;
+}
+
+void ARitualGameState::SwitchSides()
+{
+	//Switch Offense/Defense
+	FName Temp = CurrentOffenseTeam;
+	CurrentOffenseTeam = CurrentDefenseTeam;
+	CurrentDefenseTeam = Temp;
+}
+
+bool ARitualGameState::ShouldEndMatch()
+{
+	if (GreenScore >= RequiredScore || BlueScore >= RequiredScore)
+	{ 
+		return true;
+	}
+	return false;
+}
+
+bool ARitualGameState::ShouldEndRound()
+{
+	if (GreenAliveCount == 0 || BlueAliveCount == 0 || GetPhaseRemainingTime() <= 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+void ARitualGameState::DecideRoundWinner()
+{
+	// Out of time
+	if (GetPhaseRemainingTime() <= 0)
+	{
+		if (CurrentDefenseTeam == GreenName)
 		{
 			GreenScore++;
 		}
-		else if (BlueAliveCount != 0)
+		else if (CurrentDefenseTeam == BlueName)
 		{
 			BlueScore++;
 		}
-
-		// Deal with this problem later
-		if (GreenScore == RequiredScore)
-		{
-			GameMode->EndMatch();
-			return;
-		}
-		else if (BlueScore == RequiredScore)
-		{
-			GameMode->EndMatch();
-			return;
-		}
-		StartRound();
+		return;
 	}
-	else
+
+	// Survining team
+	if (GreenAliveCount != 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Non Authoral call of End Round"));
+		GreenScore++;
+	}
+	else if (BlueAliveCount != 0)
+	{
+		BlueScore++;
 	}
 }
+
+void ARitualGameState::UpdateProperties()
+{
+	int32 Green = 0;
+	int32 GreenAlive = 0;
+	int32 Blue = 0;
+	int32 BlueAlive = 0;
+	for (APlayerState* PlayerState : PlayerArray)
+	{
+		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
+		if (PlayerState == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Not Ritual Player State"));
+			continue;
+		}
+		FName Team = RitualPlayerState->GetTeam();
+		if (Team == GreenName)
+		{
+			Green++;
+			if (RitualPlayerState->IsAlive())
+				GreenAlive++;
+		}
+		else if (Team == BlueName)
+		{
+			Blue++;
+			if (RitualPlayerState->IsAlive())
+				BlueAlive++;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Unknown Team name"));
+		}
+	}
+	NumGreenPlayers = Green;
+	GreenAliveCount = GreenAlive;
+	NumBluePlayers = Blue;
+	BlueAliveCount = BlueAlive;
+
+}
+
