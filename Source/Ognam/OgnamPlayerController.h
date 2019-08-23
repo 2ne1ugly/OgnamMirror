@@ -13,5 +13,30 @@ UCLASS()
 class OGNAM_API AOgnamPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+protected:
+	/*
+	**	Widgets
+	*/
+
+public:
+	AOgnamPlayerController();
+
+	/*
+	**	Binded Functions
+	*/
+	virtual void BeginPlay() override;
+	virtual void OnPawnDeath();
+
+private:
+
+	/*
+	**	Props
+	*/
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> OgnamHUDClass;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	class UUserWidget* OgnamHUD;
+
 };
