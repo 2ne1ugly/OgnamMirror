@@ -26,6 +26,7 @@ public:
 	**	Binded Functions
 	*/
 	virtual void BeginPlay() override;
+	virtual void OnPawnDeath();
 
 private:
 

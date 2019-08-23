@@ -88,7 +88,7 @@ void AOgnamShooter::StopAim()
 void AOgnamShooter::ServerFireBullet_Implementation()
 {
 	FHitResult HitResult;
-	GetAimHitResult(HitResult, 10000.0f);
+	GetAimHitResult(HitResult, 0.f, 10000.0f);
 
 	//draw a ray from bullet spawn to that landing point
 	FVector From = GetMesh()->GetSocketLocation("BulletSpawn");

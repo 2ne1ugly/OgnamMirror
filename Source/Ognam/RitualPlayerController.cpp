@@ -8,16 +8,16 @@
 #include "Engine/World.h"
 #include "ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "OgnamCharacter.h"
+#include "Interactable.h"
 	
 ARitualPlayerController::ARitualPlayerController()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder(TEXT("/Game/UI/CharacterSelection"));
-	if (HUDFinder.Succeeded())
+	static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder1(TEXT("/Game/UI/CharacterSelection"));
+	if (HUDFinder1.Succeeded())
 	{
-		CharacterSelectionHUDClass = HUDFinder.Class;
+		CharacterSelectionHUDClass = HUDFinder1.Class;
 	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("Not Loaded"));
 }
 
 void ARitualPlayerController::SetupInputComponent()
@@ -73,6 +73,41 @@ void ARitualPlayerController::HideCharacterSelection()
 	bShowMouseCursor = false;
 	bEnableClickEvents = false;
 	SetInputMode(FInputModeGameOnly());
+}
+
+bool ARitualPlayerController::CanInteract() const
+{
+	FHitResult HitResult;
+
+	//See if pawn exists as character
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetPawn());
+	if (OgnamCharacter == nullptr)
+	{
+		return false;
+	}
+
+	//See if something's blocking hit from camera
+	OgnamCharacter->GetAimHitResult(HitResult, 0.f, 10000.f);
+	if (!HitResult.bBlockingHit)
+	{
+		return false;
+	}
+
+	//See if it's interactable
+	AActor* Actor = HitResult.Actor.Get();
+	IInteractable* Interactable = Cast<IInteractable>(Actor);
+	if (Interactable == nullptr)
+	{
+		return false;
+	}
+
+	//See if it's interactable range
+	float Distance = FVector::Dist(OgnamCharacter->GetActorLocation(),  Actor->GetActorLocation());
+	if (Interactable->GetInteractDistance() < Distance)
+	{
+		return false;
+	}
+	return true;
 }
 
 void ARitualPlayerController::ToggleChangeCharacterUI()

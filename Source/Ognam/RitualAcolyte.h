@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interactable.h"
 #include "RitualAcolyte.generated.h"
 
 UCLASS()
-class OGNAM_API ARitualAcolyte : public AActor
+class OGNAM_API ARitualAcolyte : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 
@@ -18,8 +19,6 @@ class OGNAM_API ARitualAcolyte : public AActor
 	class USkeletalMeshComponent* SkeletalMesh;
 	UPROPERTY(EditAnywhere)
 	class UCapsuleComponent* Capsule;
-	UPROPERTY(EditAnywhere)
-	class UInteractComponent* InteractComponent;
 
 public:	
 	ARitualAcolyte();
@@ -29,6 +28,8 @@ public:
 	*/
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
+	virtual float GetInteractDistance() override;
+	virtual void BeInteracted(APlayerController* PlayerController) override;
 
 	/*
 	**	Getter, Setter

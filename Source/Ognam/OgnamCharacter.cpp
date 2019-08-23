@@ -12,8 +12,6 @@
 #include "Animation/AnimBlueprint.h"
 #include "UnrealNetwork.h"
 #include "OgnamPlayerController.h"
-#include "InteractComponent.h"
-#include "OgnamControllerInterface.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -80,8 +78,6 @@ void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 void AOgnamCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	CheckForInteract();
 }
 
 // Called to bind functionality to input
@@ -110,20 +106,6 @@ void AOgnamCharacter::MoveRight(float Amount)
 	if (Controller != nullptr && Amount != 0.f)
 	{
 		AddMovementInput(GetActorRightVector(), Amount);
-	}
-}
-
-void AOgnamCharacter::CheckForInteract()
-{
-	FHitResult HitResult;
-	GetAimHitResult(HitResult, 500);
-	bCanInteract = false;
-	if (HitResult.bBlockingHit)
-	{
-		AActor* Actor = HitResult.GetActor();
-		UInteractComponent* Interact = Actor->FindComponentByClass<UInteractComponent>();
-		if (Interact)
-			bCanInteract = true;
 	}
 }
 
@@ -162,11 +144,11 @@ bool AOgnamCharacter::CanInteract() const
 	return bCanInteract;
 }
 
-void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float Dist)
+void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float far)
 {
 	//shoot ray from camera to see where it should land.
-	FVector RayFrom = Camera->GetComponentLocation();
-	FVector RayTo = RayFrom + Camera->GetForwardVector() * Dist;
+	FVector RayFrom = Camera->GetComponentLocation() + near;
+	FVector RayTo = RayFrom + Camera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
 }
@@ -210,16 +192,11 @@ void AOgnamCharacter::Die_Implementation()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 	bIsAlive = false;
 
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(GetController());
 	if (PlayerController == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ognam Player Controller"));
+		return;
 	}
 	DisableInput(PlayerController);
-
-	IOgnamControllerInterface* DieableController = Cast<IOgnamControllerInterface>(PlayerController);
-	if (DieableController != nullptr)
-	{
-		DieableController->OnPawnDeath();
-	}
+	PlayerController->OnPawnDeath();
 }

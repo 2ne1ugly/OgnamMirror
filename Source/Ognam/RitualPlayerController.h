@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "OgnamPlayerController.h"
-#include "OgnamControllerInterface.h"
 #include "RitualPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API ARitualPlayerController : public AOgnamPlayerController, public IOgnamControllerInterface
+class OGNAM_API ARitualPlayerController : public AOgnamPlayerController
 {
 	GENERATED_BODY()
 
@@ -23,10 +22,6 @@ public:
 	*/
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
-
-	/*
-	**	Interface Function
-	*/
 	virtual void OnPawnDeath() override;
 
 	/*
@@ -37,6 +32,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HideCharacterSelection();
+
+	UFUNCTION(BlueprintCallable)
+	bool CanInteract() const;
 
 protected:
 	/*

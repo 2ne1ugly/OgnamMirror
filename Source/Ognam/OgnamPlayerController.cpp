@@ -34,4 +34,8 @@ void AOgnamPlayerController::BeginPlay()
 	}
 }
 
+void AOgnamPlayerController::OnPawnDeath()
+{
+}
+
 

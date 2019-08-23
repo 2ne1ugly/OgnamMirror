@@ -79,14 +79,7 @@ public:
 	void Die();
 	virtual void Die_Implementation();
 
-	void GetAimHitResult(FHitResult& HitResult, float Dist);
-
-	/*
-	** Uses GetAimHitResult() to attempt to find something it can interact with.
-	** If it is successful, bCanInteract is set to true
-	*/
-	void CheckForInteract();
-
+	void GetAimHitResult(FHitResult& HitResult, float near, float far);
 
 protected:
 	/*

@@ -19,6 +19,7 @@ ARitualGameMode::ARitualGameMode()
 
 void ARitualGameMode::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 	if (!HasMatchStarted())
 	{
 		return ;
@@ -169,7 +170,7 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 	else
 	{
-		if (RitualGameState->GetNumGreenPlayers() <= RitualGameState->GetNumBluePlayers())
+		if (PlayerControllers.Num() % 2)
 		{
 			RitualPlayerState->SetTeam(RitualGameState->GreenName);
 			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumGreenPlayers());

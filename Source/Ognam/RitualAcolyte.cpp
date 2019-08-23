@@ -7,7 +7,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "RitualShrine.h"
-#include "InteractComponent.h"
 
 // Sets default values
 ARitualAcolyte::ARitualAcolyte()
@@ -33,9 +32,6 @@ ARitualAcolyte::ARitualAcolyte()
 	SkeletalMesh->SetupAttachment(Capsule);
 	SkeletalMesh->SetCollisionProfileName(TEXT("CharacterMesh"));
 
-	InteractComponent = CreateDefaultSubobject<UInteractComponent>(TEXT("Interact"));
-	AddOwnedComponent(InteractComponent);
-
 	RootComponent = Capsule;
 }
 
@@ -44,6 +40,16 @@ void ARitualAcolyte::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+float ARitualAcolyte::GetInteractDistance()
+{
+	return 300.f;
+}
+
+void ARitualAcolyte::BeInteracted(APlayerController* PlayerController)
+{
+	Destroy();
 }
 
 void ARitualAcolyte::SetParentShrine(ARitualShrine* Shrine)
