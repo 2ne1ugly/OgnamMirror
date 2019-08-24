@@ -73,6 +73,7 @@ public:
 	bool ShouldEndRound();
 	void DecideRoundWinner();
 	void UpdateProperties();
+	void GiveAcolyteKillReward();
 
 	/*
 	**	Exported Props
@@ -127,4 +128,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	float PhaseGivenTime;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float NumAcolytes;
 };

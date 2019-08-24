@@ -32,14 +32,6 @@ ARitualShrine::ARitualShrine()
 void ARitualShrine::BeginPlay()
 {
 	Super::BeginPlay();
-
-	/*
-	** Make sure if there aren't multiple acolytes.
-	*/
-	if (HasAuthority())
-	{
-		SpawnAcolytes(3);
-	}
 }
 
 
@@ -49,16 +41,23 @@ void ARitualShrine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Acolytes.Num() == 0)
-	{
-		Destroy();
-	}
+	//if (Acolytes.Num() == 0)
+	//{
+	//	Destroy();
+	//}
 }
 
 void ARitualShrine::SpawnAcolytes_Implementation(int32 Count)
 {
-	//Spawn Acolytes around shrine.
 
+	//Remove all acolytes
+	for (ARitualAcolyte* Acolyte: Acolytes)
+	{
+		Acolyte->Destroy();
+	}
+	Acolytes.Empty(Count);
+
+	//Spawn Acolytes around shrine.
 	const float Distance = 200.f;
 	float Angle = 0.f;
 	for (int i = 0; i < Count; i++)

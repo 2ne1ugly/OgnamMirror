@@ -7,6 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "RitualShrine.h"
+#include "RitualPlayerState.h"
+#include "RitualPlayerController.h"
+#include "RitualGameState.h"
 
 // Sets default values
 ARitualAcolyte::ARitualAcolyte()
@@ -43,7 +46,7 @@ void ARitualAcolyte::BeginPlay()
 	Super::BeginPlay();
 }
 
-float ARitualAcolyte::GetInteractDistance()
+float ARitualAcolyte::GetInteractDistance() const
 {
 	return 300.f;
 }
@@ -52,9 +55,41 @@ void ARitualAcolyte::BeInteracted_Implementation(APlayerController* PlayerContro
 {
 	ParentShrine->RemoveAcolyte(this);
 	Destroy();
+
+	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();
+	if (GameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Gamestate"));
+		return;
+	}
+	GameState->GiveAcolyteKillReward();
 }
 
-float ARitualAcolyte::GetInteractDuration()
+bool ARitualAcolyte::CanInteractWithController(const APlayerController* PlayerController) const
+{
+	ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
+	if (RitualPlayerState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Player State"));
+		return false;
+	}
+
+	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();
+	if (GameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Game State"));
+		return false;
+	}
+
+	if (GameState->GetCurrentOffenseTeam() != RitualPlayerState->GetTeam())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+float ARitualAcolyte::GetInteractDuration() const
 {
 	return 3.0f;
 }

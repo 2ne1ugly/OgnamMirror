@@ -132,8 +132,8 @@ void ARitualGameMode::RestartRound()
 		return;
 	}
 
-	RespawnAllPlayer();
 	RitualGameState->SwitchSides();
+	RespawnAllPlayer();
 	RitualGameState->StartNewRound();
 }
 

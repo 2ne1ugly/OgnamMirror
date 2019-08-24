@@ -26,6 +26,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	/*
+	**	Getters, Setters
+	*/
+	UFUNCTION(BlueprintCallable)
+	float GetInteractionProgress() const;
+
+	/*
 	**	Exported Function
 	*/
 	UFUNCTION(BlueprintCallable)
@@ -38,13 +44,21 @@ public:
 	bool CanInteract() const;
 
 	UFUNCTION(Server, WithValidation, Unreliable)
-	void StartInteract();
-	bool StartInteract_Validate() { return true; };
-	void StartInteract_Implementation();
+	void ServerStartInteract();
+	bool ServerStartInteract_Validate() { return true; };
+	void ServerStartInteract_Implementation();
 
 	UFUNCTION(Server, WithValidation, Unreliable)
+	void ServerStopInteract();
+	bool ServerStopInteract_Validate() { return true; };
+	void ServerStopInteract_Implementation();
+
+	UFUNCTION(Client, Reliable)
+	void StartInteract();
+	void StartInteract_Implementation();
+
+	UFUNCTION(Client, Reliable)
 	void StopInteract();
-	bool StopInteract_Validate() { return true; };
 	void StopInteract_Implementation();
 
 protected:
@@ -69,12 +83,6 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(EditAnywhere, Category = "Widgets")
-	TSubclassOf<class UUserWidget> CharacterSelectionHUDClass;
-
-	UPROPERTY(EditAnywhere, Category = "Widgets")
-	class UUserWidget* CharacterSelectionHUD;
-
 	UPROPERTY(Replicated)
 	bool bInteracting;
 
@@ -82,4 +90,17 @@ protected:
 	float InteractionTime;
 
 	IInteractable* TargetedInteractable;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> CharacterSelectionHUDClass;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	class UUserWidget* CharacterSelectionHUD;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> InteractionBarClass;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	class UUserWidget* InteractionBar;
+
 };

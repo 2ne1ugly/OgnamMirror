@@ -7,6 +7,9 @@
 #include "OgnamCharacter.h"
 #include "UnrealNetwork.h"
 #include "Engine/World.h"
+#include "RitualShrine.h"
+#include "RitualAcolyte.h"
+#include "EngineUtils.h"
 
 ARitualGameState::ARitualGameState()
 {
@@ -42,6 +45,7 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ARitualGameState, RoundStartTime);
 	DOREPLIFETIME(ARitualGameState, PhaseStartTime);
 	DOREPLIFETIME(ARitualGameState, PhaseGivenTime);
+	DOREPLIFETIME(ARitualGameState, NumAcolytes);
 }
 
 FName ARitualGameState::GetCurrentOffenseTeam() const
@@ -129,6 +133,12 @@ void ARitualGameState::StartNewRound()
 
 	//Start Phase 1
 	PhaseStartTime = GetWorld()->GetTimeSeconds();
+
+	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
+	{
+		Itr->SpawnAcolytes(3);
+	}
+
 	PhaseGivenTime = 30;
 }
 
@@ -151,7 +161,7 @@ bool ARitualGameState::ShouldEndMatch()
 
 bool ARitualGameState::ShouldEndRound()
 {
-	if (GreenAliveCount == 0 || BlueAliveCount == 0 || GetPhaseRemainingTime() <= 0)
+	if (GreenAliveCount == 0 || BlueAliveCount == 0 || GetPhaseRemainingTime() <= 0 || NumAcolytes == 0)
 	{
 		return true;
 	}
@@ -168,6 +178,20 @@ void ARitualGameState::DecideRoundWinner()
 			GreenScore++;
 		}
 		else if (CurrentDefenseTeam == BlueName)
+		{
+			BlueScore++;
+		}
+		return;
+	}
+
+	// All acolytes dead
+	if (NumAcolytes <= 0)
+	{
+		if (CurrentOffenseTeam == GreenName)
+		{
+			GreenScore++;
+		}
+		else if (CurrentOffenseTeam == BlueName)
 		{
 			BlueScore++;
 		}
@@ -222,5 +246,15 @@ void ARitualGameState::UpdateProperties()
 	NumBluePlayers = Blue;
 	BlueAliveCount = BlueAlive;
 
+	int32 AcolyteCount = 0;
+	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
+	{
+		AcolyteCount += Itr->Acolytes.Num();
+	}
+	NumAcolytes = AcolyteCount;
 }
 
+void ARitualGameState::GiveAcolyteKillReward()
+{
+	PhaseGivenTime += 20;
+}

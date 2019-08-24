@@ -20,6 +20,11 @@ ARitualPlayerController::ARitualPlayerController()
 	{
 		CharacterSelectionHUDClass = HUDFinder1.Class;
 	}
+	static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder2(TEXT("/Game/UI/ProgressBar"));
+	if (HUDFinder2.Succeeded())
+	{
+		InteractionBarClass = HUDFinder2.Class;
+	}
 }
 
 void ARitualPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -34,16 +39,23 @@ void ARitualPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAction(TEXT("CharacterSelection"), IE_Pressed, this, &ARitualPlayerController::ToggleChangeCharacterUI);
-	InputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ARitualPlayerController::StartInteract);
-	InputComponent->BindAction(TEXT("Interact"), IE_Released, this, &ARitualPlayerController::StopInteract);
+	InputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ARitualPlayerController::ServerStartInteract);
+	InputComponent->BindAction(TEXT("Interact"), IE_Released, this, &ARitualPlayerController::ServerStopInteract);
 }
 
 void ARitualPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	if (CharacterSelectionHUDClass && IsLocalPlayerController())
+	if (IsLocalPlayerController())
 	{
-		CharacterSelectionHUD = CreateWidget<UUserWidget>(this, CharacterSelectionHUDClass);
+		if (CharacterSelectionHUDClass)
+		{
+			CharacterSelectionHUD = CreateWidget<UUserWidget>(this, CharacterSelectionHUDClass);
+		}
+		if (InteractionBarClass)
+		{
+			InteractionBar = CreateWidget<UUserWidget>(this, InteractionBarClass);
+		}
 		return;
 	}
 }
@@ -63,18 +75,18 @@ void ARitualPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (HasAuthority())
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, .1f, FColor::Yellow, bInteracting ? "s: true" : "s: false");
-	}
-	else
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, .1f, FColor::Yellow, bInteracting ? "c: true" : "c: false");
-	}
+	// Replicating Tick values seems dangerous. find a better way.
 	UpdateInteractionTime(DeltaTime);
 	CheckInteractionCompletion();
+}
+
+float ARitualPlayerController::GetInteractionProgress() const
+{
+	if (TargetedInteractable == nullptr)
+	{
+		return 0.0f;
+	}
+	return InteractionTime / TargetedInteractable->GetInteractDuration();
 }
 
 void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* CharacterClass)
@@ -91,7 +103,10 @@ void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* Chara
 void ARitualPlayerController::ShowCharacterSelection()
 {
 	//Find a better way to set input mode
-	CharacterSelectionHUD->AddToViewport();
+	if (CharacterSelectionHUD)
+	{
+		CharacterSelectionHUD->AddToViewport();
+	}
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
 	SetInputMode(FInputModeUIOnly());
@@ -99,7 +114,10 @@ void ARitualPlayerController::ShowCharacterSelection()
 
 void ARitualPlayerController::HideCharacterSelection()
 {
-	CharacterSelectionHUD->RemoveFromViewport();
+	if (CharacterSelectionHUD)
+	{
+		CharacterSelectionHUD->RemoveFromViewport();
+	}
 	bShowMouseCursor = false;
 	bEnableClickEvents = false;
 	SetInputMode(FInputModeGameOnly());
@@ -117,14 +135,14 @@ IInteractable* ARitualPlayerController::GetTargetedInteractable() const
 
 	OgnamCharacter->GetAimHitResult(HitResult, 0.f, 10000.f);
 	if (HitResult.bBlockingHit)
+	{
 		return Cast<IInteractable>(HitResult.GetActor());
+	}
 	return nullptr;
 }
 
 bool ARitualPlayerController::CanInteract() const
 {
-	FHitResult HitResult;
-
 	//See if pawn exists as character
 	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetPawn());
 	if (OgnamCharacter == nullptr)
@@ -132,6 +150,7 @@ bool ARitualPlayerController::CanInteract() const
 		return false;
 	}
 
+	FHitResult HitResult;
 	//See if something's blocking hit from camera
 	OgnamCharacter->GetAimHitResult(HitResult, 0.f, 10000.f);
 	if (!HitResult.bBlockingHit)
@@ -150,6 +169,12 @@ bool ARitualPlayerController::CanInteract() const
 	//See if it's interactable range
 	float Distance = FVector::Dist(OgnamCharacter->GetActorLocation(),  Actor->GetActorLocation());
 	if (Interactable->GetInteractDistance() < Distance)
+	{
+		return false;
+	}
+
+	//See if it's fine interation
+	if (!Interactable->CanInteractWithController(this))
 	{
 		return false;
 	}
@@ -201,12 +226,13 @@ void ARitualPlayerController::CheckInteractionCompletion()
 	}
 }
 
-void ARitualPlayerController::StartInteract_Implementation()
+void ARitualPlayerController::ServerStartInteract_Implementation()
 {
 	if (CanInteract())
 	{
 		bInteracting = true;
 		TargetedInteractable = GetTargetedInteractable();
+		StartInteract();
 	}
 	else
 	{
@@ -215,9 +241,26 @@ void ARitualPlayerController::StartInteract_Implementation()
 	}
 }
 
-void ARitualPlayerController::StopInteract_Implementation()
+void ARitualPlayerController::ServerStopInteract_Implementation()
 {
 	bInteracting = false;
 	TargetedInteractable = nullptr;
 	InteractionTime = 0;
+	StopInteract();
+}
+
+void ARitualPlayerController::StartInteract_Implementation()
+{
+	if (InteractionBar)
+	{
+		InteractionBar->AddToViewport();
+	}
+}
+
+void ARitualPlayerController::StopInteract_Implementation()
+{
+	if (InteractionBar && InteractionBar->IsInViewport())
+	{
+		InteractionBar->RemoveFromViewport();
+	}
 }
