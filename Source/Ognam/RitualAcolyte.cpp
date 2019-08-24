@@ -33,13 +33,14 @@ ARitualAcolyte::ARitualAcolyte()
 	SkeletalMesh->SetCollisionProfileName(TEXT("CharacterMesh"));
 
 	RootComponent = Capsule;
+
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
 void ARitualAcolyte::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 float ARitualAcolyte::GetInteractDistance()
@@ -47,9 +48,15 @@ float ARitualAcolyte::GetInteractDistance()
 	return 300.f;
 }
 
-void ARitualAcolyte::BeInteracted(APlayerController* PlayerController)
+void ARitualAcolyte::BeInteracted_Implementation(APlayerController* PlayerController)
 {
+	ParentShrine->RemoveAcolyte(this);
 	Destroy();
+}
+
+float ARitualAcolyte::GetInteractDuration()
+{
+	return 3.0f;
 }
 
 void ARitualAcolyte::SetParentShrine(ARitualShrine* Shrine)

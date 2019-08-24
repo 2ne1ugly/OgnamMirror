@@ -23,5 +23,10 @@ class OGNAM_API IInteractable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual float GetInteractDistance() = 0;
-	virtual void BeInteracted(APlayerController* PlayerController) = 0;
+	virtual float GetInteractDuration() = 0;
+
+	UFUNCTION(NetMulticast, Unreliable, WithValidation)
+	virtual void BeInteracted(APlayerController* PlayerController);
+	virtual bool BeInteracted_Validate(APlayerController* PlayerController) { return true; };
+	virtual void BeInteracted_Implementation(APlayerController* PlayerController) = 0;
 };

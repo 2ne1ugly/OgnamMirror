@@ -89,8 +89,6 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("CameraYaw", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("CameraPitch", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AOgnamCharacter::Jump);
-	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AOgnamCharacter::OgnamCrouch);
-	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AOgnamCharacter::OgnamCrouch);
 }
 
 void AOgnamCharacter::MoveForward(float Amount)
@@ -129,19 +127,9 @@ bool AOgnamCharacter::GetIsJumping() const
 	return bIsJumping;
 }
 
-bool AOgnamCharacter::GetIsCrouched() const
-{
-	return bIsCrouched;
-}
-
 bool AOgnamCharacter::IsAlive() const
 {
 	return bIsAlive;
-}
-
-bool AOgnamCharacter::CanInteract() const
-{
-	return bCanInteract;
 }
 
 void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float far)
@@ -156,11 +144,6 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 void AOgnamCharacter::ServerJump_Implementation()
 {
 	bIsJumping = true;
-}
-
-void AOgnamCharacter::OgnamCrouch()
-{
-	ACharacter::Crouch(true);
 }
 
 void AOgnamCharacter::Jump()

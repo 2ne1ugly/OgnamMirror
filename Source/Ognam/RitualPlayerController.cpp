@@ -10,6 +10,8 @@
 #include "Blueprint/UserWidget.h"
 #include "OgnamCharacter.h"
 #include "Interactable.h"
+#include "UnrealNetwork.h"
+#include "Engine.h"
 	
 ARitualPlayerController::ARitualPlayerController()
 {
@@ -20,10 +22,20 @@ ARitualPlayerController::ARitualPlayerController()
 	}
 }
 
+void ARitualPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARitualPlayerController, bInteracting);
+	DOREPLIFETIME(ARitualPlayerController, InteractionTime);
+}
+
 void ARitualPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAction(TEXT("CharacterSelection"), IE_Pressed, this, &ARitualPlayerController::ToggleChangeCharacterUI);
+	InputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ARitualPlayerController::StartInteract);
+	InputComponent->BindAction(TEXT("Interact"), IE_Released, this, &ARitualPlayerController::StopInteract);
 }
 
 void ARitualPlayerController::BeginPlay()
@@ -45,6 +57,24 @@ void ARitualPlayerController::OnPawnDeath()
 		return;
 	}
 	RitualPlayerState->SetIsAlive(false);
+}
+
+void ARitualPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (HasAuthority())
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, .1f, FColor::Yellow, bInteracting ? "s: true" : "s: false");
+	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, .1f, FColor::Yellow, bInteracting ? "c: true" : "c: false");
+	}
+	UpdateInteractionTime(DeltaTime);
+	CheckInteractionCompletion();
 }
 
 void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* CharacterClass)
@@ -73,6 +103,22 @@ void ARitualPlayerController::HideCharacterSelection()
 	bShowMouseCursor = false;
 	bEnableClickEvents = false;
 	SetInputMode(FInputModeGameOnly());
+}
+
+IInteractable* ARitualPlayerController::GetTargetedInteractable() const
+{
+	FHitResult HitResult;
+
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetPawn());
+	if (OgnamCharacter == nullptr)
+	{
+		return nullptr;
+	}
+
+	OgnamCharacter->GetAimHitResult(HitResult, 0.f, 10000.f);
+	if (HitResult.bBlockingHit)
+		return Cast<IInteractable>(HitResult.GetActor());
+	return nullptr;
 }
 
 bool ARitualPlayerController::CanInteract() const
@@ -107,6 +153,7 @@ bool ARitualPlayerController::CanInteract() const
 	{
 		return false;
 	}
+
 	return true;
 }
 
@@ -124,4 +171,53 @@ void ARitualPlayerController::ToggleChangeCharacterUI()
 	{
 		HideCharacterSelection();
 	}
+}
+
+void ARitualPlayerController::UpdateInteractionTime(float DeltaTime)
+{
+	if (bInteracting)
+	{
+		InteractionTime += DeltaTime;
+	}
+	else
+	{
+		InteractionTime = 0;
+	}
+}
+
+void ARitualPlayerController::CheckInteractionCompletion()
+{
+	if (HasAuthority())
+	{
+		if (bInteracting)
+		{
+			if (TargetedInteractable->GetInteractDuration() <= InteractionTime)
+			{
+				InteractionTime = 0;
+				bInteracting = false;
+				TargetedInteractable->Execute_BeInteracted(Cast<AActor>(TargetedInteractable), this);
+			}
+		}
+	}
+}
+
+void ARitualPlayerController::StartInteract_Implementation()
+{
+	if (CanInteract())
+	{
+		bInteracting = true;
+		TargetedInteractable = GetTargetedInteractable();
+	}
+	else
+	{
+		bInteracting = false;
+		TargetedInteractable = nullptr;
+	}
+}
+
+void ARitualPlayerController::StopInteract_Implementation()
+{
+	bInteracting = false;
+	TargetedInteractable = nullptr;
+	InteractionTime = 0;
 }

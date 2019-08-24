@@ -23,6 +23,7 @@ public:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
 	virtual void OnPawnDeath() override;
+	virtual void Tick(float DeltaTime) override;
 
 	/*
 	**	Exported Function
@@ -36,11 +37,29 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanInteract() const;
 
+	UFUNCTION(Server, WithValidation, Unreliable)
+	void StartInteract();
+	bool StartInteract_Validate() { return true; };
+	void StartInteract_Implementation();
+
+	UFUNCTION(Server, WithValidation, Unreliable)
+	void StopInteract();
+	bool StopInteract_Validate() { return true; };
+	void StopInteract_Implementation();
+
 protected:
 	/*
 	**	Internal Function
 	*/
 	void ToggleChangeCharacterUI();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	void UpdateInteractionTime(float DeltaTime);
+
+	void CheckInteractionCompletion();
+
+	class IInteractable* GetTargetedInteractable() const;
 
 	UFUNCTION(Server, WithValidation, Reliable)
 	void ServerChangeCharacter(UClass* CharacterClass);
@@ -55,4 +74,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	class UUserWidget* CharacterSelectionHUD;
+
+	UPROPERTY(Replicated)
+	bool bInteracting;
+
+	UPROPERTY(Replicated)
+	float InteractionTime;
+
+	IInteractable* TargetedInteractable;
 };

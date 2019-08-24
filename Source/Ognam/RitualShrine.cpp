@@ -25,6 +25,8 @@ ARitualShrine::ARitualShrine()
 	Arrow->SetRelativeLocation(FVector::ZeroVector);
 
 	RootComponent = StaticMesh;
+
+	bReplicates = true;
 }
 
 void ARitualShrine::BeginPlay()
@@ -34,14 +36,23 @@ void ARitualShrine::BeginPlay()
 	/*
 	** Make sure if there aren't multiple acolytes.
 	*/
-	SpawnAcolytes(3);
+	if (HasAuthority())
+	{
+		SpawnAcolytes(3);
+	}
 }
+
+
 
 // Called every frame
 void ARitualShrine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (Acolytes.Num() == 0)
+	{
+		Destroy();
+	}
 }
 
 void ARitualShrine::SpawnAcolytes_Implementation(int32 Count)
@@ -65,3 +76,7 @@ void ARitualShrine::SpawnAcolytes_Implementation(int32 Count)
 	}
 }
 
+void ARitualShrine::RemoveAcolyte(ARitualAcolyte* Acolyte)
+{
+	Acolytes.Remove(Acolyte);
+}

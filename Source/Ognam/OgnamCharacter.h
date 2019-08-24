@@ -44,8 +44,6 @@ public:
 
 	virtual void MoveRight(float amount);
 
-	void OgnamCrouch();
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	/*
@@ -64,13 +62,7 @@ public:
 	bool GetIsJumping() const;
 
 	UFUNCTION(BlueprintCallable)
-	bool GetIsCrouched() const;
-
-	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
-
-	UFUNCTION(BlueprintCallable)
-	bool CanInteract() const;
 
 	/*
 	**	Exported functions
@@ -108,5 +100,4 @@ protected:
 	UPROPERTY(Replicated)
 	bool bIsAlive;
 
-	bool bCanInteract;
 };

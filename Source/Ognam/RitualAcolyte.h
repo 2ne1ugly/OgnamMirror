@@ -29,7 +29,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 	virtual float GetInteractDistance() override;
-	virtual void BeInteracted(APlayerController* PlayerController) override;
+	virtual void BeInteracted_Implementation(APlayerController* PlayerController) override;
+	virtual float GetInteractDuration() override;
 
 	/*
 	**	Getter, Setter
