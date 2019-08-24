@@ -32,6 +32,8 @@ void ARitualGameMode::Tick(float DeltaTime)
 		return;
 	}
 	RitualGameState->UpdateProperties();
+	if (RitualGameState->ShouldEndRound())
+		EndRound();
 }
 
 // This is where you init game based on options and Maps
