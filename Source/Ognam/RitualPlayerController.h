@@ -31,6 +31,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetInteractionProgress() const;
 
+	UFUNCTION(BlueprintCallable)
+	class AActor* GetInteractedActor() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetDistanceBetweenInteracted() const;
+
 	/*
 	**	Exported Function
 	*/
@@ -43,6 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanInteract() const;
 
+	UFUNCTION(BlueprintCallable)
+	class AActor* GetTargetedActor() const;
+
 	UFUNCTION(Server, WithValidation, Unreliable)
 	void ServerStartInteract();
 	bool ServerStartInteract_Validate() { return true; };
@@ -53,27 +62,18 @@ public:
 	bool ServerStopInteract_Validate() { return true; };
 	void ServerStopInteract_Implementation();
 
-	UFUNCTION(Client, Reliable)
 	void StartInteract();
-	void StartInteract_Implementation();
+	void StopInteract();
 
 	UFUNCTION(Client, Reliable)
-	void StopInteract();
-	void StopInteract_Implementation();
+	void InterruptInteract();
+	void InterruptInteract_Implementation();
 
 protected:
 	/*
 	**	Internal Function
 	*/
 	void ToggleChangeCharacterUI();
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	void UpdateInteractionTime(float DeltaTime);
-
-	void CheckInteractionCompletion();
-
-	class IInteractable* GetTargetedInteractable() const;
 
 	UFUNCTION(Server, WithValidation, Reliable)
 	void ServerChangeCharacter(UClass* CharacterClass);
@@ -83,13 +83,9 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(Replicated)
-	bool bInteracting;
-
-	UPROPERTY(Replicated)
 	float InteractionTime;
-
-	IInteractable* TargetedInteractable;
+	bool bIsInteracting;
+	class AActor* InteractedActor;
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSelectionHUDClass;

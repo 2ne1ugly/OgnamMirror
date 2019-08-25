@@ -47,7 +47,7 @@ void ARitualShrine::Tick(float DeltaTime)
 	//}
 }
 
-void ARitualShrine::SpawnAcolytes_Implementation(int32 Count)
+void ARitualShrine::SpawnAcolytes(int32 Count)
 {
 
 	//Remove all acolytes

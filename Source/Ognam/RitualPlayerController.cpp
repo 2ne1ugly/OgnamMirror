@@ -27,25 +27,18 @@ ARitualPlayerController::ARitualPlayerController()
 	}
 }
 
-void ARitualPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ARitualPlayerController, bInteracting);
-	DOREPLIFETIME(ARitualPlayerController, InteractionTime);
-}
-
 void ARitualPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAction(TEXT("CharacterSelection"), IE_Pressed, this, &ARitualPlayerController::ToggleChangeCharacterUI);
-	InputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ARitualPlayerController::ServerStartInteract);
-	InputComponent->BindAction(TEXT("Interact"), IE_Released, this, &ARitualPlayerController::ServerStopInteract);
+	InputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ARitualPlayerController::StartInteract);
+	InputComponent->BindAction(TEXT("Interact"), IE_Released, this, &ARitualPlayerController::StopInteract);
 }
 
 void ARitualPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	//Create all using widget
 	if (IsLocalPlayerController())
 	{
 		if (CharacterSelectionHUDClass)
@@ -76,17 +69,47 @@ void ARitualPlayerController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Replicating Tick values seems dangerous. find a better way.
-	UpdateInteractionTime(DeltaTime);
-	CheckInteractionCompletion();
+	if (bIsInteracting)
+	{
+		InteractionTime += DeltaTime;
+	}
+
+	// Interaction progress
+	if (HasAuthority() && bIsInteracting)
+	{
+		IInteractable* Interactable = Cast<IInteractable>(InteractedActor);
+		if (Interactable == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Not Interactable"));
+			return;
+		}
+		// Interrupt Interaction when too far.
+		if (Interactable->GetInteractDistance() <= GetDistanceBetweenInteracted())
+		{
+			InteractionTime = 0;
+			bIsInteracting = false;
+			InterruptInteract();
+		}
+		// Finish interaction when time done.
+		else if (Interactable->GetInteractDuration() <= InteractionTime)
+		{
+			InteractionTime = 0;
+			bIsInteracting = false;
+			Interactable->Execute_BeInteracted(InteractedActor, this);
+			InterruptInteract();
+		}
+
+	}
 }
 
 float ARitualPlayerController::GetInteractionProgress() const
 {
-	if (TargetedInteractable == nullptr)
+	IInteractable* Interactable = Cast<IInteractable>(InteractedActor);
+	if (Interactable == nullptr)
 	{
 		return 0.0f;
 	}
-	return InteractionTime / TargetedInteractable->GetInteractDuration();
+	return InteractionTime / Interactable->GetInteractDuration();
 }
 
 void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* CharacterClass)
@@ -123,43 +146,24 @@ void ARitualPlayerController::HideCharacterSelection()
 	SetInputMode(FInputModeGameOnly());
 }
 
-IInteractable* ARitualPlayerController::GetTargetedInteractable() const
+AActor* ARitualPlayerController::GetInteractedActor() const
 {
-	FHitResult HitResult;
+	return InteractedActor;
+}
 
-	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetPawn());
-	if (OgnamCharacter == nullptr)
+float ARitualPlayerController::GetDistanceBetweenInteracted() const
+{
+	if (!bIsInteracting || !InteractedActor || !GetPawn())
 	{
-		return nullptr;
+		return 0.0f;
 	}
-
-	OgnamCharacter->GetAimHitResult(HitResult, 0.f, 10000.f);
-	if (HitResult.bBlockingHit)
-	{
-		return Cast<IInteractable>(HitResult.GetActor());
-	}
-	return nullptr;
+	return FVector::Dist(GetPawn()->GetActorLocation(), InteractedActor->GetActorLocation());
 }
 
 bool ARitualPlayerController::CanInteract() const
 {
-	//See if pawn exists as character
-	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetPawn());
-	if (OgnamCharacter == nullptr)
-	{
-		return false;
-	}
-
-	FHitResult HitResult;
-	//See if something's blocking hit from camera
-	OgnamCharacter->GetAimHitResult(HitResult, 0.f, 10000.f);
-	if (!HitResult.bBlockingHit)
-	{
-		return false;
-	}
-
-	//See if it's interactable
-	AActor* Actor = HitResult.Actor.Get();
+	//See if targeted actor is interactable
+	AActor* Actor = GetTargetedActor();
 	IInteractable* Interactable = Cast<IInteractable>(Actor);
 	if (Interactable == nullptr)
 	{
@@ -167,7 +171,7 @@ bool ARitualPlayerController::CanInteract() const
 	}
 
 	//See if it's interactable range
-	float Distance = FVector::Dist(OgnamCharacter->GetActorLocation(),  Actor->GetActorLocation());
+	float Distance = FVector::Dist(GetPawn()->GetActorLocation(),  Actor->GetActorLocation());
 	if (Interactable->GetInteractDistance() < Distance)
 	{
 		return false;
@@ -180,6 +184,26 @@ bool ARitualPlayerController::CanInteract() const
 	}
 
 	return true;
+}
+
+AActor* ARitualPlayerController::GetTargetedActor() const
+{
+	//See if pawn exists as character
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetPawn());
+	if (OgnamCharacter == nullptr)
+	{
+		return nullptr;
+	}
+
+	FHitResult HitResult;
+	//See if something's blocking hit from camera
+	OgnamCharacter->GetAimHitResult(HitResult, 0.f, 10000.f);
+	if (!HitResult.bBlockingHit)
+	{
+		return nullptr;
+	}
+
+	return HitResult.Actor.Get();
 }
 
 void ARitualPlayerController::ToggleChangeCharacterUI()
@@ -198,69 +222,61 @@ void ARitualPlayerController::ToggleChangeCharacterUI()
 	}
 }
 
-void ARitualPlayerController::UpdateInteractionTime(float DeltaTime)
-{
-	if (bInteracting)
-	{
-		InteractionTime += DeltaTime;
-	}
-	else
-	{
-		InteractionTime = 0;
-	}
-}
-
-void ARitualPlayerController::CheckInteractionCompletion()
-{
-	if (HasAuthority())
-	{
-		if (bInteracting)
-		{
-			if (TargetedInteractable->GetInteractDuration() <= InteractionTime)
-			{
-				InteractionTime = 0;
-				bInteracting = false;
-				TargetedInteractable->Execute_BeInteracted(Cast<AActor>(TargetedInteractable), this);
-			}
-		}
-	}
-}
-
 void ARitualPlayerController::ServerStartInteract_Implementation()
 {
 	if (CanInteract())
 	{
-		bInteracting = true;
-		TargetedInteractable = GetTargetedInteractable();
-		StartInteract();
+		bIsInteracting = true;
+		InteractedActor = GetTargetedActor();
+		InteractionTime = 0;
 	}
 	else
 	{
-		bInteracting = false;
-		TargetedInteractable = nullptr;
+		StopInteract();
 	}
 }
 
 void ARitualPlayerController::ServerStopInteract_Implementation()
 {
-	bInteracting = false;
-	TargetedInteractable = nullptr;
+	bIsInteracting = false;
+	InteractedActor = nullptr;
 	InteractionTime = 0;
-	StopInteract();
 }
 
-void ARitualPlayerController::StartInteract_Implementation()
+void ARitualPlayerController::StartInteract()
 {
-	if (InteractionBar)
+	if (CanInteract())
 	{
-		InteractionBar->AddToViewport();
+		bIsInteracting = true;
+		InteractedActor = GetTargetedActor();
+		InteractionTime = 0;
+		if (InteractionBar)
+		{
+			InteractionBar->AddToViewport();
+		}
+		ServerStartInteract();
 	}
 }
 
-void ARitualPlayerController::StopInteract_Implementation()
+void ARitualPlayerController::StopInteract()
 {
 	if (InteractionBar && InteractionBar->IsInViewport())
 	{
 		InteractionBar->RemoveFromViewport();
 	}
+	bIsInteracting = false;
+	InteractedActor = nullptr;
+	InteractionTime = 0;
+	ServerStopInteract();
+}
+
+void ARitualPlayerController::InterruptInteract_Implementation()
+{
+	if (InteractionBar && InteractionBar->IsInViewport())
+	{
+		InteractionBar->RemoveFromViewport();
+	}
+	bIsInteracting = false;
+	InteractedActor = nullptr;
+	InteractionTime = 0;
 }

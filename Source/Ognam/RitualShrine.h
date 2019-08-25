@@ -33,9 +33,8 @@ public:
 	/*
 	**	Exported Function
 	*/
-	UFUNCTION(NetMulticast, Reliable)
 	void SpawnAcolytes(int32 Count);
-	void SpawnAcolytes_Implementation(int32 Count);
+	//void SpawnAcolytes_Implementation(int32 Count);
 
 	virtual void RemoveAcolyte(class ARitualAcolyte* Acolyte);
 
