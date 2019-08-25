@@ -8,8 +8,8 @@
 #include "Engine/World.h"
 #include "ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
-#include "OgnamCharacter.h"
-#include "Interactable.h"
+#include "Ognam/OgnamCharacter.h"
+#include "Interfaces/Interactable.h"
 #include "UnrealNetwork.h"
 #include "Engine.h"
 	
@@ -158,6 +158,11 @@ float ARitualPlayerController::GetDistanceBetweenInteracted() const
 		return 0.0f;
 	}
 	return FVector::Dist(GetPawn()->GetActorLocation(), InteractedActor->GetActorLocation());
+}
+
+bool ARitualPlayerController::IsInteracting() const
+{
+	return bIsInteracting;
 }
 
 bool ARitualPlayerController::CanInteract() const

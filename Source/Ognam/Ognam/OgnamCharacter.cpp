@@ -54,7 +54,7 @@ AOgnamCharacter::AOgnamCharacter()
 	Defense = 0.0f;
 
 	this->bReplicates = true;
-	this->GetCharacterMovement()->MaxWalkSpeed = 300;
+//	this->GetCharacterMovement()->MaxWalkSpeed = 300;
 	bIsAlive = true;
 }
 

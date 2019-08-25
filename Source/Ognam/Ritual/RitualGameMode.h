@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "OgnamGameMode.h"
+#include "Ognam/OgnamGameMode.h"
 #include "RitualGameMode.generated.h"
 
 /**

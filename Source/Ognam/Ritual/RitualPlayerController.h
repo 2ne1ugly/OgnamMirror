@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "OgnamPlayerController.h"
+#include "Ognam/OgnamPlayerController.h"
 #include "RitualPlayerController.generated.h"
 
 /**
@@ -36,6 +36,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetDistanceBetweenInteracted() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool IsInteracting() const;
 
 	/*
 	**	Exported Function

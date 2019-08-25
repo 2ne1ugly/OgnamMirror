@@ -3,8 +3,8 @@
 
 #include "RitualPlayerState.h"
 #include "RitualGameState.h"
-#include "OgnamShooter.h"
-#include "OgnamCharacter.h"
+#include "Ognam/OgnamShooter.h"
+#include "Ognam/OgnamCharacter.h"
 #include "Engine/World.h"
 #include "UnrealNetwork.h"
 
@@ -72,11 +72,11 @@ FName ARitualPlayerState::GetSide() const
 		return FName();
 	}
 
-	if (Team.IsEqual(GameState->GetCurrentOffenseTeam()))
+	if (Team == GameState->GetCurrentOffenseTeam())
 	{
 		return GameState->OffenseName;
 	}
-	else if (Team.IsEqual(GameState->GetCurrentDefenseTeam()))
+	else if (Team == GameState->GetCurrentDefenseTeam())
 	{
 		return GameState->DefenseName;
 	}

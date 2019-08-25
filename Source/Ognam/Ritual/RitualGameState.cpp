@@ -4,7 +4,7 @@
 #include "RitualGameMode.h"
 #include "RitualPlayerState.h"
 #include "RitualPlayerController.h"
-#include "OgnamCharacter.h"
+#include "Ognam/OgnamCharacter.h"
 #include "UnrealNetwork.h"
 #include "Engine/World.h"
 #include "RitualShrine.h"

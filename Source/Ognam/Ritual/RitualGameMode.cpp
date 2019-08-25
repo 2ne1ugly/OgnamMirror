@@ -4,7 +4,7 @@
 #include "RitualGameState.h"
 #include "RitualPlayerState.h"
 #include "RitualPlayerController.h"
-#include "OgnamCharacter.h"
+#include "Ognam/OgnamCharacter.h"
 #include "GameFramework/PlayerStart.h"
 #include "EngineUtils.h"
 
