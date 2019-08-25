@@ -28,30 +28,17 @@ public:
 	/*
 	**	Binded Functions
 	*/
-	virtual void BeginPlay() override;
-
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void Jump() override;
-
 	virtual void Landed(const FHitResult & Hit) override;
-
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
-
 	virtual void MoveForward(float amount);
-
 	virtual void MoveRight(float amount);
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	/*
 	**	Getters, Setters
 	*/
-	UFUNCTION(BlueprintCallable)
-	int32 GetTeamID() const;
-
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() const;
 
@@ -82,17 +69,19 @@ protected:
 	virtual bool ServerJump_Validate() { return true; };
 	virtual void ServerJump_Implementation();
 
+	float GetDamageAfterDefense(float Damage);
+
 	/*
 	**	Props
 	*/
-	UPROPERTY(Replicated)
-	int32 TeamID;
-
 	UPROPERTY(Replicated)
 	float Health;
 
 	UPROPERTY(Replicated)
 	float MaxHealth;
+
+	UPROPERTY(Replicated)
+	float Defense;
 
 	UPROPERTY(Replicated)
 	bool bIsJumping;

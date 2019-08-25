@@ -51,33 +51,22 @@ AOgnamCharacter::AOgnamCharacter()
 
 	Health = 100.f;
 	MaxHealth = 100.f;
+	Defense = 0.0f;
 
 	this->bReplicates = true;
-	this->GetCharacterMovement()->MaxWalkSpeed = 2000;
+	this->GetCharacterMovement()->MaxWalkSpeed = 300;
 	bIsAlive = true;
-}
-
-// Called when the game starts or when spawned
-void AOgnamCharacter::BeginPlay()
-{
-	Super::BeginPlay();
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AOgnamCharacter, TeamID);
 	DOREPLIFETIME(AOgnamCharacter, Health);
 	DOREPLIFETIME(AOgnamCharacter, MaxHealth);
 	DOREPLIFETIME(AOgnamCharacter, bIsJumping);
 	DOREPLIFETIME(AOgnamCharacter, bIsAlive);
-}
-
-// Called every frame
-void AOgnamCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	DOREPLIFETIME(AOgnamCharacter, Defense);
 }
 
 // Called to bind functionality to input
@@ -105,11 +94,6 @@ void AOgnamCharacter::MoveRight(float Amount)
 	{
 		AddMovementInput(GetActorRightVector(), Amount);
 	}
-}
-
-int AOgnamCharacter::GetTeamID() const
-{
-	return TeamID;
 }
 
 float AOgnamCharacter::GetHealth() const
@@ -146,6 +130,11 @@ void AOgnamCharacter::ServerJump_Implementation()
 	bIsJumping = true;
 }
 
+float AOgnamCharacter::GetDamageAfterDefense(float Damage)
+{
+	return Damage * Defense;
+}
+
 void AOgnamCharacter::Jump()
 {
 	ACharacter::Jump();
@@ -175,6 +164,7 @@ void AOgnamCharacter::Die_Implementation()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 	bIsAlive = false;
 
+	//For local player
 	AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(GetController());
 	if (PlayerController == nullptr)
 	{
