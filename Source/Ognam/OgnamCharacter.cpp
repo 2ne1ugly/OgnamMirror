@@ -161,7 +161,7 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Health -= Damage;
-	if (Health <= 0)
+	if (HasAuthority() && Health <= 0)
 	{
 		Die();
 	}
