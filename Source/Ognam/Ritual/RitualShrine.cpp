@@ -17,6 +17,7 @@ ARitualShrine::ARitualShrine()
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	StaticMesh->SetStaticMesh(Mesh.Object);
 	StaticMesh->SetMobility(EComponentMobility::Static);
+	StaticMesh->SetCollisionProfileName(TEXT("BlockAll"));
 	StaticMesh->SetWorldScale3D(FVector(1, 1, 5));
 	StaticMesh->SetupAttachment(RootComponent);
 

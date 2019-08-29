@@ -17,7 +17,7 @@ AOgnamPlayerController::AOgnamPlayerController()
 		OgnamHUDClass = HUDFinder.Class;
 	}
 	else
-		UE_LOG(LogTemp, Warning, TEXT("Not Loaded"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Loaded"), __FUNCTION__);
 }
 
 void AOgnamPlayerController::BeginPlay()

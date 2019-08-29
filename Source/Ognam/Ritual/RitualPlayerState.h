@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerState.h"
+#include "Ognam/OgnamPlayerstate.h"
 #include "RitualPlayerState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API ARitualPlayerState : public APlayerState
+class OGNAM_API ARitualPlayerState : public AOgnamPlayerState
 {
 	GENERATED_BODY()
 
@@ -25,12 +25,6 @@ public:
 	/*
 	**	Getters, Setters
 	*/
-	UFUNCTION(BlueprintCallable)
-	void SetTeam(FName name);
-
-	UFUNCTION(BlueprintCallable)
-	FName GetTeam() const;
-
 	UFUNCTION(BlueprintCallable)
 	void SetTeamIndex(int32 index);
 
@@ -56,9 +50,6 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(Replicated, VisibleAnywhere)
-	FName Team;
-
 	UPROPERTY(Replicated)
 	int32 TeamIndex;
 

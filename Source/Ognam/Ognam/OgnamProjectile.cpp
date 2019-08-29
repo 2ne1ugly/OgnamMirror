@@ -23,7 +23,7 @@ AOgnamProjectile::AOgnamProjectile()
 	Bullet->SetupAttachment(RootComponent);
 	Bullet->SetWorldScale3D(FVector(0.1));
 	Bullet->SetStaticMesh(Sphere.Object);
-	Bullet->SetCollisionProfileName(TEXT("BlockAll"));
+	Bullet->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 	Bullet->SetVisibility(true);
 
 	// Set Particle effects, being buggy.

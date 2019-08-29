@@ -59,7 +59,7 @@ void ARitualAcolyte::BeInteracted_Implementation(APlayerController* PlayerContro
 	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();
 	if (GameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Gamestate"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
 	GameState->GiveAcolyteKillReward();
@@ -70,14 +70,14 @@ bool ARitualAcolyte::CanInteractWithController(const APlayerController* PlayerCo
 	ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
 	if (RitualPlayerState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Player State"));
+		UE_LOG(LogTemp, Warning, TEXT("%¤¤ Not Ritual Player State"), __FUNCTION__);
 		return false;
 	}
 
 	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();
 	if (GameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Game State"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Game State"), __FUNCTION__);
 		return false;
 	}
 

@@ -79,7 +79,7 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("CameraPitch", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AOgnamCharacter::Jump);
 }
-
+ 
 void AOgnamCharacter::MoveForward(float Amount)
 {
 	if (Controller != nullptr && Amount != 0.f)

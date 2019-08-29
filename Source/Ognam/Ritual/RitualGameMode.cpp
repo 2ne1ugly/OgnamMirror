@@ -28,7 +28,7 @@ void ARitualGameMode::Tick(float DeltaTime)
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not a Ritual Gamestate"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not a Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
 	RitualGameState->UpdateProperties();
@@ -64,7 +64,7 @@ void ARitualGameMode::HandleMatchHasStarted()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not a Ritual Gamestate"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not a Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
 	StartFirstRound();
@@ -80,7 +80,7 @@ void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Player Controller"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Player Controller"), __FUNCTION__);
 	}
 
 	//Set states
@@ -91,7 +91,7 @@ void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Player Controller"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Player Controller"), __FUNCTION__);
 	}
 }
 
@@ -115,7 +115,7 @@ void ARitualGameMode::StartFirstRound()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (GameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Gamestate"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
 
@@ -128,7 +128,7 @@ void ARitualGameMode::RestartRound()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (GameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Gamestate"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
 
@@ -142,7 +142,7 @@ void ARitualGameMode::EndRound()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (GameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Gamestate"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
 
@@ -168,7 +168,7 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 	//Assign Team
 	if (RitualPlayerState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Some one is not a Ritual Player State!"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Some one is not a Ritual Player State!"), __FUNCTION__);
 	}
 	else
 	{
@@ -195,7 +195,7 @@ void ARitualGameMode::PreLogin(const FString& Options, const FString& Address, c
 	}
 	if (NumPlayers == MaxNumPlayers)
 	{
-		ErrorMessage = TEXT("Match Full");
+		ErrorMessage = TEXT("%s Match Full");
 	}
 }
 
@@ -207,7 +207,7 @@ AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, con
 	ARitualPlayerState* PlayerState = Player->GetPlayerState<ARitualPlayerState>();
 	if (PlayerState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GameState or ARitualPlayerController invalid"));
+		UE_LOG(LogTemp, Warning, TEXT("%s GameState or ARitualPlayerController invalid"), __FUNCTION__);
 		return nullptr;
 	}
 
@@ -226,7 +226,7 @@ AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, con
 			CurrentIndex++;
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Not enough Spawn points"));
+	UE_LOG(LogTemp, Warning, TEXT("%s Not enough Spawn points"), __FUNCTION__);
 	return Super::FindPlayerStart_Implementation(Player, IncomingName);
 }
 
@@ -238,17 +238,17 @@ void ARitualGameMode::RestartPlayerAtPlayerStart(AController* NewPlayer, AActor*
 	}
 	if (!StartSpot)
 	{
-		UE_LOG(LogGameMode, Warning, TEXT("RestartPlayerAtPlayerStart: Player start not found"));
+		UE_LOG(LogGameMode, Warning, TEXT("%s Player start not found"), __FUNCTION__);
 		return;
 	}
 
 	FRotator SpawnRotation = StartSpot->GetActorRotation();
 
-	UE_LOG(LogGameMode, Verbose, TEXT("RestartPlayerAtPlayerStart %s"), (NewPlayer && NewPlayer->PlayerState) ? *NewPlayer->PlayerState->GetPlayerName() : TEXT("Unknown"));
+	UE_LOG(LogGameMode, Verbose, TEXT("%s %s"), __FUNCTION__, (NewPlayer && NewPlayer->PlayerState) ? *NewPlayer->PlayerState->GetPlayerName() : TEXT("Unknown"));
 
 	if (MustSpectate(Cast<APlayerController>(NewPlayer)))
 	{
-		UE_LOG(LogGameMode, Verbose, TEXT("RestartPlayerAtPlayerStart: Tried to restart a spectator-only player!"));
+		UE_LOG(LogGameMode, Verbose, TEXT("%s Tried to restart a spectator-only player!"), __FUNCTION__);
 		return;
 	}
 

@@ -23,16 +23,6 @@ void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ARitualPlayerState, PawnClass);
 }
 
-void ARitualPlayerState::SetTeam(FName name)
-{
-	Team = name;
-}
-
-FName ARitualPlayerState::GetTeam() const
-{
-	return Team;
-}
-
 void ARitualPlayerState::SetTeamIndex(int32 index)
 {
 	TeamIndex = index;
@@ -68,7 +58,7 @@ FName ARitualPlayerState::GetSide() const
 	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();
 	if (GameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Game state not valid!"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Game state not valid!"), __FUNCTION__);
 		return FName();
 	}
 
@@ -80,6 +70,6 @@ FName ARitualPlayerState::GetSide() const
 	{
 		return GameState->DefenseName;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Team name not valid!"));
+	UE_LOG(LogTemp, Warning, TEXT("%s Team name not valid!"), __FUNCTION__);
 	return FName();
 }

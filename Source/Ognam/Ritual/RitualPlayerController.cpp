@@ -58,7 +58,7 @@ void ARitualPlayerController::OnPawnDeath()
 	ARitualPlayerState* RitualPlayerState = GetPlayerState<ARitualPlayerState>();
 	if (RitualPlayerState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Ritual Player State"));
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Player State"), __FUNCTION__);
 		return;
 	}
 	RitualPlayerState->SetIsAlive(false);
@@ -80,7 +80,7 @@ void ARitualPlayerController::Tick(float DeltaTime)
 		IInteractable* Interactable = Cast<IInteractable>(InteractedActor);
 		if (Interactable == nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Not Interactable"));
+			UE_LOG(LogTemp, Warning, TEXT("%s Not Interactable"), __FUNCTION__);
 			return;
 		}
 		// Interrupt Interaction when too far.

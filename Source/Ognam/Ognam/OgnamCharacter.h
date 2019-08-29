@@ -60,6 +60,12 @@ public:
 
 	void GetAimHitResult(FHitResult& HitResult, float near, float far);
 
+	/*
+	**	Exported Props
+	*/
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
+
 protected:
 	/*
 	**	Internal functions
@@ -88,5 +94,4 @@ protected:
 
 	UPROPERTY(Replicated)
 	bool bIsAlive;
-
 };

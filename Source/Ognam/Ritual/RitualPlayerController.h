@@ -78,7 +78,7 @@ protected:
 	*/
 	void ToggleChangeCharacterUI();
 
-	UFUNCTION(Server, WithValidation, Reliable)
+	UFUNCTION(Server, WithValidation, Reliable, BlueprintCallable)
 	void ServerChangeCharacter(UClass* CharacterClass);
 	bool ServerChangeCharacter_Validate(UClass* CharacterClass) { return true; };
 	void ServerChangeCharacter_Implementation(UClass* CharacterClass);
@@ -101,5 +101,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	class UUserWidget* InteractionBar;
-
 };

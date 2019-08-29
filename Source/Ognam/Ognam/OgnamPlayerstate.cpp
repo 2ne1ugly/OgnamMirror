@@ -9,6 +9,7 @@ AOgnamPlayerState::AOgnamPlayerState()
 	Name = "Name me";
 	NumKill = 0;
 	NumDeath = 0;
+	Team = TEXT("No Team");
 }
 
 void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -18,6 +19,7 @@ void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(AOgnamPlayerState, Name);
 	DOREPLIFETIME(AOgnamPlayerState, NumKill);
 	DOREPLIFETIME(AOgnamPlayerState, NumDeath);
+	DOREPLIFETIME(AOgnamPlayerState, Team);
 }
 
 void AOgnamPlayerState::CopyProperties(APlayerState* PlayerState)
@@ -44,4 +46,14 @@ void AOgnamPlayerState::OverrideWith(APlayerState* PlayerState)
 			Name = OgnamPlayerState->Name;
 		}
 	}
+}
+
+void AOgnamPlayerState::SetTeam(FName name)
+{
+	Team = name;
+}
+
+FName AOgnamPlayerState::GetTeam() const
+{
+	return Team;
 }

@@ -220,7 +220,7 @@ void ARitualGameState::UpdateProperties()
 		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
 		if (PlayerState == nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Not Ritual Player State"));
+			UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Player State"), __FUNCTION__);
 			continue;
 		}
 		FName Team = RitualPlayerState->GetTeam();
@@ -238,7 +238,7 @@ void ARitualGameState::UpdateProperties()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Unknown Team name"));
+			UE_LOG(LogTemp, Warning, TEXT("%s Unknown Team name"), __FUNCTION__);
 		}
 	}
 	NumGreenPlayers = Green;

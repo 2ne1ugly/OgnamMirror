@@ -7,7 +7,7 @@
 #include "OgnamPlayerState.generated.h"
 
 /**
- * 
+ *	Put things that are common
  */
 UCLASS()
 class OGNAM_API AOgnamPlayerState : public APlayerState
@@ -23,17 +23,30 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void CopyProperties(class APlayerState* PlayerState) override;
 	virtual void OverrideWith(class APlayerState* PlayerState) override;
+
+	/*
+	**	Getters, Setters
+	*/
+	UFUNCTION(BlueprintCallable)
+	void SetTeam(FName name);
+
+	UFUNCTION(BlueprintCallable)
+	FName GetTeam() const;
+
 protected:
 
 	/*
 	**	Props
 	*/
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated)
 	FString Name;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated)
+	FName Team;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
 	int32 NumKill;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated)
 	int32 NumDeath;
 };

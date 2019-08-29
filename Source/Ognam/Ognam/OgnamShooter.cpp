@@ -125,10 +125,10 @@ void AOgnamShooter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 void AOgnamShooter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AOgnamShooter::Shoot);
-	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AOgnamShooter::StopShoot);
-	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AOgnamShooter::Aim);
-	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AOgnamShooter::StopAim);
+	PlayerInputComponent->BindAction("Basic", IE_Pressed, this, &AOgnamShooter::Shoot);
+	PlayerInputComponent->BindAction("Basic", IE_Released, this, &AOgnamShooter::StopShoot);
+	PlayerInputComponent->BindAction("Sub", IE_Pressed, this, &AOgnamShooter::Aim);
+	PlayerInputComponent->BindAction("Sub", IE_Released, this, &AOgnamShooter::StopAim);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AOgnamShooter::Reload);
 }
 
