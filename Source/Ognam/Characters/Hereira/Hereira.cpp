@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "HereiraArrow.h"
 #include "ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
 
 AHereira::AHereira()
 {
