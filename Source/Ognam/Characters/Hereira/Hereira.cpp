@@ -6,11 +6,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
 #include "Engine/World.h"
-#include "HereiraArrow.h"
-#include "HereiraExplosiveArrow.h"
 #include "ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "HereiraSprint.h"
+#include "HereiraExplosiveArrowReady.h"
+#include "HereiraCanFastReload.h"
 
 AHereira::AHereira()
 {
@@ -50,13 +50,13 @@ void AHereira::FireArrow()
 		return;
 	}
 	ServerFireArrow();
-	GetWorldTimerManager().SetTimer(BasicReload, 1.5f, false);
 }
 
 void AHereira::ServerFireArrow_Implementation() 
 {
 	if (GetWorldTimerManager().IsTimerActive(BasicReload) || CurrentSprint != nullptr)
 	{
+		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
 	float Gravity = 1000.f;
@@ -67,23 +67,27 @@ void AHereira::ServerFireArrow_Implementation()
 
 	//Set Spawner
 	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.bNoFail = true;
 	SpawnParameters.Instigator = this;
 
 	AHereiraArrow* Arrow;
-	if (bIsExplosiveShot)
+	UHereiraExplosiveArrowReady* ExplosiveReady = GetModifier<UHereiraExplosiveArrowReady>();
+
+	//See if modifier exists and can cosnume.
+	if (ExplosiveReady != nullptr && ExplosiveReady->Use())
 	{
 		Arrow = GetWorld()->SpawnActor<AHereiraExplosiveArrow>(GetActorLocation(), Rotator, SpawnParameters);
-		bIsExplosiveShot = false;
+		GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 15.f, false);
 	}
 	else
 	{
 		Arrow = GetWorld()->SpawnActor<AHereiraArrow>(GetActorLocation(), Rotator, SpawnParameters);
 	}
 	Arrow->SetReplicates(true);
-	Arrow->SetInitialPosition(GetActorLocation());
+	Arrow->SetInitialPosition(Arrow->GetActorLocation());
 	Arrow->SetInitialVelocity(Direction * 5000);
 	Arrow->SetGravity(Gravity);
-	GetWorldTimerManager().SetTimer(BasicReload, 1.5f, false);
+	Reload();
 }
 
 void AHereira::StartSprint()
@@ -100,6 +104,7 @@ void AHereira::ServerStartSprint_Implementation()
 	//Check Cooldown or In use
 	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) || CurrentSprint != nullptr)
 	{
+		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
 	ApplySprint();
@@ -124,6 +129,7 @@ void AHereira::ServerStopSprint_Implementation()
 {
 	if (CurrentSprint == nullptr)
 	{
+		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
 	InterruptSprint();
@@ -140,7 +146,8 @@ void AHereira::InterruptSprint_Implementation()
 
 void AHereira::LoadExplosiveShot()
 {
-	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown))
+	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) &&
+		GetModifier<UHereiraExplosiveArrowReady>() != nullptr)
 	{
 		return;
 	}
@@ -149,11 +156,26 @@ void AHereira::LoadExplosiveShot()
 
 void AHereira::ServerLoadExplosiveShot_Implementation()
 {
-	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown))
+	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) &&
+		GetModifier<UHereiraExplosiveArrowReady>() != nullptr)
 	{
+		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
-	GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 15.f, false);
+	ApplyModifier(NewObject<UHereiraExplosiveArrowReady>(this));
 	GetWorldTimerManager().SetTimer(BasicReload, 0.5f, false);
-	bIsExplosiveShot = true;
 }
+
+void AHereira::Reload()
+{
+	UHereiraCanFastReload* FastReload = GetModifier<UHereiraCanFastReload>();
+	if (FastReload && FastReload->Use())
+	{
+		GetWorldTimerManager().SetTimer(BasicReload, 1.f, false);
+	}
+	else
+	{
+		GetWorldTimerManager().SetTimer(BasicReload, 1.5f, false);
+	}
+}
+

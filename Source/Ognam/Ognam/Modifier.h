@@ -10,6 +10,7 @@
  *	Modifier can be applied to Characters.
  *	If Someone wants to expand this to specific Interface than characters, more than welcomed.
  *	But for now, it's only intended for AOgnamCharacters.
+ *	Access Target to get information to attached character.
  */
 UCLASS()
 class OGNAM_API UModifier : public UObject

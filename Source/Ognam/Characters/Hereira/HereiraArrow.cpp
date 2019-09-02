@@ -11,6 +11,7 @@
 #include "Ognam/OgnamPlayerstate.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "HereiraCanFastReload.h"
 
 // Sets default values
 AHereiraArrow::AHereiraArrow()
@@ -150,6 +151,24 @@ void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitRe
 		FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
 
 		UGameplayStatics::ApplyPointDamage(OtherCharacter, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
+
+		//Apply Fast reload if close range
+		FVector Disposition = InitialVelocity * ElapsedTime + Acceleration * .5f * ElapsedTime * ElapsedTime;
+		if (Disposition.Size() < 700.f)
+		{
+			AOgnamCharacter* Character = Cast<AOgnamCharacter>(Instigator);
+			if (Character != nullptr)
+			{
+				if (Character->GetModifier<UHereiraCanFastReload>() == nullptr)
+				{
+					Character->ApplyModifier(NewObject<UHereiraCanFastReload>(this));
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s Not Ognam Character"), __FUNCTIONW__);
+			}
+		}
 	}
 	Destroy();
 

@@ -10,6 +10,7 @@
 #include "Engine/World.h"
 #include "HereiraExplosion.h"
 #include "HereiraWillExplode.h"
+#include "HereiraCanFastReload.h"
 
 void AHereiraExplosiveArrow::EndLifeSpan()
 {
@@ -41,6 +42,24 @@ void AHereiraExplosiveArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, con
 		UHereiraWillExplode* Explosion = NewObject<UHereiraWillExplode>(this);
 		Explosion->SetInstigator(Instigator);
 		OtherCharacter->ApplyModifier(Explosion);
+
+		//Apply Fast reload if close range
+		FVector Disposition = InitialVelocity * ElapsedTime + Acceleration * .5f * ElapsedTime * ElapsedTime;
+		if (Disposition.Size() < 700.f)
+		{
+			AOgnamCharacter* Character = Cast<AOgnamCharacter>(Instigator);
+			if (Character != nullptr)
+			{
+				if (Character->GetModifier<UHereiraCanFastReload>() == nullptr)
+				{
+					Character->ApplyModifier(NewObject<UHereiraCanFastReload>(this));
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s Not Ognam Character"), __FUNCTIONW__);
+			}
+		}
 	}
 	Destroy();
 }

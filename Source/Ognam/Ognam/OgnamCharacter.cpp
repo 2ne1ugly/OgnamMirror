@@ -12,7 +12,6 @@
 #include "Animation/AnimBlueprint.h"
 #include "UnrealNetwork.h"
 #include "OgnamPlayerController.h"
-#include "Modifier.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()

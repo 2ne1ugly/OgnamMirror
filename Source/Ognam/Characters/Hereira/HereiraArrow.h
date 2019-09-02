@@ -38,6 +38,7 @@ protected:
 	*/
 	virtual void EndLifeSpan();
 	virtual void OnCharacterHit(class AOgnamCharacter* OtherCharacter, const FHitResult& SweepResult);
+	float CalculateFlownDistance();
 
 	//For non Characters
 	virtual void OnActorHit(class AActor* OtherCharacter, const FHitResult& SweepResult);

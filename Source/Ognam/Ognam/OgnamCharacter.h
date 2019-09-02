@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Modifier.h"
 #include "OgnamCharacter.generated.h"
 
 // Contains What's common between every Character.
@@ -62,6 +63,20 @@ public:
 
 	void GetAimHitResult(FHitResult& HitResult, float near, float far);
 	void ApplyModifier(class UModifier* Modifier);
+
+	template<typename T>
+	T* GetModifier()
+	{
+		for (UModifier* Modifier : Modifiers)
+		{
+			T* Casted = Cast<T>(Modifier);
+			if (Casted != nullptr)
+			{
+				return Casted;
+			}
+		}
+		return nullptr;
+	}
 
 	/*
 	**	Exported Props

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/OgnamCharacter.h"
+#include "HereiraArrow.h"
+#include "HereiraExplosiveArrow.h"
 #include "Hereira.generated.h"
 
 /**
@@ -23,6 +25,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Tick(float DeltaTime) override;
 
+	/*
+	**	Exported Function
+	*/
 protected:
 	/*
 	**	Abilities
@@ -43,7 +48,7 @@ protected:
 	bool ServerStartSprint_Validate() { return true; };
 	void ServerStartSprint_Implementation();
 
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(NetMulticast, Unreliable)
 	void ApplySprint();
 	void ApplySprint_Implementation();
 	
@@ -67,16 +72,17 @@ protected:
 	bool ServerLoadExplosiveShot_Validate() { return true; };
 	void ServerLoadExplosiveShot_Implementation();
 
+	//Reload (Not Binded anywhere tho)
+	void Reload();
+
+	//UFUNCTION(Server, WithValidation, Unrealiable)
+	//void ServerReload();
+	//bool ServerReload_Validate() { return true; };
+	//void ServerReload_Implementaion();
+
 	/*
 	**	Props
 	*/
-
-	UPROPERTY(VisibleAnywhere, Category = Ability)
-	bool bIsExplosiveShot;
-
-	UPROPERTY(VisibleAnywhere, Category = Ability)
-	int32 Ammo;
-
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle BasicReload;
 
