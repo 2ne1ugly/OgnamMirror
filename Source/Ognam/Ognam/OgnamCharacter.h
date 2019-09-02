@@ -22,6 +22,7 @@ protected:
 	UPROPERTY(EditAnywhere, category = Camera)
 	class UCameraComponent* Camera;
 
+
 public:
 	AOgnamCharacter();
 
@@ -29,6 +30,7 @@ public:
 	**	Binded Functions
 	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult & Hit) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
@@ -59,10 +61,32 @@ public:
 	virtual void Die_Implementation();
 
 	void GetAimHitResult(FHitResult& HitResult, float near, float far);
+	void ApplyModifier(class UModifier* Modifier);
 
 	/*
 	**	Exported Props
 	*/
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float Health;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float BaseMaxHealth;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float MaxHealth;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float BaseDefense;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float Defense;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float BaseSpeed;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float Speed;
+
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
 
@@ -80,18 +104,12 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(Replicated)
-	float Health;
-
-	UPROPERTY(Replicated)
-	float MaxHealth;
-
-	UPROPERTY(Replicated)
-	float Defense;
-
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bIsJumping;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bIsAlive;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<UModifier*> Modifiers;
 };

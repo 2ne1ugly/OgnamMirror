@@ -21,6 +21,7 @@ public:
 	**	Binded Function
 	*/
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	/*
@@ -42,6 +43,11 @@ protected:
 	bool ServerStartSprint_Validate() { return true; };
 	void ServerStartSprint_Implementation();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void ApplySprint();
+	void ApplySprint_Implementation();
+	
+
 	void StopSprint();
 
 	UFUNCTION(Server, WithValidation, Unreliable)
@@ -49,10 +55,17 @@ protected:
 	bool ServerStopSprint_Validate() { return true; };
 	void ServerStopSprint_Implementation();
 
-	void EndSprint();
+	UFUNCTION(NetMulticast, Unreliable)
+	void InterruptSprint();
+	void InterruptSprint_Implementation();
 
 	//Unique
 	void LoadExplosiveShot();
+
+	UFUNCTION(Server, WithValidation, Unreliable)
+	void ServerLoadExplosiveShot();
+	bool ServerLoadExplosiveShot_Validate() { return true; };
+	void ServerLoadExplosiveShot_Implementation();
 
 	/*
 	**	Props
@@ -62,16 +75,7 @@ protected:
 	bool bIsExplosiveShot;
 
 	UPROPERTY(VisibleAnywhere, Category = Ability)
-	bool bIsReloadingExplosiveShot;
-
-	UPROPERTY(VisibleAnywhere, Category = Ability)
-	bool bWillFastReload;
-
-	UPROPERTY(VisibleAnywhere, Category = Ability)
 	int32 Ammo;
-
-	UPROPERTY(VisibleAnywhere, Category = Ability)
-	FTimerHandle SprintDuration;
 
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle BasicReload;
@@ -81,4 +85,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle ExplosiveShotCooldown;
+
+	UPROPERTY(VisibleAnywhere, Category = Ability)
+	class UHereiraSprint* CurrentSprint;
 };

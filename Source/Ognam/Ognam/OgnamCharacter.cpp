@@ -12,11 +12,14 @@
 #include "Animation/AnimBlueprint.h"
 #include "UnrealNetwork.h"
 #include "OgnamPlayerController.h"
+#include "Modifier.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
 {
+	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bCanEverTick = true;
+
 
 	//Create Spring arm and Camera
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
@@ -49,9 +52,16 @@ AOgnamCharacter::AOgnamCharacter()
 		GetMesh()->SetAnimInstanceClass(AnimBP.Object);
 	//}
 
-	Health = 100.f;
-	MaxHealth = 100.f;
-	Defense = 0.0f;
+	BaseMaxHealth = 100.f;
+	BaseDefense = 0.0f;
+	BaseSpeed = 600.0f;
+
+	MaxHealth = BaseMaxHealth;
+	Defense = BaseDefense;
+	Speed = BaseSpeed;
+
+	Health = MaxHealth;
+
 
 	this->bReplicates = true;
 //	this->GetCharacterMovement()->MaxWalkSpeed = 300;
@@ -63,10 +73,38 @@ void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AOgnamCharacter, Health);
+	DOREPLIFETIME(AOgnamCharacter, BaseMaxHealth);
 	DOREPLIFETIME(AOgnamCharacter, MaxHealth);
+	DOREPLIFETIME(AOgnamCharacter, BaseDefense);
+	DOREPLIFETIME(AOgnamCharacter, Defense);
+	DOREPLIFETIME(AOgnamCharacter, BaseSpeed);
+	DOREPLIFETIME(AOgnamCharacter, Speed);
 	DOREPLIFETIME(AOgnamCharacter, bIsJumping);
 	DOREPLIFETIME(AOgnamCharacter, bIsAlive);
-	DOREPLIFETIME(AOgnamCharacter, Defense);
+}
+
+void AOgnamCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	MaxHealth = BaseMaxHealth;
+	Defense = BaseDefense;
+	Speed = BaseSpeed;
+
+	//Check ending conditions of Modiifers and apply tick.
+	for (int i = Modifiers.Num() - 1; i >= 0; i--)
+	{
+		if (Modifiers[i]->ShouldEnd())
+		{
+			Modifiers[i]->GetDetached();
+			Modifiers.RemoveAt(i, 1, false);
+		}
+		else
+		{
+			Modifiers[i]->TickModifier(DeltaTime);
+		}
+	}
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
 // Called to bind functionality to input
@@ -123,6 +161,12 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	FVector RayTo = RayFrom + Camera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
+}
+
+void AOgnamCharacter::ApplyModifier(class UModifier* Modifier)
+{
+	Modifiers.Push(Modifier);
+	Modifier->GetApplied(this);
 }
 
 void AOgnamCharacter::ServerJump_Implementation()

@@ -7,7 +7,10 @@
 #include "TimerManager.h"
 #include "Engine/World.h"
 #include "HereiraArrow.h"
+#include "HereiraExplosiveArrow.h"
 #include "ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
+#include "HereiraSprint.h"
 
 AHereira::AHereira()
 {
@@ -28,9 +31,21 @@ void AHereira::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Unique"), IE_Pressed, this, &AHereira::LoadExplosiveShot);
 }
 
+void AHereira::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	//Run sprint cd when finished
+	if (CurrentSprint && !CurrentSprint->IsActive())
+	{
+		CurrentSprint = nullptr;
+		GetWorldTimerManager().SetTimer(SprintCooldown, 8.f, false);
+	}
+}
+
 void AHereira::FireArrow()
 {
-	if (GetWorldTimerManager().IsTimerActive(BasicReload) || GetWorldTimerManager().IsTimerActive(SprintDuration))
+	if (GetWorldTimerManager().IsTimerActive(BasicReload) || CurrentSprint != nullptr)
 	{
 		return;
 	}
@@ -40,7 +55,7 @@ void AHereira::FireArrow()
 
 void AHereira::ServerFireArrow_Implementation() 
 {
-	if (GetWorldTimerManager().IsTimerActive(BasicReload) || GetWorldTimerManager().IsTimerActive(SprintDuration))
+	if (GetWorldTimerManager().IsTimerActive(BasicReload) || CurrentSprint != nullptr)
 	{
 		return;
 	}
@@ -49,71 +64,96 @@ void AHereira::ServerFireArrow_Implementation()
 	FVector Direction = Camera->GetForwardVector()* (1 - UpRatio) + FVector::UpVector * UpRatio;
 	Direction.GetSafeNormal();
 	FRotator Rotator = FRotationMatrix::MakeFromX(Direction).Rotator();
-	AHereiraArrow* Arrow = GetWorld()->SpawnActor<AHereiraArrow>(GetActorLocation(), Rotator);
+
+	//Set Spawner
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Instigator = this;
+
+	AHereiraArrow* Arrow;
+	if (bIsExplosiveShot)
+	{
+		Arrow = GetWorld()->SpawnActor<AHereiraExplosiveArrow>(GetActorLocation(), Rotator, SpawnParameters);
+		bIsExplosiveShot = false;
+	}
+	else
+	{
+		Arrow = GetWorld()->SpawnActor<AHereiraArrow>(GetActorLocation(), Rotator, SpawnParameters);
+	}
 	Arrow->SetReplicates(true);
 	Arrow->SetInitialPosition(GetActorLocation());
 	Arrow->SetInitialVelocity(Direction * 5000);
 	Arrow->SetGravity(Gravity);
-	Arrow->SetController(GetController<APlayerController>());
 	GetWorldTimerManager().SetTimer(BasicReload, 1.5f, false);
 }
 
 void AHereira::StartSprint()
 {
-	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) ||
-		GetWorldTimerManager().IsTimerActive(SprintDuration))
+	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) || CurrentSprint != nullptr)
 	{
 		return;
 	}
 	ServerStartSprint();
-	ServerStartSprint_Implementation();
 }
 
 void AHereira::ServerStartSprint_Implementation()
 {
 	//Check Cooldown or In use
-	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) ||
-		GetWorldTimerManager().IsTimerActive(SprintDuration))
+	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) || CurrentSprint != nullptr)
 	{
 		return;
 	}
-	GetWorldTimerManager().SetTimer(SprintDuration, this, &AHereira::EndSprint, 3.f, false);
-	GetCharacterMovement()->MaxWalkSpeed = 600 * 2;
+	ApplySprint();
+}
+
+void AHereira::ApplySprint_Implementation()
+{
+	CurrentSprint = NewObject<UHereiraSprint>(this);
+	ApplyModifier(CurrentSprint);
 }
 
 void AHereira::StopSprint()
 {
-	//Check In use
-	if (!GetWorldTimerManager().IsTimerActive(SprintDuration))
+	if (CurrentSprint == nullptr)
 	{
 		return;
 	}
 	ServerStopSprint();
-	ServerStopSprint_Implementation();
 }
 
 void AHereira::ServerStopSprint_Implementation()
 {
-	if (!GetWorldTimerManager().IsTimerActive(SprintDuration))
+	if (CurrentSprint == nullptr)
 	{
 		return;
 	}
-	GetWorldTimerManager().ClearTimer(SprintDuration);
-	GetWorldTimerManager().SetTimer(SprintCooldown, 8.f, false);
-	GetCharacterMovement()->MaxWalkSpeed = 600;
+	InterruptSprint();
 }
 
-void AHereira::EndSprint()
+void AHereira::InterruptSprint_Implementation()
 {
-	if (GetWorldTimerManager().IsTimerActive(SprintCooldown))
+	if (CurrentSprint == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s SprintCooldown pending when duration ended!"), __FUNCTION__);
 		return;
 	}
-	GetWorldTimerManager().SetTimer(SprintCooldown, 8.f, false);
-	GetCharacterMovement()->MaxWalkSpeed = 600;
+	CurrentSprint->Interrupt();
 }
 
 void AHereira::LoadExplosiveShot()
 {
+	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown))
+	{
+		return;
+	}
+	ServerLoadExplosiveShot();
+}
+
+void AHereira::ServerLoadExplosiveShot_Implementation()
+{
+	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown))
+	{
+		return;
+	}
+	GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 15.f, false);
+	GetWorldTimerManager().SetTimer(BasicReload, 0.5f, false);
+	bIsExplosiveShot = true;
 }

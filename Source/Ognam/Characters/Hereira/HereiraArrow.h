@@ -22,9 +22,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
 	UFUNCTION()
-	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	/*
 	**	Getters, Setters
@@ -32,13 +31,16 @@ public:
 	void SetInitialPosition(FVector Value);
 	void SetInitialVelocity(FVector Value);
 	void SetGravity(float Value);
-	void SetController(APlayerController*_Controller);
 
 protected:
 	/*
 	**	Internal Functions
 	*/
-	void EndLifeSpan();
+	virtual void EndLifeSpan();
+	virtual void OnCharacterHit(class AOgnamCharacter* OtherCharacter, const FHitResult& SweepResult);
+
+	//For non Characters
+	virtual void OnActorHit(class AActor* OtherCharacter, const FHitResult& SweepResult);
 
 	/*
 	**	Props
@@ -56,7 +58,4 @@ protected:
 	float Gravity;
 
 	bool bIsTraveling;
-
-	UPROPERTY()
-	APlayerController* Controller;
 };

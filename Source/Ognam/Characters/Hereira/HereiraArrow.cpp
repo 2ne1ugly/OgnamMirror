@@ -32,7 +32,7 @@ AHereiraArrow::AHereiraArrow()
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Vehicle, ECollisionResponse::ECR_Block);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Destructible, ECollisionResponse::ECR_Block);
 	Arrow->OnComponentBeginOverlap.AddDynamic(this, &AHereiraArrow::BeginOverlap);
-	Arrow->SetRelativeScale3D(FVector(0.05, 0.05, 1.0f));
+	Arrow->SetRelativeScale3D(FVector(0.1, 0.1, 1.0f));
 	Arrow->SetWorldLocationAndRotation(FVector(0.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
 
 	Gravity = 100;
@@ -56,7 +56,7 @@ void AHereiraArrow::Tick(float DeltaTime)
 	{
 		return;
 	}
-
+	
 	float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
 	FVector Acceleration = Gravity * FVector::DownVector;
 	FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
@@ -71,6 +71,7 @@ void AHereiraArrow::Tick(float DeltaTime)
 	if (HitResult.bBlockingHit)
 	{
 		bIsTraveling = false;
+		OnActorHit(HitResult.GetActor(), HitResult);
 	}
 }
 
@@ -92,13 +93,13 @@ void AHereiraArrow::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		return;
 	}
 
-	if (Controller == nullptr)
+	if (Instigator == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No controller!"));
+		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
 		return;
 	}
 
-	if (OtherActor == Controller->GetPawn())
+	if (OtherActor == Instigator)
 	{
 		return;
 	}
@@ -108,22 +109,7 @@ void AHereiraArrow::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 		return;
 	}
-	AOgnamPlayerState* PlayerState = Character->GetPlayerState<AOgnamPlayerState>();
-	AOgnamPlayerState* ControllerPlayerState = Controller->GetPlayerState<AOgnamPlayerState>();
-	if (PlayerState == nullptr || ControllerPlayerState == nullptr)
-	{
-		return;
-	}
-
-	if (PlayerState->GetTeam() != ControllerPlayerState->GetTeam())
-	{
-		float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
-		FVector Acceleration = Gravity * FVector::DownVector;
-		FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
-
-		UGameplayStatics::ApplyPointDamage(OtherActor, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
-	}
-	Destroy();
+	OnCharacterHit(Character, SweepResult);
 }
 
 void AHereiraArrow::SetInitialPosition(FVector Value)
@@ -141,13 +127,47 @@ void AHereiraArrow::SetGravity(float Value)
 	Gravity = Value;
 }
 
-void AHereiraArrow::SetController(APlayerController* _Controller)
-{
-	Controller = _Controller;
-}
-
 void AHereiraArrow::EndLifeSpan()
 {
 	Destroy();
+}
+
+void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitResult& SweepResult)
+{
+	if (Instigator == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
+		return;
+	}
+
+	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
+	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
+	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
+	{
+		AController* Controller = Instigator->GetController();
+		float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
+		FVector Acceleration = Gravity * FVector::DownVector;
+		FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
+
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
+	}
+	Destroy();
+
+}
+
+void AHereiraArrow::OnActorHit(AActor* OtherActor, const FHitResult& SweepResult)
+{
+	if (Instigator == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
+		return;
+	}
+
+	AController* Controller = Instigator->GetController();
+	float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
+	FVector Acceleration = Gravity * FVector::DownVector;
+	FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
+
+	UGameplayStatics::ApplyPointDamage(OtherActor, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
 }
 
