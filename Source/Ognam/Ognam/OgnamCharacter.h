@@ -125,6 +125,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bIsAlive;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly	)
 	TArray<UModifier*> Modifiers;
 };
