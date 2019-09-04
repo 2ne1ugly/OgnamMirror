@@ -11,8 +11,6 @@
 #include "TimerManager.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "ParticleDefinitions.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
 
 // Sets default values
 AHereiraExplosion::AHereiraExplosion()
@@ -35,13 +33,7 @@ AHereiraExplosion::AHereiraExplosion()
 	ParticleSystem->SetTemplate(Emitter.Object);
 	ParticleSystem->bAutoActivate = false;
 	ParticleSystem->SetHiddenInGame(false);
-
-	ConstructorHelpers::FObjectFinder<USoundCue> SoundCue(TEXT("SoundCue'/Game/StarterContent/Audio/Explosion_Cue.Explosion_Cue'"));
-
-	AudioSystem = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
-	AudioSystem->SetSound(SoundCue.Object);
-	AudioSystem->SetupAttachment(Range);
-	AudioSystem->SetRelativeLocation(FVector::ZeroVector);
+	//ParticleSystem->InitializeSystem();
 }
 
 // Called when the game starts or when spawned
@@ -49,8 +41,7 @@ void AHereiraExplosion::BeginPlay()
 {
 	Super::BeginPlay();
 	ParticleSystem->Activate();
-	AudioSystem->Activate();
-	GetWorld()->GetTimerManager().SetTimer(LifeSpan, this, &AHereiraExplosion::EndLifeSpan, 3.2f, false);
+	GetWorld()->GetTimerManager().SetTimer(LifeSpan, this, &AHereiraExplosion::EndLifeSpan, .25f, false);
 }
 
 // Called every frame

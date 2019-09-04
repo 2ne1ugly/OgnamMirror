@@ -139,7 +139,7 @@ void ARitualGameState::StartNewRound()
 		Itr->SpawnAcolytes(3);
 	}
 
-	PhaseGivenTime = 120;
+	PhaseGivenTime = 30;
 }
 
 void ARitualGameState::SwitchSides()

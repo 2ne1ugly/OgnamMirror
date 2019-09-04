@@ -7,12 +7,13 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Engine/World.h"
 #include "UnrealNetwork.h"
+#include "Characters/Hereira/Hereira.h"
 
 ARitualPlayerState::ARitualPlayerState()
 {
 	Team = TEXT("Undefined");
 	bIsAlive = false;
-	PawnClass = AOgnamShooter::StaticClass();
+	PawnClass = AHereira::StaticClass();
 }
 
 void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -17,9 +17,6 @@ class OGNAM_API AHereiraExplosion : public AActor
 	UPROPERTY(EditAnywhere)
 	class UParticleSystemComponent* ParticleSystem;
 
-	UPROPERTY(EditAnywhere)
-	class UAudioComponent* AudioSystem;
-
 public:	
 	AHereiraExplosion();
 
