@@ -85,7 +85,7 @@ void AHereira::ServerFireArrow_Implementation()
 	}
 	Arrow->SetReplicates(true);
 	Arrow->SetInitialPosition(Arrow->GetActorLocation());
-	Arrow->SetInitialVelocity(Direction * 5000);
+	Arrow->SetInitialVelocity(Direction * 4000);
 	Arrow->SetGravity(Gravity);
 	Reload();
 }

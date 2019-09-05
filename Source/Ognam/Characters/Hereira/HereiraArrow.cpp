@@ -19,10 +19,11 @@ AHereiraArrow::AHereiraArrow()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cylinder(TEXT("StaticMesh'/Engine/BasicShapes/Cylinder.Cylinder'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowObj(TEXT("StaticMesh'/Game/Meshes/StaticArrow.StaticArrow'"));
 	Arrow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Arrow"));
 	Arrow->SetupAttachment(RootComponent);
-	Arrow->SetStaticMesh(Cylinder.Object);
+	Arrow->SetStaticMesh(ArrowObj.Object);
+	
 	Arrow->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Overlap);
@@ -33,8 +34,8 @@ AHereiraArrow::AHereiraArrow()
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Vehicle, ECollisionResponse::ECR_Block);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Destructible, ECollisionResponse::ECR_Block);
 	Arrow->OnComponentBeginOverlap.AddDynamic(this, &AHereiraArrow::BeginOverlap);
-	Arrow->SetRelativeScale3D(FVector(0.1, 0.1, 1.0f));
-	Arrow->SetWorldLocationAndRotation(FVector(0.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
+	Arrow->SetRelativeScale3D(FVector(0.66, 0.66, .66f));
+	//Arrow->SetWorldLocationAndRotation(FVector(0.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
 
 	Gravity = 100;
 	RootComponent = Arrow;
@@ -45,7 +46,7 @@ AHereiraArrow::AHereiraArrow()
 void AHereiraArrow::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraArrow::EndLifeSpan, 3.f, false);
+	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraArrow::EndLifeSpan, 3., false);
 }
 
 // Called every frame
@@ -73,6 +74,7 @@ void AHereiraArrow::Tick(float DeltaTime)
 	{
 		bIsTraveling = false;
 		OnActorHit(HitResult.GetActor(), HitResult);
+		UE_LOG(LogTemp, Warning, TEXT("Blocking!"));
 	}
 }
 
