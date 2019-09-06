@@ -51,6 +51,7 @@ void AHereiraExplosion::BeginPlay()
 	ParticleSystem->Activate();
 	AudioSystem->Activate();
 	GetWorld()->GetTimerManager().SetTimer(LifeSpan, this, &AHereiraExplosion::EndLifeSpan, 3.2f, false);
+	GetWorld()->GetTimerManager().SetTimer(TriggerLifeSpan, this, &AHereiraExplosion::EndTriggerLifeSpan, .25f, false);
 }
 
 // Called every frame
@@ -104,5 +105,10 @@ void AHereiraExplosion::OnActorHit(AActor* OtherActor)
 void AHereiraExplosion::EndLifeSpan()
 {
 	Destroy();
+}
+
+void AHereiraExplosion::EndTriggerLifeSpan()
+{
+	Range->DestroyComponent();
 }
 

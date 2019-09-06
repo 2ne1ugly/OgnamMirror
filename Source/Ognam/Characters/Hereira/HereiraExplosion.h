@@ -38,10 +38,14 @@ protected:
 	/*
 	**	Props
 	*/
-	virtual void EndLifeSpan();
+	void EndLifeSpan();
+	void EndTriggerLifeSpan();
 
 	UPROPERTY(VisibleAnywhere)
 	FTimerHandle LifeSpan;
+
+	UPROPERTY(VisibleAnywhere)
+	FTimerHandle TriggerLifeSpan;
 
 	UPROPERTY()
 	TSet<AActor*> AffectedActors;

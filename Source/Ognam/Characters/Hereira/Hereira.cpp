@@ -72,16 +72,16 @@ void AHereira::ServerFireArrow_Implementation()
 
 	AHereiraArrow* Arrow;
 	UHereiraExplosiveArrowReady* ExplosiveReady = GetModifier<UHereiraExplosiveArrowReady>();
-
+	FVector Location = GetActorLocation() + FVector(0.f, 0.f, 60.f);
 	//See if modifier exists and can cosnume.
 	if (ExplosiveReady != nullptr && ExplosiveReady->Use())
 	{
-		Arrow = GetWorld()->SpawnActor<AHereiraExplosiveArrow>(GetActorLocation(), Rotator, SpawnParameters);
+		Arrow = GetWorld()->SpawnActor<AHereiraExplosiveArrow>(Location, Rotator, SpawnParameters);
 		GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 15.f, false);
 	}
 	else
 	{
-		Arrow = GetWorld()->SpawnActor<AHereiraArrow>(GetActorLocation(), Rotator, SpawnParameters);
+		Arrow = GetWorld()->SpawnActor<AHereiraArrow>(Location, Rotator, SpawnParameters);
 	}
 	Arrow->SetReplicates(true);
 	Arrow->SetInitialPosition(Arrow->GetActorLocation());
@@ -146,7 +146,7 @@ void AHereira::InterruptSprint_Implementation()
 
 void AHereira::LoadExplosiveShot()
 {
-	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) &&
+	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) ||
 		GetModifier<UHereiraExplosiveArrowReady>() != nullptr)
 	{
 		return;
@@ -156,7 +156,7 @@ void AHereira::LoadExplosiveShot()
 
 void AHereira::ServerLoadExplosiveShot_Implementation()
 {
-	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) &&
+	if (GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) ||
 		GetModifier<UHereiraExplosiveArrowReady>() != nullptr)
 	{
 		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
