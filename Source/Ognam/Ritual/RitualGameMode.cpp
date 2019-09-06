@@ -195,7 +195,7 @@ void ARitualGameMode::PreLogin(const FString& Options, const FString& Address, c
 	}
 	if (NumPlayers == MaxNumPlayers)
 	{
-		ErrorMessage = TEXT("%s Match Full");
+		ErrorMessage = TEXT("Match Full");
 	}
 }
 

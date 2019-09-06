@@ -64,6 +64,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetPhaseRemainingTime() const;
 
+	UFUNCTION(BlueprintCallable)
+	const FString GetFormatRemainingTime() const;
+
 	/*
 	**	Exported Functions
 	*/

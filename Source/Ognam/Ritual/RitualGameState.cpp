@@ -123,6 +123,14 @@ float ARitualGameState::GetPhaseRemainingTime() const
 	return	PhaseGivenTime - (CurrentTime - PhaseStartTime);
 }
 
+const FString ARitualGameState::GetFormatRemainingTime() const
+{
+	int Time = FMath::RoundToInt(GetPhaseRemainingTime());
+	int Seconds = Time % 60;
+	int Minutes = (Time - Seconds) / 60.f;
+	return FString::Printf(TEXT("%d:%02d"), Minutes, Seconds);
+}
+
 void ARitualGameState::StartNewRound()
 {
 	//Increase Current Round
