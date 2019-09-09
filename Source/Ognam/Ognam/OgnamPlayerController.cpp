@@ -38,4 +38,35 @@ void AOgnamPlayerController::OnPawnDeath()
 {
 }
 
+void AOgnamPlayerController::OnPossess(APawn* Pawn)
+{
+	Super::OnPossess(Pawn);
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(Pawn);
+
+	if (Character == nullptr)
+	{
+		return;
+	}
+
+	if (Character->CharacterSpecificHUDClass && IsLocalPlayerController())
+	{
+		CharacterSpecificHUD = CreateWidget<UUserWidget>(this, Character->CharacterSpecificHUDClass);
+		if (CharacterSpecificHUD)
+		{
+			CharacterSpecificHUD->AddToViewport();
+		}
+	}
+}
+
+void AOgnamPlayerController::OnUnPossess()
+{
+	Super::OnUnPossess();
+
+	if (CharacterSpecificHUD && IsLocalPlayerController() && CharacterSpecificHUD->IsInViewport())
+	{
+		CharacterSpecificHUD->RemoveFromViewport();
+		CharacterSpecificHUD = nullptr;
+	}
+}
+
 

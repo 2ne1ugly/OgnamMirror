@@ -27,8 +27,8 @@ public:
 	*/
 	virtual void BeginPlay() override;
 	virtual void OnPawnDeath();
-	//virtual void OnPossess() override;
-	//virtual void UnPossess() override;
+	virtual void OnPossess(APawn* Pawn) override;
+	virtual void OnUnPossess() override;
 
 private:
 
