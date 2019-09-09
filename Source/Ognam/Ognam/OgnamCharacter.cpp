@@ -61,9 +61,13 @@ AOgnamCharacter::AOgnamCharacter()
 
 	Health = MaxHealth;
 
+	GetCharacterMovement()->MaxAcceleration = 1536.f;
+	GetCharacterMovement()->BrakingFrictionFactor = .5f;
+	GetCharacterMovement()->AirControl = 2.f;
+	GetCharacterMovement()->GravityScale = 1.5f;
+	GetCharacterMovement()->JumpZVelocity = 510.f;
 
 	this->bReplicates = true;
-//	this->GetCharacterMovement()->MaxWalkSpeed = 300;
 	bIsAlive = true;
 }
 
@@ -104,6 +108,17 @@ void AOgnamCharacter::Tick(float DeltaTime)
 		}
 	}
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+	if (NumInputs > 0)
+	{
+		//InputVector.Normalize();
+		InputVector = InputVector.GetSafeNormal();
+		InputSpeed /= NumInputs;
+		AddMovementInput(InputVector, InputSpeed);
+	}
+	InputVector = FVector::ZeroVector;
+	InputSpeed = 0;
+	NumInputs = 0;
 }
 
 // Called to bind functionality to input
@@ -121,7 +136,17 @@ void AOgnamCharacter::MoveForward(float Amount)
 {
 	if (Controller != nullptr && Amount != 0.f)
 	{
-		AddMovementInput(GetActorForwardVector(), Amount);
+		if (Amount < 0)
+		{
+			InputVector += GetActorForwardVector() * -1;
+		}
+		else
+		{
+			InputVector += GetActorForwardVector();
+		}
+
+		InputSpeed += abs(Amount);
+		NumInputs++;
 	}
 }
 
@@ -129,7 +154,17 @@ void AOgnamCharacter::MoveRight(float Amount)
 {
 	if (Controller != nullptr && Amount != 0.f)
 	{
-		AddMovementInput(GetActorRightVector(), Amount);
+		if (Amount < 0)
+		{
+			InputVector += GetActorRightVector() * -1;
+		}
+		else
+		{
+			InputVector += GetActorRightVector();
+		}
+
+		InputSpeed += abs(Amount);
+		NumInputs++;
 	}
 }
 

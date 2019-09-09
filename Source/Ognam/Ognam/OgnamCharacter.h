@@ -125,6 +125,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bIsAlive;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly	)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<UModifier*> Modifiers;
+
+	FVector InputVector;
+	float	InputSpeed;
+	int		NumInputs;
 };

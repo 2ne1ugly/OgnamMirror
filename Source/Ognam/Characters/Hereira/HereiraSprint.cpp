@@ -12,7 +12,7 @@ bool UHereiraSprint::ShouldEnd()
 
 void UHereiraSprint::TickModifier(float DeltaTime)
 {
-	Target->Speed += Target->BaseSpeed * .5f;
+	Target->Speed += Target->BaseSpeed * .35f;
 }
 
 void UHereiraSprint::Interrupt()
