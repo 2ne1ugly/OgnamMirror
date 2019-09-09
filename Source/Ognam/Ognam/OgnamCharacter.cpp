@@ -111,7 +111,6 @@ void AOgnamCharacter::Tick(float DeltaTime)
 
 	if (NumInputs > 0)
 	{
-		//InputVector.Normalize();
 		InputVector = InputVector.GetSafeNormal();
 		InputSpeed /= NumInputs;
 		AddMovementInput(InputVector, InputSpeed);
