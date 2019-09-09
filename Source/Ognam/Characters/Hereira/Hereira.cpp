@@ -39,7 +39,7 @@ void AHereira::Tick(float DeltaTime)
 	if (CurrentSprint && !CurrentSprint->IsActive())
 	{
 		CurrentSprint = nullptr;
-		GetWorldTimerManager().SetTimer(SprintCooldown, 8.f, false);
+		GetWorldTimerManager().SetTimer(SprintCooldown, 6.f, false);
 	}
 }
 
@@ -77,7 +77,7 @@ void AHereira::ServerFireArrow_Implementation()
 	if (ExplosiveReady != nullptr && ExplosiveReady->Use())
 	{
 		Arrow = GetWorld()->SpawnActor<AHereiraExplosiveArrow>(Location, Rotator, SpawnParameters);
-		GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 15.f, false);
+		GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 5.f, false);
 	}
 	else
 	{

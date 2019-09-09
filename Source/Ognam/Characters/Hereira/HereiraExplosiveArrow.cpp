@@ -11,6 +11,27 @@
 #include "HereiraExplosion.h"
 #include "HereiraWillExplode.h"
 #include "HereiraCanFastReload.h"
+#include "ParticleDefinitions.h"
+#include "ConstructorHelpers.h"
+#include "Particles/ParticleSystemComponent.h"
+
+AHereiraExplosiveArrow::AHereiraExplosiveArrow()
+{
+	ConstructorHelpers::FObjectFinder<UParticleSystem> Emitter(TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'"));
+
+	ParticleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Emitter"));
+	ParticleSystem->SetupAttachment(RootComponent);
+	ParticleSystem->SetRelativeLocation(FVector::ZeroVector);
+	ParticleSystem->SetTemplate(Emitter.Object);
+	ParticleSystem->bAutoActivate = false;
+	ParticleSystem->SetHiddenInGame(false);
+}
+
+void AHereiraExplosiveArrow::BeginPlay()
+{
+	Super::BeginPlay();
+	ParticleSystem->Activate();
+}
 
 void AHereiraExplosiveArrow::EndLifeSpan()
 {

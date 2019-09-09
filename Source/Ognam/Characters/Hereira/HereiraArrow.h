@@ -11,6 +11,7 @@ class OGNAM_API AHereiraArrow : public AActor
 {
 	GENERATED_BODY()
 
+protected:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* Arrow;
 public:	

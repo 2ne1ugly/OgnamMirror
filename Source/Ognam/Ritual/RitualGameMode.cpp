@@ -44,7 +44,7 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 	{
 		return;
 	}
-	MaxNumPlayers = 2;
+	MaxNumPlayers = 4;
 }
 
 bool ARitualGameMode::ReadyToStartMatch_Implementation()
