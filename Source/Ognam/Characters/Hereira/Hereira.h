@@ -74,6 +74,7 @@ protected:
 
 	//Reload (Not Binded anywhere tho)
 	void Reload();
+	void FinishReload();
 
 	//UFUNCTION(Server, WithValidation, Unrealiable)
 	//void ServerReload();
@@ -83,6 +84,15 @@ protected:
 	/*
 	**	Props
 	*/
+	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
+	int32 NumArrows;
+
+	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
+	int32 MaxArrows;
+
+	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
+	FTimerHandle BasicDelay;
+
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle BasicReload;
 

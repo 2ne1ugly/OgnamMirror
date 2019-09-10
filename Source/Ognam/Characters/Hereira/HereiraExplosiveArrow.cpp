@@ -49,6 +49,11 @@ void AHereiraExplosiveArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, con
 		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
 		return;
 	}
+	if (!bIsTraveling)
+	{
+		return;
+	}
+
 
 	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
 	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
@@ -59,7 +64,7 @@ void AHereiraExplosiveArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, con
 		FVector Acceleration = Gravity * FVector::DownVector;
 		FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
 
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
 		UHereiraWillExplode* Explosion = NewObject<UHereiraWillExplode>(this);
 		Explosion->SetInstigator(Instigator);
 		OtherCharacter->ApplyModifier(Explosion);

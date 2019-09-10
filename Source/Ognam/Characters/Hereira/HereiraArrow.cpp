@@ -28,7 +28,7 @@ AHereiraArrow::AHereiraArrow()
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Overlap);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Overlap);
 	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Vehicle, ECollisionResponse::ECR_Block);
@@ -142,6 +142,10 @@ void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitRe
 		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
 		return;
 	}
+	if (!bIsTraveling)
+	{
+		return;
+	}
 
 	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
 	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
@@ -152,7 +156,7 @@ void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitRe
 		FVector Acceleration = Gravity * FVector::DownVector;
 		FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
 
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
 
 		//Apply Fast reload if close range
 		FVector Disposition = InitialVelocity * ElapsedTime + Acceleration * .5f * ElapsedTime * ElapsedTime;
@@ -183,12 +187,11 @@ void AHereiraArrow::OnActorHit(AActor* OtherActor, const FHitResult& SweepResult
 		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
 		return;
 	}
+	//AController* Controller = Instigator->GetController();
+	//float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
+	//FVector Acceleration = Gravity * FVector::DownVector;
+	//FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
 
-	AController* Controller = Instigator->GetController();
-	float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
-	FVector Acceleration = Gravity * FVector::DownVector;
-	FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
-
-	UGameplayStatics::ApplyPointDamage(OtherActor, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
+	//UGameplayStatics::ApplyPointDamage(OtherActor, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
 }
 
