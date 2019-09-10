@@ -28,7 +28,7 @@ AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 	ParticleSystem->bAutoActivate = false;
 	ParticleSystem->SetHiddenInGame(false);
 
-	ConstructorHelpers::FObjectFinder<USoundCue> SparkFizzleCue(TEXT("SoundCue'/Game/Sounds/SparkFizzle_Cue.SparkFizzle_Cue'"));
+	ConstructorHelpers::FObjectFinder<USoundCue> SparkFizzleCue(TEXT("SoundCue'/Game/Sounds/Arrow/SparkFizzle_Cue.SparkFizzle_Cue'"));
 
 	AudioSystem = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSystem"));
 	AudioSystem->SetupAttachment(RootComponent);
