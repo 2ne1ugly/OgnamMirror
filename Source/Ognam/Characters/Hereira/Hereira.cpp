@@ -22,7 +22,7 @@ AHereira::AHereira()
 		CharacterSpecificHUDClass = HUDFinder.Class;
 	}
 
-	static ConstructorHelpers::FObjectFinder<USoundCue> ShotSound(TEXT("SoundCue'/Game/UI/CrossbowShot.CrossbowShot'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> ShotSound(TEXT("SoundCue'/Game/Sounds/Crossbow/CrossbowShot.CrossbowShot'"));
 	ShotAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotAudio"));
 	ShotAudio->SetSound(ShotSound.Object);
 	ShotAudio->SetupAttachment(RootComponent);
@@ -56,7 +56,8 @@ void AHereira::Tick(float DeltaTime)
 
 void AHereira::FireArrow()
 {
-	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || CurrentSprint != nullptr)
+	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || CurrentSprint != nullptr
+		 || GetWorldTimerManager().IsTimerActive(BasicReload))
 	{
 		return;
 	}
@@ -100,7 +101,7 @@ void AHereira::ServerFireArrow_Implementation()
 	Arrow->SetInitialPosition(Arrow->GetActorLocation());
 	Arrow->SetInitialVelocity(Direction * 4000);
 	Arrow->SetGravity(Gravity);
-	GetWorldTimerManager().SetTimer(BasicDelay, 0.1f, false);
+	GetWorldTimerManager().SetTimer(BasicDelay, 0.5f, false);
 	if (NumArrows <= 0)
 	{
 		Reload();
