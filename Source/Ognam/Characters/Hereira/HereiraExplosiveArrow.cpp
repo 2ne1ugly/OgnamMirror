@@ -25,24 +25,15 @@ AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 	ParticleSystem->SetupAttachment(RootComponent);
 	ParticleSystem->SetRelativeLocation(FVector::ZeroVector);
 	ParticleSystem->SetTemplate(Emitter.Object);
-	ParticleSystem->bAutoActivate = false;
-	ParticleSystem->SetHiddenInGame(false);
+	ParticleSystem->bAutoActivate = true;
 
 	ConstructorHelpers::FObjectFinder<USoundCue> SparkFizzleCue(TEXT("SoundCue'/Game/Sounds/Arrow/SparkFizzle_Cue.SparkFizzle_Cue'"));
 
 	AudioSystem = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSystem"));
 	AudioSystem->SetupAttachment(RootComponent);
-	AudioSystem->SetupAttachment(RootComponent);
 	AudioSystem->SetRelativeLocation(FVector::ZeroVector);
 	AudioSystem->SetSound(SparkFizzleCue.Object);
-	AudioSystem->bAutoActivate = false;
-}
-
-void AHereiraExplosiveArrow::BeginPlay()
-{
-	Super::BeginPlay();
-	AudioSystem->Activate();
-	ParticleSystem->Activate();
+	AudioSystem->bAutoActivate = true;
 }
 
 void AHereiraExplosiveArrow::EndLifeSpan()
@@ -116,5 +107,5 @@ void AHereiraExplosiveArrow::OnActorHit(AActor* OtherCharacter, const FHitResult
 	FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
 
 	UGameplayStatics::ApplyPointDamage(OtherCharacter, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
-	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraExplosiveArrow::EndLifeSpan, 0.5f, false);
+	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraExplosiveArrow::EndLifeSpan, .5f, false);
 }
