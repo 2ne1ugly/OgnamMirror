@@ -18,6 +18,9 @@ class OGNAM_API AHereiraExplosiveArrow : public AHereiraArrow
 	UPROPERTY(EditAnywhere)
 	class UParticleSystemComponent* ParticleSystem;
 
+	UPROPERTY()
+	class UAudioComponent* AudioSystem;
+
 protected:
 	/*
 	**	Binded Functions

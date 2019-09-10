@@ -14,6 +14,8 @@
 #include "ParticleDefinitions.h"
 #include "ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 {
@@ -25,11 +27,21 @@ AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 	ParticleSystem->SetTemplate(Emitter.Object);
 	ParticleSystem->bAutoActivate = false;
 	ParticleSystem->SetHiddenInGame(false);
+
+	ConstructorHelpers::FObjectFinder<USoundCue> SparkFizzleCue(TEXT("SoundCue'/Game/Sounds/SparkFizzle_Cue.SparkFizzle_Cue'"));
+
+	AudioSystem = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSystem"));
+	AudioSystem->SetupAttachment(RootComponent);
+	AudioSystem->SetupAttachment(RootComponent);
+	AudioSystem->SetRelativeLocation(FVector::ZeroVector);
+	AudioSystem->SetSound(SparkFizzleCue.Object);
+	AudioSystem->bAutoActivate = false;
 }
 
 void AHereiraExplosiveArrow::BeginPlay()
 {
 	Super::BeginPlay();
+	AudioSystem->Activate();
 	ParticleSystem->Activate();
 }
 

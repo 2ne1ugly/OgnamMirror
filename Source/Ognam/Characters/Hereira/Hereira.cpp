@@ -27,6 +27,7 @@ AHereira::AHereira()
 	ShotAudio->SetSound(ShotSound.Object);
 	ShotAudio->SetupAttachment(RootComponent);
 	ShotAudio->SetRelativeLocation(FVector::ZeroVector);
+	ShotAudio->bAutoActivate = 0;
 	MaxArrows = 2;
 	NumArrows = MaxArrows;
 }
