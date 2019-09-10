@@ -27,6 +27,8 @@ AHereira::AHereira()
 	ShotAudio->SetSound(ShotSound.Object);
 	ShotAudio->SetupAttachment(RootComponent);
 	ShotAudio->SetRelativeLocation(FVector::ZeroVector);
+	MaxArrows = 2;
+	NumArrows = MaxArrows;
 }
 
 void AHereira::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -37,6 +39,7 @@ void AHereira::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Mobility"), IE_Pressed, this, &AHereira::StartSprint);
 	PlayerInputComponent->BindAction(TEXT("Mobility"), IE_Released, this, &AHereira::StopSprint);
 	PlayerInputComponent->BindAction(TEXT("Unique"), IE_Pressed, this, &AHereira::LoadExplosiveShot);
+	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AHereira::Reload);
 }
 
 void AHereira::Tick(float DeltaTime)
@@ -53,7 +56,7 @@ void AHereira::Tick(float DeltaTime)
 
 void AHereira::FireArrow()
 {
-	if (GetWorldTimerManager().IsTimerActive(BasicReload) || CurrentSprint != nullptr)
+	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || CurrentSprint != nullptr)
 	{
 		return;
 	}
@@ -63,11 +66,12 @@ void AHereira::FireArrow()
 
 void AHereira::ServerFireArrow_Implementation() 
 {
-	if (GetWorldTimerManager().IsTimerActive(BasicReload) || CurrentSprint != nullptr)
+	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || CurrentSprint != nullptr)
 	{
 		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
+	NumArrows--;
 	float Gravity = 1000.f;
 	float UpRatio = 0.1f;
 	FVector Direction = Camera->GetForwardVector()* (1 - UpRatio) + FVector::UpVector * UpRatio;
@@ -96,7 +100,11 @@ void AHereira::ServerFireArrow_Implementation()
 	Arrow->SetInitialPosition(Arrow->GetActorLocation());
 	Arrow->SetInitialVelocity(Direction * 4000);
 	Arrow->SetGravity(Gravity);
-	Reload();
+	GetWorldTimerManager().SetTimer(BasicDelay, 0.1f, false);
+	if (NumArrows <= 0)
+	{
+		Reload();
+	}
 }
 
 void AHereira::StartSprint()
@@ -172,7 +180,6 @@ void AHereira::ServerLoadExplosiveShot_Implementation()
 		return;
 	}
 	ApplyModifier(NewObject<UHereiraExplosiveArrowReady>(this));
-	GetWorldTimerManager().SetTimer(BasicReload, 0.5f, false);
 }
 
 void AHereira::Reload()
@@ -180,11 +187,16 @@ void AHereira::Reload()
 	UHereiraCanFastReload* FastReload = GetModifier<UHereiraCanFastReload>();
 	if (FastReload && FastReload->Use())
 	{
-		GetWorldTimerManager().SetTimer(BasicReload, 1.f, false);
+		GetWorldTimerManager().SetTimer(BasicReload, this, &AHereira::FinishReload, 1.f, false);
 	}
 	else
 	{
-		GetWorldTimerManager().SetTimer(BasicReload, 1.5f, false);
+		GetWorldTimerManager().SetTimer(BasicReload, this, &AHereira::FinishReload, 1.5f, false);
 	}
+}
+
+void AHereira::FinishReload()
+{
+	NumArrows = MaxArrows;
 }
 
