@@ -16,6 +16,9 @@ class OGNAM_API AHereira : public AOgnamCharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	class UAudioComponent* ShotAudio;
+
 public:
 	AHereira();
 

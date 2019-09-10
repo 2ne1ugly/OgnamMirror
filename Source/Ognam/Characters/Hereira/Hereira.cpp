@@ -11,6 +11,8 @@
 #include "HereiraSprint.h"
 #include "HereiraExplosiveArrowReady.h"
 #include "HereiraCanFastReload.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 AHereira::AHereira()
 {
@@ -19,6 +21,12 @@ AHereira::AHereira()
 	{
 		CharacterSpecificHUDClass = HUDFinder.Class;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> ShotSound(TEXT("SoundCue'/Game/UI/CrossbowShot.CrossbowShot'"));
+	ShotAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotAudio"));
+	ShotAudio->SetSound(ShotSound.Object);
+	ShotAudio->SetupAttachment(RootComponent);
+	ShotAudio->SetRelativeLocation(FVector::ZeroVector);
 }
 
 void AHereira::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -50,6 +58,7 @@ void AHereira::FireArrow()
 		return;
 	}
 	ServerFireArrow();
+	ShotAudio->Activate();
 }
 
 void AHereira::ServerFireArrow_Implementation() 
