@@ -15,6 +15,8 @@
 #include "ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 {
@@ -27,6 +29,13 @@ AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 	ParticleSystem->bAutoActivate = true;
 
 	Movement->OnProjectileStop.AddDynamic(this, &AHereiraExplosiveArrow::OnActorHit);
+
+	ConstructorHelpers::FObjectFinder<USoundCue> SparkFizzleCue(TEXT("SoundCue'/Game/Sounds/Arrow/SparkFizzle_Cue.SparkFizzle_Cue'"));
+	AudioSystem = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSystem"));
+	AudioSystem->SetupAttachment(RootComponent);
+	AudioSystem->SetRelativeLocation(FVector::ZeroVector);
+	AudioSystem->SetSound(SparkFizzleCue.Object);
+	AudioSystem->bAutoActivate = true;
 }
 
 void AHereiraExplosiveArrow::EndLifeSpan()

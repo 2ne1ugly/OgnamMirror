@@ -12,6 +12,8 @@
 #include "HereiraExplosiveArrowReady.h"
 #include "HereiraCanFastReload.h"
 #include "UnrealNetwork.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 AHereira::AHereira()
 {
@@ -20,6 +22,13 @@ AHereira::AHereira()
 	{
 		CharacterSpecificHUDClass = HUDFinder.Class;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> ShotSound(TEXT("SoundCue'/Game/Sounds/Crossbow/CrossbowShot.CrossbowShot'"));
+	ShotAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotAudio"));
+	ShotAudio->SetSound(ShotSound.Object);
+	ShotAudio->SetupAttachment(RootComponent);
+	ShotAudio->SetRelativeLocation(FVector::ZeroVector);
+	ShotAudio->bAutoActivate = 0;
 	MaxArrows = 2;
 	NumArrows = MaxArrows;
 }
@@ -47,7 +56,9 @@ void AHereira::Tick(float DeltaTime)
 
 void AHereira::FireArrow()
 {
-	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || GetModifier<UHereiraSprint>())
+	if (NumArrows <= 0  || GetModifier<UHereiraSprint>() ||
+		GetWorldTimerManager().IsTimerActive(BasicDelay) ||
+		GetWorldTimerManager().IsTimerActive(BasicReload))
 	{
 		return;
 	}
@@ -58,6 +69,7 @@ void AHereira::FireArrow()
 	{
 		Reload();
 	}
+	ShotAudio->Activate();
 }
 
 void AHereira::ServerFireArrow_Implementation() 
@@ -94,7 +106,7 @@ void AHereira::ServerFireArrow_Implementation()
 		Arrow = GetWorld()->SpawnActor<AHereiraArrow>(Location, Rotator, SpawnParameters);
 	}
 	Arrow->SetReplicates(true);
-	GetWorldTimerManager().SetTimer(BasicDelay, 0.1f, false);
+	GetWorldTimerManager().SetTimer(BasicDelay, 0.5f, false);
 	if (NumArrows <= 0)
 	{
 		Reload();
