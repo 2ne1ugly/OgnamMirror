@@ -27,8 +27,7 @@ public:
 	*/
 	virtual void BeginPlay() override;
 	virtual void OnPawnDeath();
-	virtual void OnPossess(APawn* Pawn) override;
-	virtual void OnUnPossess() override;
+	virtual void ClientRestart_Implementation(APawn* NewPawn) override;
 
 private:
 
@@ -42,6 +41,6 @@ private:
 	class UUserWidget* OgnamHUD;
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
-	class UUserWidget* CharacterSpecificHUD;
+	class UUserWidget* CharacterHUD;
 
 };

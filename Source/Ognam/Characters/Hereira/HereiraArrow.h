@@ -13,7 +13,14 @@ class OGNAM_API AHereiraArrow : public AActor
 
 protected:
 	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* Arrow;
+	class UBoxComponent* Collision;
+
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* Mesh;
+
+	UPROPERTY(EditAnywhere)
+	class UProjectileMovementComponent* Movement;
+
 public:	
 	AHereiraArrow();
 
@@ -21,17 +28,10 @@ public:
 	**	Binded Functions
 	*/
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	UFUNCTION()
-	virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	/*
-	**	Getters, Setters
-	*/
-	void SetInitialPosition(FVector Value);
-	void SetInitialVelocity(FVector Value);
-	void SetGravity(float Value);
+	UFUNCTION()
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
 	/*
@@ -39,25 +39,9 @@ protected:
 	*/
 	virtual void EndLifeSpan();
 	virtual void OnCharacterHit(class AOgnamCharacter* OtherCharacter, const FHitResult& SweepResult);
-	float CalculateFlownDistance();
-
-	//For non Characters
-	virtual void OnActorHit(class AActor* OtherCharacter, const FHitResult& SweepResult);
 
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere, Replicated)
 	FTimerHandle LifeSpan;
-
-	UPROPERTY(EditAnywhere, Replicated)
-	FVector InitialPosition;
-
-	UPROPERTY(EditAnywhere, Replicated)
-	FVector InitialVelocity;
-
-	UPROPERTY(EditAnywhere, Replicated)
-	float Gravity;
-
-	bool bIsTraveling;
 };

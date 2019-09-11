@@ -36,7 +36,6 @@ AOgnamCharacter::AOgnamCharacter()
 	GetMesh()->SetSkeletalMesh(SkMesh.Object);
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
-
 	//Animations for the mesh, if animation starts to get buggy, check if this code is right.
 	static ConstructorHelpers::FObjectFinder<UClass> AnimBP(
 		TEXT("/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint_C"));
@@ -196,8 +195,15 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
 }
 
-void AOgnamCharacter::ApplyModifier(class UModifier* Modifier)
+void AOgnamCharacter::ApplyModifier(UModifier* Modifier)
 {
+	Modifiers.Push(Modifier);
+	Modifier->GetApplied(this);
+}
+
+void AOgnamCharacter::NetApplyDefaultModifier_Implementation(TSubclassOf<UModifier> ModifierClass)
+{
+	UModifier* Modifier = NewObject<UModifier>(this, ModifierClass);
 	Modifiers.Push(Modifier);
 	Modifier->GetApplied(this);
 }

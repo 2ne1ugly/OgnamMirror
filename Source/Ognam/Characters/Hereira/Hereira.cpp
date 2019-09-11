@@ -11,6 +11,7 @@
 #include "HereiraSprint.h"
 #include "HereiraExplosiveArrowReady.h"
 #include "HereiraCanFastReload.h"
+#include "UnrealNetwork.h"
 
 AHereira::AHereira()
 {
@@ -34,36 +35,39 @@ void AHereira::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AHereira::Reload);
 }
 
+void AHereira::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
 void AHereira::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//Run sprint cd when finished
-	if (CurrentSprint && !CurrentSprint->IsActive())
-	{
-		CurrentSprint = nullptr;
-		GetWorldTimerManager().SetTimer(SprintCooldown, 6.f, false);
-	}
 }
 
 void AHereira::FireArrow()
 {
-	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || CurrentSprint != nullptr)
+	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || GetModifier<UHereiraSprint>())
 	{
 		return;
 	}
+	NumArrows--;
+	GetWorldTimerManager().SetTimer(BasicDelay, 0.1f, false);
 	ServerFireArrow();
+	if (NumArrows == 0)
+	{
+		Reload();
+	}
 }
 
 void AHereira::ServerFireArrow_Implementation() 
 {
-	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || CurrentSprint != nullptr)
+	if (NumArrows <= 0 || GetWorldTimerManager().IsTimerActive(BasicDelay) || GetModifier<UHereiraSprint>())
 	{
-		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
 	NumArrows--;
-	float Gravity = 1000.f;
+
 	float UpRatio = 0.1f;
 	FVector Direction = Camera->GetForwardVector()* (1 - UpRatio) + FVector::UpVector * UpRatio;
 	Direction.GetSafeNormal();
@@ -74,23 +78,22 @@ void AHereira::ServerFireArrow_Implementation()
 	SpawnParameters.bNoFail = true;
 	SpawnParameters.Instigator = this;
 
-	AHereiraArrow* Arrow;
+
 	UHereiraExplosiveArrowReady* ExplosiveReady = GetModifier<UHereiraExplosiveArrowReady>();
 	FVector Location = GetActorLocation() + FVector(0.f, 0.f, 60.f);
-	//See if modifier exists and can cosnume.
-	if (ExplosiveReady != nullptr && ExplosiveReady->Use())
+
+	AHereiraArrow* Arrow;
+	if (ExplosiveReady && ExplosiveReady->Use())
 	{
 		Arrow = GetWorld()->SpawnActor<AHereiraExplosiveArrow>(Location, Rotator, SpawnParameters);
 		GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 5.f, false);
+		ClientFiredExplosiveShot();
 	}
 	else
 	{
 		Arrow = GetWorld()->SpawnActor<AHereiraArrow>(Location, Rotator, SpawnParameters);
 	}
 	Arrow->SetReplicates(true);
-	Arrow->SetInitialPosition(Arrow->GetActorLocation());
-	Arrow->SetInitialVelocity(Direction * 4000);
-	Arrow->SetGravity(Gravity);
 	GetWorldTimerManager().SetTimer(BasicDelay, 0.1f, false);
 	if (NumArrows <= 0)
 	{
@@ -100,7 +103,7 @@ void AHereira::ServerFireArrow_Implementation()
 
 void AHereira::StartSprint()
 {
-	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) || CurrentSprint != nullptr)
+	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) || GetModifier<UHereiraSprint>())
 	{
 		return;
 	}
@@ -110,23 +113,17 @@ void AHereira::StartSprint()
 void AHereira::ServerStartSprint_Implementation()
 {
 	//Check Cooldown or In use
-	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) || CurrentSprint != nullptr)
+	if (GetWorldTimerManager().IsTimerActive(SprintCooldown) || GetModifier<UHereiraSprint>())
 	{
 		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
-	ApplySprint();
-}
-
-void AHereira::ApplySprint_Implementation()
-{
-	CurrentSprint = NewObject<UHereiraSprint>(this);
-	ApplyModifier(CurrentSprint);
+	NetApplyDefaultModifier(UHereiraSprint::StaticClass());
 }
 
 void AHereira::StopSprint()
 {
-	if (CurrentSprint == nullptr)
+	if (!GetModifier<UHereiraSprint>())
 	{
 		return;
 	}
@@ -135,21 +132,23 @@ void AHereira::StopSprint()
 
 void AHereira::ServerStopSprint_Implementation()
 {
-	if (CurrentSprint == nullptr)
+	if (!GetModifier<UHereiraSprint>())
 	{
 		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
-	InterruptSprint();
+	EndSprint();
 }
 
-void AHereira::InterruptSprint_Implementation()
+void AHereira::EndSprint_Implementation()
 {
-	if (CurrentSprint == nullptr)
+	GetWorldTimerManager().SetTimer(SprintCooldown, 6.f, false);
+	UHereiraSprint* HereiraSprint = GetModifier<UHereiraSprint>();
+	if (!HereiraSprint)
 	{
 		return;
 	}
-	CurrentSprint->Interrupt();
+	HereiraSprint->Interrupt();
 }
 
 void AHereira::LoadExplosiveShot()
@@ -170,7 +169,17 @@ void AHereira::ServerLoadExplosiveShot_Implementation()
 		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
-	ApplyModifier(NewObject<UHereiraExplosiveArrowReady>(this));
+	NetApplyDefaultModifier(UHereiraExplosiveArrowReady::StaticClass());
+}
+
+void AHereira::ClientFiredExplosiveShot_Implementation()
+{
+	UHereiraExplosiveArrowReady* Arrow = GetModifier<UHereiraExplosiveArrowReady>();
+	if (Arrow)
+	{
+		Arrow->Use();
+	}
+	GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 5.f, false);
 }
 
 void AHereira::Reload()

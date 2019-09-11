@@ -20,7 +20,7 @@ public:
 	*/
 	virtual void BeginModifier() override;
 	virtual void EndModifier() override;
-
+	
 	/*
 	**	Getters, Setters
 	*/
@@ -30,6 +30,5 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere)
 	APawn* Instigator;
 };

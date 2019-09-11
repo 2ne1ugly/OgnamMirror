@@ -64,6 +64,10 @@ public:
 	void GetAimHitResult(FHitResult& HitResult, float near, float far);
 	void ApplyModifier(class UModifier* Modifier);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void NetApplyDefaultModifier(TSubclassOf<UModifier> ModifierClass);
+	void NetApplyDefaultModifier_Implementation(TSubclassOf<UModifier> ModifierClass);
+
 	template<typename T>
 	T* GetModifier()
 	{
@@ -115,6 +119,7 @@ protected:
 	virtual void ServerJump_Implementation();
 
 	float GetDamageAfterDefense(float Damage);
+	void OnRep_Modifiers();
 
 	/*
 	**	Props

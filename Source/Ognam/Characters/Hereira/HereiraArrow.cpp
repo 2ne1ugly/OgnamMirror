@@ -5,129 +5,72 @@
 #include "ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 #include "UnrealNetwork.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Ognam/OgnamPlayerstate.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "HereiraCanFastReload.h"
 
 // Sets default values
 AHereiraArrow::AHereiraArrow()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
+	Collision->SetBoxExtent(FVector(40.f, 5.f, 5.f));
+	Collision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Collision->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+	Collision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECR_Block);
+	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
+	Collision->OnComponentBeginOverlap.AddDynamic(this, &AHereiraArrow::OnBeginOverlap);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowObj(TEXT("StaticMesh'/Game/Meshes/StaticArrow.StaticArrow'"));
-	Arrow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Arrow"));
-	Arrow->SetupAttachment(RootComponent);
-	Arrow->SetStaticMesh(ArrowObj.Object);
-	
-	Arrow->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Overlap);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Overlap);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Vehicle, ECollisionResponse::ECR_Block);
-	Arrow->SetCollisionResponseToChannel(ECollisionChannel::ECC_Destructible, ECollisionResponse::ECR_Block);
-	Arrow->OnComponentBeginOverlap.AddDynamic(this, &AHereiraArrow::BeginOverlap);
-	Arrow->SetRelativeScale3D(FVector(0.66, 0.66, .66f));
-	//Arrow->SetWorldLocationAndRotation(FVector(0.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->AttachTo(Collision);
+	Mesh->SetStaticMesh(ArrowObj.Object);
+	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
+	Mesh->SetRelativeScale3D(FVector(0.66, 0.66, .66f));
+	Mesh->SetRelativeLocationAndRotation(FVector(-20.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
 
-	Gravity = 100;
-	RootComponent = Arrow;
-	bIsTraveling = true;
+	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
+	Movement->bInterpMovement = true;
+	Movement->bRotationFollowsVelocity = true;
+	Movement->bSweepCollision = true;
+	Movement->bShouldBounce = false;
+	Movement->InitialSpeed = 4000.f;
+	Movement->ProjectileGravityScale = 1.5f;
+
+	RootComponent = Collision;
 }
 
 // Called when the game starts or when spawned
 void AHereiraArrow::BeginPlay()
 {
 	Super::BeginPlay();
+	Collision->MoveIgnoreActors.Add(Instigator);
 	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraArrow::EndLifeSpan, 3., false);
 }
 
-// Called every frame
-void AHereiraArrow::Tick(float DeltaTime)
+void AHereiraArrow::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::Tick(DeltaTime);
-
-	if (!bIsTraveling)
-	{
-		return;
-	}
-	
-	float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
-	FVector Acceleration = Gravity * FVector::DownVector;
-	FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
-	FVector Position = InitialPosition + ElapsedTime * InitialVelocity + ElapsedTime * ElapsedTime * Acceleration * 1 / 2;
-
-	FRotator Rotator = FRotationMatrix::MakeFromX(Velocity).Rotator();
-	Rotator.Pitch -= 90.f;
-	SetActorRotation(Rotator);
-
-	FHitResult HitResult;
-	SetActorLocation(Position, true, &HitResult);
-	if (HitResult.bBlockingHit)
-	{
-		bIsTraveling = false;
-		OnActorHit(HitResult.GetActor(), HitResult);
-		UE_LOG(LogTemp, Warning, TEXT("Blocking!"));
-	}
-}
-
-void AHereiraArrow::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AHereiraArrow, LifeSpan);
-	DOREPLIFETIME(AHereiraArrow, InitialPosition);
-	DOREPLIFETIME(AHereiraArrow, InitialVelocity);
-	DOREPLIFETIME(AHereiraArrow, Gravity);
-}
-
-void AHereiraArrow::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (Instigator == nullptr)
+	if (!Instigator)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
 		return;
 	}
-
-	if (OtherActor == Instigator)
+	if (!bFromSweep)
 	{
 		return;
 	}
 
 	AOgnamCharacter* Character = Cast<AOgnamCharacter>(OtherActor);
-	if (Character == nullptr)
+	if (Character)
 	{
-		return;
+		OnCharacterHit(Character, SweepResult);
 	}
-	OnCharacterHit(Character, SweepResult);
-}
-
-void AHereiraArrow::SetInitialPosition(FVector Value)
-{
-	InitialPosition = Value;
-}
-
-void AHereiraArrow::SetInitialVelocity(FVector Value)
-{
-	InitialVelocity = Value;
-}
-
-void AHereiraArrow::SetGravity(float Value)
-{
-	Gravity = Value;
 }
 
 void AHereiraArrow::EndLifeSpan()
@@ -137,61 +80,18 @@ void AHereiraArrow::EndLifeSpan()
 
 void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitResult& SweepResult)
 {
-	if (Instigator == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
-		return;
-	}
-	if (!bIsTraveling)
+	if (!HasAuthority() || OtherCharacter == Instigator)
 	{
 		return;
 	}
-
 	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
 	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
 	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
 	{
 		AController* Controller = Instigator->GetController();
-		float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
-		FVector Acceleration = Gravity * FVector::DownVector;
-		FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
-
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
-
-		//Apply Fast reload if close range
-		FVector Disposition = InitialVelocity * ElapsedTime + Acceleration * .5f * ElapsedTime * ElapsedTime;
-		if (Disposition.Size() < 700.f)
-		{
-			AOgnamCharacter* Character = Cast<AOgnamCharacter>(Instigator);
-			if (Character != nullptr)
-			{
-				if (Character->GetModifier<UHereiraCanFastReload>() == nullptr)
-				{
-					Character->ApplyModifier(NewObject<UHereiraCanFastReload>(this));
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("%s Not Ognam Character"), __FUNCTIONW__);
-			}
-		}
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
 	}
 	Destroy();
-
 }
 
-void AHereiraArrow::OnActorHit(AActor* OtherActor, const FHitResult& SweepResult)
-{
-	if (Instigator == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
-		return;
-	}
-	//AController* Controller = Instigator->GetController();
-	//float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
-	//FVector Acceleration = Gravity * FVector::DownVector;
-	//FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
-
-	//UGameplayStatics::ApplyPointDamage(OtherActor, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
-}
 

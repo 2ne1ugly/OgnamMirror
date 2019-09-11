@@ -38,35 +38,30 @@ void AOgnamPlayerController::OnPawnDeath()
 {
 }
 
-void AOgnamPlayerController::OnPossess(APawn* Pawn)
+void AOgnamPlayerController::ClientRestart_Implementation(APawn* aPawn)
 {
-	Super::OnPossess(Pawn);
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(Pawn);
+	Super::ClientRestart_Implementation(aPawn);
 
-	if (Character == nullptr)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(aPawn);
+
+	if (OgnamCharacter == nullptr)
 	{
 		return;
 	}
-
-	if (Character->CharacterSpecificHUDClass && IsLocalPlayerController())
+	if (CharacterHUD && CharacterHUD->IsInViewport())
 	{
-		CharacterSpecificHUD = CreateWidget<UUserWidget>(this, Character->CharacterSpecificHUDClass);
-		if (CharacterSpecificHUD)
+		CharacterHUD->RemoveFromViewport();
+		CharacterHUD = nullptr;
+	}
+	if (OgnamCharacter->CharacterSpecificHUDClass)
+	{
+		CharacterHUD = CreateWidget<UUserWidget>(this, OgnamCharacter->CharacterSpecificHUDClass);
+		if (CharacterHUD)
 		{
-			CharacterSpecificHUD->AddToViewport();
+			CharacterHUD->AddToViewport();
 		}
 	}
-}
 
-void AOgnamPlayerController::OnUnPossess()
-{
-	Super::OnUnPossess();
-
-	if (CharacterSpecificHUD && IsLocalPlayerController() && CharacterSpecificHUD->IsInViewport())
-	{
-		CharacterSpecificHUD->RemoveFromViewport();
-		CharacterSpecificHUD = nullptr;
-	}
 }
 
 
