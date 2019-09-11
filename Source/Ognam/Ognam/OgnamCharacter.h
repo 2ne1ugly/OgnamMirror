@@ -62,11 +62,6 @@ public:
 	virtual void Die_Implementation();
 
 	void GetAimHitResult(FHitResult& HitResult, float near, float far);
-	void ApplyModifier(class UModifier* Modifier);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetApplyDefaultModifier(TSubclassOf<UModifier> ModifierClass);
-	void NetApplyDefaultModifier_Implementation(TSubclassOf<UModifier> ModifierClass);
 
 	template<typename T>
 	T* GetModifier()
@@ -109,6 +104,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<UModifier*> Modifiers;
+
 protected:
 	/*
 	**	Internal functions
@@ -119,7 +117,6 @@ protected:
 	virtual void ServerJump_Implementation();
 
 	float GetDamageAfterDefense(float Damage);
-	void OnRep_Modifiers();
 
 	/*
 	**	Props
@@ -129,9 +126,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bIsAlive;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<UModifier*> Modifiers;
 
 	FVector InputVector;
 	float	InputSpeed;

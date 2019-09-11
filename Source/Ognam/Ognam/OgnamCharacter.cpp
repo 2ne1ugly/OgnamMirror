@@ -98,8 +98,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	{
 		if (Modifiers[i]->ShouldEnd())
 		{
-			Modifiers[i]->GetDetached();
-			Modifiers.RemoveAt(i, 1, false);
+			Modifiers[i]->DestroyComponent();
 		}
 		else
 		{
@@ -193,19 +192,6 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	FVector RayTo = RayFrom + Camera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
-}
-
-void AOgnamCharacter::ApplyModifier(UModifier* Modifier)
-{
-	Modifiers.Push(Modifier);
-	Modifier->GetApplied(this);
-}
-
-void AOgnamCharacter::NetApplyDefaultModifier_Implementation(TSubclassOf<UModifier> ModifierClass)
-{
-	UModifier* Modifier = NewObject<UModifier>(this, ModifierClass);
-	Modifiers.Push(Modifier);
-	Modifier->GetApplied(this);
 }
 
 void AOgnamCharacter::ServerJump_Implementation()

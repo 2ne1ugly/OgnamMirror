@@ -28,7 +28,7 @@ AHereiraArrow::AHereiraArrow()
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowObj(TEXT("StaticMesh'/Game/Meshes/StaticArrow.StaticArrow'"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->AttachTo(Collision);
+	Mesh->SetupAttachment(Collision);
 	Mesh->SetStaticMesh(ArrowObj.Object);
 	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
 	Mesh->SetRelativeScale3D(FVector(0.66, 0.66, .66f));

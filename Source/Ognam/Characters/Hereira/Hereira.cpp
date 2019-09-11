@@ -44,16 +44,6 @@ void AHereira::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AHereira::Reload);
 }
 
-void AHereira::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-}
-
-void AHereira::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void AHereira::FireArrow()
 {
 	if (NumArrows <= 0  || GetModifier<UHereiraSprint>() ||
@@ -62,13 +52,16 @@ void AHereira::FireArrow()
 	{
 		return;
 	}
-	NumArrows--;
-	GetWorldTimerManager().SetTimer(BasicDelay, 0.1f, false);
-	ServerFireArrow();
-	if (NumArrows == 0)
+	if (!HasAuthority())
 	{
-		Reload();
+		NumArrows--;
+		GetWorldTimerManager().SetTimer(BasicDelay, 0.1f, false);
+		if (NumArrows == 0)
+		{
+			Reload();
+		}
 	}
+	ServerFireArrow();
 	ShotAudio->Activate();
 }
 
@@ -78,18 +71,16 @@ void AHereira::ServerFireArrow_Implementation()
 	{
 		return;
 	}
-	NumArrows--;
 
+	NumArrows--;
 	float UpRatio = 0.1f;
 	FVector Direction = Camera->GetForwardVector()* (1 - UpRatio) + FVector::UpVector * UpRatio;
-	Direction.GetSafeNormal();
 	FRotator Rotator = FRotationMatrix::MakeFromX(Direction).Rotator();
 
 	//Set Spawner
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.bNoFail = true;
 	SpawnParameters.Instigator = this;
-
 
 	UHereiraExplosiveArrowReady* ExplosiveReady = GetModifier<UHereiraExplosiveArrowReady>();
 	FVector Location = GetActorLocation() + FVector(0.f, 0.f, 60.f);
@@ -130,7 +121,7 @@ void AHereira::ServerStartSprint_Implementation()
 		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
-	NetApplyDefaultModifier(UHereiraSprint::StaticClass());
+	NewObject<UHereiraSprint>(this)->RegisterComponent();
 }
 
 void AHereira::StopSprint()
@@ -181,7 +172,7 @@ void AHereira::ServerLoadExplosiveShot_Implementation()
 		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
-	NetApplyDefaultModifier(UHereiraExplosiveArrowReady::StaticClass());
+	NewObject<UHereiraExplosiveArrowReady>(this)->RegisterComponent();
 }
 
 void AHereira::ClientFiredExplosiveShot_Implementation()
@@ -207,7 +198,7 @@ void AHereira::Reload()
 	}
 }
 
-void AHereira::FinishReload()
+void AHereira::FinishReload_Implementation()
 {
 	NumArrows = MaxArrows;
 }

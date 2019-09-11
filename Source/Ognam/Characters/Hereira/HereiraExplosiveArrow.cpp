@@ -63,7 +63,9 @@ void AHereiraExplosiveArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, con
 	{
 		AController* Controller = Instigator->GetController();
 		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
-		ApplyWillExplode(OtherCharacter);
+		UHereiraWillExplode* Explosion = NewObject<UHereiraWillExplode>(OtherCharacter);
+		Explosion->SetInstigator(Instigator);
+		Explosion->RegisterComponent();
 	}
 	Destroy();
 }
@@ -71,16 +73,4 @@ void AHereiraExplosiveArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, con
 void AHereiraExplosiveArrow::OnActorHit(const FHitResult& ImpactResult)
 {
 	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraExplosiveArrow::EndLifeSpan, .5f, false);
-}
-
-void AHereiraExplosiveArrow::ApplyWillExplode_Implementation(AOgnamCharacter* OtherCharacter)
-{
-	if (!OtherCharacter)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Cannot apply will explode cuz it's nullptr"));
-		return;
-	}
-	UHereiraWillExplode* Explosion = NewObject<UHereiraWillExplode>(this);
-	Explosion->SetInstigator(Instigator);
-	OtherCharacter->ApplyModifier(Explosion);
 }

@@ -26,8 +26,6 @@ public:
 	**	Binded Function
 	*/
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void Tick(float DeltaTime) override;
 
 	/*
 	**	Exported Function
@@ -76,7 +74,10 @@ protected:
 	void ClientFiredExplosiveShot_Implementation();
 
 	void Reload();
+
+	UFUNCTION(Client, Unreliable)
 	void FinishReload();
+	void FinishReload_Implemenatation();
 
 	//UFUNCTION(Server, WithValidation, Unrealiable)
 	//void ServerReload();
@@ -103,4 +104,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle ExplosiveShotCooldown;
+
+	bool bReloading;
 };

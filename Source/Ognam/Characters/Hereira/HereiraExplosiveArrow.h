@@ -30,13 +30,6 @@ protected:
 	UFUNCTION()
 	void OnActorHit(const FHitResult& ImpactResult);
 
-	/*
-	**	Internal Functions
-	*/
-	UFUNCTION(NetMulticast, Unreliable)
-	void ApplyWillExplode(class AOgnamCharacter* OtherCharacter);
-	void ApplyWillExplode_Implementation(class AOgnamCharacter* OtherCharacter);
-
 public:
 	AHereiraExplosiveArrow();
 };

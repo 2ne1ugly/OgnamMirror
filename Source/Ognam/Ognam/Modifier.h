@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
+#include "Components/ActorComponent.h"
 #include "Modifier.generated.h"
 
 /**
@@ -13,28 +13,24 @@
  *	Access Target to get information to attached character.
  */
 UCLASS()
-class OGNAM_API UModifier : public UObject
+class OGNAM_API UModifier : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
+	UModifier();
+
 	/*
 	**	Exported Functions
 	*/
-	void GetApplied(class AOgnamCharacter* Character);
-	void GetDetached();
-	bool IsActive() const;
 	virtual bool ShouldEnd();
 	virtual void TickModifier(float DeltaTime);
-
+	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+	//virtual void Deactivate() override;
 protected:
-	/*
-	**	Inherited Functions
-	*/
-	//Executed when begining of modifier. Usually applied for Visual Effects with this.
 	virtual void BeginModifier();
 	virtual void EndModifier();
-
 	/*
 	**	Props
 	*/
@@ -42,8 +38,6 @@ protected:
 	//Sprite propery to show through modifier list.
 
 	UPROPERTY(VisibleAnywhere)
-	bool bActive;
+	class AOgnamCharacter* Target;
 
-	UPROPERTY(VisibleAnywhere)
-	class AOgnamCharacter* Target;	
 };
