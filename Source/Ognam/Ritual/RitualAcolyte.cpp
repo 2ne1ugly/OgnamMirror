@@ -53,7 +53,7 @@ float ARitualAcolyte::GetInteractDistance() const
 
 void ARitualAcolyte::BeInteracted_Implementation(APlayerController* PlayerController)
 {
-	ParentShrine->RemoveAcolyte(this);
+	//ParentShrine->RemoveAcolyte(this);
 	Destroy();
 
 	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();

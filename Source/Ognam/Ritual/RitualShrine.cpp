@@ -5,6 +5,9 @@
 #include "ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/BoxComponent.h"
+#include "RitualPlayerState.h"
+#include "Ognam/OgnamCharacter.h"
 #include "RitualAcolyte.h"
 
 // Sets default values
@@ -21,11 +24,15 @@ ARitualShrine::ARitualShrine()
 	StaticMesh->SetWorldScale3D(FVector(1, 1, 5));
 	StaticMesh->SetupAttachment(RootComponent);
 
-	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
-	Arrow->SetupAttachment(StaticMesh);
-	Arrow->SetRelativeLocation(FVector::ZeroVector);
-
 	RootComponent = StaticMesh;
+
+	CaptureField = CreateDefaultSubobject<UBoxComponent>(TEXT("Capture Point"));
+	CaptureField->SetupAttachment(RootComponent);
+	CaptureField->SetRelativeLocation(FVector::ZeroVector);
+	CaptureField->SetCollisionProfileName(TEXT("Trigger"));
+	CaptureField->bHiddenInGame = false;
+	CaptureField->OnComponentBeginOverlap.AddDynamic(this, &ARitualShrine::OnEnterField);
+	CaptureField->OnComponentEndOverlap.AddDynamic(this, &ARitualShrine::OnExitField);
 
 	bReplicates = true;
 }
@@ -36,47 +43,37 @@ void ARitualShrine::BeginPlay()
 }
 
 
-
-// Called every frame
 void ARitualShrine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//if (Acolytes.Num() == 0)
-	//{
-	//	Destroy();
-	//}
+	UE_LOG(LogTemp, Warning, TEXT("Atk: %d, Def %d"), Attackers, Defenders);
 }
 
-void ARitualShrine::SpawnAcolytes(int32 Count)
+void ARitualShrine::OnEnterField(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(OtherActor);
 
-	//Remove all acolytes
-	for (ARitualAcolyte* Acolyte: Acolytes)
-	{
-		Acolyte->Destroy();
-	}
-	Acolytes.Empty(Count);
+	if (!Character)
+		return;
 
-	//Spawn Acolytes around shrine.
-	const float Distance = 200.f;
-	float Angle = 0.f;
-	for (int i = 0; i < Count; i++)
-	{
-		//find spawn position
-		FVector Location(cos(Angle) * Distance, sin(Angle) * Distance, -25);
-
-
-		Location = GetTransform().TransformPosition(Location);
-		ARitualAcolyte* Acolyte = GetWorld()->SpawnActor<ARitualAcolyte>(Location, FRotator::ZeroRotator);
-		Acolyte->AddActorLocalOffset(FVector(0, 0, -100), true);
-		Acolyte->SetParentShrine(this);
-		Acolytes.Push(Acolyte);
-		Angle += (1.f / Count) * 2 * PI ;
-	}
+	ARitualPlayerState* PlayerState = Character->GetPlayerState<ARitualPlayerState>();
+	if (PlayerState->GetSide() == TEXT("Offense"))
+		Attackers++;
+	if (PlayerState->GetSide() == TEXT("Defense"))
+		Defenders++;
 }
 
-void ARitualShrine::RemoveAcolyte(ARitualAcolyte* Acolyte)
+void ARitualShrine::OnExitField(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	Acolytes.Remove(Acolyte);
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(OtherActor);
+
+	if (!Character)
+		return;
+
+	ARitualPlayerState* PlayerState = Character->GetPlayerState<ARitualPlayerState>();
+	if (PlayerState->GetSide() == TEXT("Offense"))
+		Attackers--;
+	if (PlayerState->GetSide() == TEXT("Defense"))
+		Defenders--;
 }
+

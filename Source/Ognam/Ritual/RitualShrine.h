@@ -18,7 +18,10 @@ class OGNAM_API ARitualShrine : public AActor
 	class UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(EditAnywhere)
-	class UArrowComponent* Arrow;
+	class UBoxComponent* CaptureField;
+
+	int32 Defenders;
+	int32 Attackers;
 
 public:	
 	ARitualShrine();
@@ -29,18 +32,10 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	void OnEnterField(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void OnExitField(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	/*
-	**	Exported Function
-	*/
-	void SpawnAcolytes(int32 Count);
-	//void SpawnAcolytes_Implementation(int32 Count);
-
-	virtual void RemoveAcolyte(class ARitualAcolyte* Acolyte);
-
-	/*
-	**	Exported Props
-	*/
-	UPROPERTY()
-		TArray<class ARitualAcolyte*> Acolytes;
 };
