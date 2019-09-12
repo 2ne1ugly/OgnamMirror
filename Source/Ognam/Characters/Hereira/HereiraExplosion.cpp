@@ -109,6 +109,7 @@ void AHereiraExplosion::EndLifeSpan()
 
 void AHereiraExplosion::EndTriggerLifeSpan()
 {
-	Range->DestroyComponent();
+	Range->Deactivate();
+	Range->SetVisibility(false);
 }
 

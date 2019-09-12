@@ -62,7 +62,6 @@ public:
 	virtual void Die_Implementation();
 
 	void GetAimHitResult(FHitResult& HitResult, float near, float far);
-	void ApplyModifier(class UModifier* Modifier);
 
 	template<typename T>
 	T* GetModifier()
@@ -105,6 +104,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<UModifier*> Modifiers;
+
 protected:
 	/*
 	**	Internal functions
@@ -124,9 +126,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bIsAlive;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<UModifier*> Modifiers;
 
 	FVector InputVector;
 	float	InputSpeed;

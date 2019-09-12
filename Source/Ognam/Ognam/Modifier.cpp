@@ -4,23 +4,9 @@
 #include "Modifier.h"
 #include "OgnamCharacter.h"
 
-void UModifier::GetApplied(AOgnamCharacter* Character)
+UModifier::UModifier()
 {
-	Target = Character;
-	bActive = true;
-	BeginModifier();
-}
-
-void UModifier::GetDetached()
-{
-	EndModifier();
-	Target = nullptr;
-	bActive = false;
-}
-
-bool UModifier::IsActive() const
-{
-	return bActive;
+	SetIsReplicated(true);
 }
 
 bool UModifier::ShouldEnd()
@@ -30,6 +16,32 @@ bool UModifier::ShouldEnd()
 
 void UModifier::TickModifier(float DeltaTime)
 {
+}
+
+void UModifier::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Target = Cast<AOgnamCharacter>(GetOwner());
+	if (!Target)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Modifier applied to non-ognam character"));
+		return;
+	}
+	BeginModifier();
+	Target->Modifiers.Add(this);
+}
+
+void UModifier::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	if (!Target)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Modifier applied to non-ognam character"));
+		return;
+	}
+	EndModifier();
+	Target->Modifiers.Remove(this);
 }
 
 void UModifier::BeginModifier()

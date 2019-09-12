@@ -26,11 +26,14 @@ public:
 	**	Binded Function
 	*/
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void Tick(float DeltaTime) override;
 
 	/*
 	**	Exported Function
 	*/
+	UFUNCTION(NetMulticast, Unreliable)
+	void EndSprint();
+	void EndSprint_Implementation();
+
 protected:
 	/*
 	**	Abilities
@@ -51,21 +54,12 @@ protected:
 	bool ServerStartSprint_Validate() { return true; };
 	void ServerStartSprint_Implementation();
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void ApplySprint();
-	void ApplySprint_Implementation();
-	
-
 	void StopSprint();
 
 	UFUNCTION(Server, WithValidation, Unreliable)
 	void ServerStopSprint();
 	bool ServerStopSprint_Validate() { return true; };
 	void ServerStopSprint_Implementation();
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void InterruptSprint();
-	void InterruptSprint_Implementation();
 
 	//Unique
 	void LoadExplosiveShot();
@@ -75,9 +69,15 @@ protected:
 	bool ServerLoadExplosiveShot_Validate() { return true; };
 	void ServerLoadExplosiveShot_Implementation();
 
-	//Reload (Not Binded anywhere tho)
+	UFUNCTION(Client, Unreliable)
+	void ClientFiredExplosiveShot();
+	void ClientFiredExplosiveShot_Implementation();
+
 	void Reload();
+
+	UFUNCTION(Client, Unreliable)
 	void FinishReload();
+	void FinishReload_Implemenatation();
 
 	//UFUNCTION(Server, WithValidation, Unrealiable)
 	//void ServerReload();
@@ -105,6 +105,5 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle ExplosiveShotCooldown;
 
-	UPROPERTY(VisibleAnywhere, Category = Ability)
-	class UHereiraSprint* CurrentSprint;
+	bool bReloading;
 };

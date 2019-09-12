@@ -36,7 +36,6 @@ AOgnamCharacter::AOgnamCharacter()
 	GetMesh()->SetSkeletalMesh(SkMesh.Object);
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
-
 	//Animations for the mesh, if animation starts to get buggy, check if this code is right.
 	static ConstructorHelpers::FObjectFinder<UClass> AnimBP(
 		TEXT("/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint_C"));
@@ -99,8 +98,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	{
 		if (Modifiers[i]->ShouldEnd())
 		{
-			Modifiers[i]->GetDetached();
-			Modifiers.RemoveAt(i, 1, false);
+			Modifiers[i]->DestroyComponent();
 		}
 		else
 		{
@@ -194,12 +192,6 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	FVector RayTo = RayFrom + Camera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
-}
-
-void AOgnamCharacter::ApplyModifier(class UModifier* Modifier)
-{
-	Modifiers.Push(Modifier);
-	Modifier->GetApplied(this);
 }
 
 void AOgnamCharacter::ServerJump_Implementation()

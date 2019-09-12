@@ -4,6 +4,7 @@
 #include "HereiraSprint.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Engine/World.h"
+#include "Hereira.h"
 
 bool UHereiraSprint::ShouldEnd()
 {
@@ -27,4 +28,10 @@ void UHereiraSprint::BeginModifier()
 
 void UHereiraSprint::EndModifier()
 {
+	if (bInterrupted)
+	{
+		return;
+	}
+	AHereira* Hereira = Cast<AHereira>(Target);
+	Hereira->EndSprint();
 }

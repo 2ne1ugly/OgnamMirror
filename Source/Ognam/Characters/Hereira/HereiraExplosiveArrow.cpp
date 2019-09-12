@@ -14,6 +14,7 @@
 #include "ParticleDefinitions.h"
 #include "ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
 
@@ -27,8 +28,9 @@ AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 	ParticleSystem->SetTemplate(Emitter.Object);
 	ParticleSystem->bAutoActivate = true;
 
-	ConstructorHelpers::FObjectFinder<USoundCue> SparkFizzleCue(TEXT("SoundCue'/Game/Sounds/Arrow/SparkFizzle_Cue.SparkFizzle_Cue'"));
+	Movement->OnProjectileStop.AddDynamic(this, &AHereiraExplosiveArrow::OnActorHit);
 
+	ConstructorHelpers::FObjectFinder<USoundCue> SparkFizzleCue(TEXT("SoundCue'/Game/Sounds/Arrow/SparkFizzle_Cue.SparkFizzle_Cue'"));
 	AudioSystem = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSystem"));
 	AudioSystem->SetupAttachment(RootComponent);
 	AudioSystem->SetRelativeLocation(FVector::ZeroVector);
@@ -38,6 +40,10 @@ AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 
 void AHereiraExplosiveArrow::EndLifeSpan()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Instigator = Instigator;
 	AHereiraExplosion* Explosion = GetWorld()->SpawnActor<AHereiraExplosion>(GetActorLocation(), FRotator::ZeroRotator, SpawnParameters);
@@ -47,65 +53,24 @@ void AHereiraExplosiveArrow::EndLifeSpan()
 
 void AHereiraExplosiveArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitResult& SweepResult)
 {
-	if (Instigator == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
-		return;
-	}
-	if (!bIsTraveling)
+	if (!HasAuthority() || OtherCharacter == Instigator)
 	{
 		return;
 	}
-
-
 	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
 	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
 	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
 	{
 		AController* Controller = Instigator->GetController();
-		float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
-		FVector Acceleration = Gravity * FVector::DownVector;
-		FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
-
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
-		UHereiraWillExplode* Explosion = NewObject<UHereiraWillExplode>(this);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
+		UHereiraWillExplode* Explosion = NewObject<UHereiraWillExplode>(OtherCharacter);
 		Explosion->SetInstigator(Instigator);
-		OtherCharacter->ApplyModifier(Explosion);
-
-		//Apply Fast reload if close range
-		FVector Disposition = InitialVelocity * ElapsedTime + Acceleration * .5f * ElapsedTime * ElapsedTime;
-		if (Disposition.Size() < 700.f)
-		{
-			AOgnamCharacter* Character = Cast<AOgnamCharacter>(Instigator);
-			if (Character != nullptr)
-			{
-				if (Character->GetModifier<UHereiraCanFastReload>() == nullptr)
-				{
-					Character->ApplyModifier(NewObject<UHereiraCanFastReload>(this));
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("%s Not Ognam Character"), __FUNCTIONW__);
-			}
-		}
+		Explosion->RegisterComponent();
 	}
 	Destroy();
 }
 
-void AHereiraExplosiveArrow::OnActorHit(AActor* OtherCharacter, const FHitResult& SweepResult)
+void AHereiraExplosiveArrow::OnActorHit(const FHitResult& ImpactResult)
 {
-	if (Instigator == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
-		return;
-	}
-
-	AController* Controller = Instigator->GetController();
-	float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(LifeSpan);
-	FVector Acceleration = Gravity * FVector::DownVector;
-	FVector Velocity = InitialVelocity + ElapsedTime * Acceleration;
-
-	UGameplayStatics::ApplyPointDamage(OtherCharacter, 45, Velocity.GetSafeNormal(), SweepResult, Controller, this, nullptr);
 	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraExplosiveArrow::EndLifeSpan, .5f, false);
 }

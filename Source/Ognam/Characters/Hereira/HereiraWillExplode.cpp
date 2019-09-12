@@ -6,6 +6,8 @@
 #include "TimerManager.h"
 #include "HereiraExplosion.h"
 #include "Ognam/OgnamCharacter.h"
+#include "GameFramework/GameStateBase.h"
+#include "UnrealNetwork.h"
 
 void UHereiraWillExplode::BeginModifier()
 {
@@ -14,11 +16,16 @@ void UHereiraWillExplode::BeginModifier()
 
 void UHereiraWillExplode::EndModifier()
 {
+	if (!GetWorld()->GetGameState()->HasAuthority())
+	{
+		return;
+	}
 	if (Instigator == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
 		return;
 	}
+
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Instigator = Instigator;
 	AHereiraExplosion* Explosion = GetWorld()->SpawnActor<AHereiraExplosion>(Target->GetActorLocation(), FRotator::ZeroRotator, SpawnParameters);
