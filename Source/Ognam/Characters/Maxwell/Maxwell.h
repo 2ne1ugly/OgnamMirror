@@ -18,39 +18,7 @@ public:
 	AMaxwell();
 
 	/*
-	**	Binded functions
+	**	Binded Function
 	*/
-	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent);
-
-protected:
-	//basic
-	void StartCharge();
-
-	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerStartCharge();
-	bool ServerStartCharge_Validate() { return true; };
-	void ServerStartCharge_Implementation();
-
-	void FireBullet();
-
-	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerFireBullet();
-	bool ServerFireBullet_Validate() { return true; };
-	void ServerFireBullet_Implementation();
-
-	//sub
-	void ToggleAimDown();
-
-	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerToggleAimDown();
-	bool ServerToggleAimDown_Validate() { return true; };
-	void ServerToggleAimDown_Implementation();
-
-	//Mobility
-	void ShadowShift();
-
-	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerShadowShift();
-	bool ServerShadowShift_Validate() { return true; };
-	void ServerShadowShift_Implementation();
+	virtual void BeginPlay() override;
 };

@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/OgnamCharacter.h"
-#include "HereiraArrow.h"
-#include "HereiraExplosiveArrow.h"
 #include "Hereira.generated.h"
 
 /**

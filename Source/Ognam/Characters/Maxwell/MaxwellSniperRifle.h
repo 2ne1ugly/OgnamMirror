@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/SemiAutoClipWeapon.h"
-#include "HereiraCrossbow.generated.h"
+#include "MaxwellSniperRifle.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UHereiraCrossbow : public USemiAutoClipWeapon
+class OGNAM_API UMaxwellSniperRifle : public USemiAutoClipWeapon
 {
 	GENERATED_BODY()
 
 public:
-	UHereiraCrossbow();
+	UMaxwellSniperRifle();
 
 protected:
 	//Server call

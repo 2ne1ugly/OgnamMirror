@@ -12,18 +12,18 @@
 
 AHereira::AHereira()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder(TEXT("/Game/UI/CharacterHUD/HereiraHUD"));
-	if (HUDFinder.Succeeded())
-	{
-		CharacterSpecificHUDClass = HUDFinder.Class;
-	}
+	//static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder(TEXT("/Game/UI/CharacterHUD/HereiraHUD"));
+	//if (HUDFinder.Succeeded())
+	//{
+	//	CharacterSpecificHUDClass = HUDFinder.Class;
+	//}
 
-	static ConstructorHelpers::FObjectFinder<USoundCue> ShotSound(TEXT("SoundCue'/Game/Sounds/Crossbow/CrossbowShot.CrossbowShot'"));
-	ShotAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotAudio"));
-	ShotAudio->SetSound(ShotSound.Object);
-	ShotAudio->SetupAttachment(RootComponent);
-	ShotAudio->SetRelativeLocation(FVector::ZeroVector);
-	ShotAudio->bAutoActivate = 0;
+	//static ConstructorHelpers::FObjectFinder<USoundCue> ShotSound(TEXT("SoundCue'/Game/Sounds/Crossbow/CrossbowShot.CrossbowShot'"));
+	//ShotAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotAudio"));
+	//ShotAudio->SetSound(ShotSound.Object);
+	//ShotAudio->SetupAttachment(RootComponent);
+	//ShotAudio->SetRelativeLocation(FVector::ZeroVector);
+	//ShotAudio->bAutoActivate = 0;
 }
 
 void AHereira::BeginPlay()
