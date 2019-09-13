@@ -64,34 +64,6 @@ void ARitualPlayerController::OnPawnDeath()
 	RitualPlayerState->SetIsAlive(false);
 }
 
-void ARitualPlayerController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-}
-
-void ARitualPlayerController::ClientRestart_Implementation(APawn* InPawn)
-{
-	Super::ClientRestart_Implementation(InPawn);
-	// Assign team color
-	UMaterialInstanceConstant* Material = nullptr;
-	ARitualPlayerState* RitualPlayerState = GetPlayerState<ARitualPlayerState>();
-
-	if (!RitualPlayerState)
-		return;
-
-	if (RitualPlayerState->GetTeam() == TEXT("Green"))
-	{
-		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_GreenTeamBody.M_GreenTeamBody"));
-	}
-	else if (RitualPlayerState->GetTeam() == TEXT("Blue"))
-	{
-		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_BlueTeamBody.M_BlueTeamBody"));
-	}
-
-	ACharacter *aCharacter = Cast<ACharacter>(InPawn);
-	aCharacter->GetMesh()->SetMaterial(0, Material);
-}
-
 void ARitualPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

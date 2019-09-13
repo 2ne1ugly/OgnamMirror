@@ -38,6 +38,7 @@ public:
 	virtual void MoveForward(float amount);
 	virtual void MoveRight(float amount);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void OnRep_PlayerState() override;
 
 	void MobilityPressed();
 	void MobilityReleased();
