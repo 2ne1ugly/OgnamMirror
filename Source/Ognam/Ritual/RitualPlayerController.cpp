@@ -67,8 +67,17 @@ void ARitualPlayerController::OnPawnDeath()
 void ARitualPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+}
+
+void ARitualPlayerController::ClientRestart_Implementation(APawn* InPawn)
+{
+	Super::ClientRestart_Implementation(InPawn);
+	// Assign team color
 	UMaterialInstanceConstant* Material = nullptr;
 	ARitualPlayerState* RitualPlayerState = GetPlayerState<ARitualPlayerState>();
+
+	if (!RitualPlayerState)
+		return;
 
 	if (RitualPlayerState->GetTeam() == TEXT("Green"))
 	{

@@ -25,6 +25,7 @@ public:
 	virtual void OnPawnDeath() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void ClientRestart_Implementation(APawn *InPawn) override;
 	/*
 	**	Getters, Setters
 	*/

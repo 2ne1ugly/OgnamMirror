@@ -62,7 +62,7 @@ void ARitualAcolyte::BeInteracted_Implementation(APlayerController* PlayerContro
 		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
-	GameState->GiveAcolyteKillReward();
+	//GameState->GiveAcolyteKillReward();
 }
 
 bool ARitualAcolyte::CanInteractWithController(const APlayerController* PlayerController) const
