@@ -142,6 +142,11 @@ void ARitualGameState::StartNewRound()
 	PhaseStartTime = GetWorld()->GetTimeSeconds();
 
 	PhaseGivenTime = 120;
+
+	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
+	{
+		Itr->Reset();
+	}
 }
 
 void ARitualGameState::SwitchSides()
@@ -167,6 +172,14 @@ bool ARitualGameState::ShouldEndRound()
 	{
 		return true;
 	}
+
+	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
+	{
+		if (Itr->ShouldRoundEnd())
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -186,18 +199,21 @@ void ARitualGameState::DecideRoundWinner()
 		return;
 	}
 
-	// All acolytes dead
-	if (NumAcolytes <= 0)
+	// Captured a site
+	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
 	{
-		if (CurrentOffenseTeam == GreenName)
+		if (Itr->ShouldRoundEnd())
 		{
-			GreenScore++;
+			if (CurrentDefenseTeam == GreenName)
+			{
+				GreenScore++;
+			}
+			else if (CurrentDefenseTeam == BlueName)
+			{
+				BlueScore++;
+			}
+			return;
 		}
-		else if (CurrentOffenseTeam == BlueName)
-		{
-			BlueScore++;
-		}
-		return;
 	}
 
 	// Survining team
@@ -247,9 +263,4 @@ void ARitualGameState::UpdateProperties()
 	GreenAliveCount = GreenAlive;
 	NumBluePlayers = Blue;
 	BlueAliveCount = BlueAlive;
-}
-
-void ARitualGameState::GiveAcolyteKillReward()
-{
-	PhaseGivenTime += 20;
 }

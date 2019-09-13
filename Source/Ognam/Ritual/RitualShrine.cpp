@@ -9,6 +9,7 @@
 #include "RitualPlayerState.h"
 #include "Ognam/OgnamCharacter.h"
 #include "RitualAcolyte.h"
+#include "UnrealNetwork.h"
 
 // Sets default values
 ARitualShrine::ARitualShrine()
@@ -35,18 +36,48 @@ ARitualShrine::ARitualShrine()
 	CaptureField->OnComponentEndOverlap.AddDynamic(this, &ARitualShrine::OnExitField);
 
 	bReplicates = true;
+
+	CaptureDuration = 5.f;
+	SpeedMultiplier = .15f;
+}
+
+void ARitualShrine::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARitualShrine, CaptureProgress);
 }
 
 void ARitualShrine::BeginPlay()
 {
 	Super::BeginPlay();
+	CaptureProgress = 0.f;
 }
 
 
 void ARitualShrine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UE_LOG(LogTemp, Warning, TEXT("Atk: %d, Def %d"), Attackers, Defenders);
+	//UE_LOG(LogTemp, Warning, TEXT("Atk: %d, Def %d"), AttackerCount, DefenderCount);
+
+	if (AttackerCount > DefenderCount)
+	{
+		CaptureProgress += DeltaTime + (AttackerCount - DefenderCount - 1) * DeltaTime * SpeedMultiplier;
+	}
+	else
+	{
+		CaptureProgress = 0;
+	}
+}
+
+void ARitualShrine::Reset()
+{
+	Super::Reset();
+
+	AttackerCount = 0;
+	DefenderCount = 0;
+	CaptureProgress = 0;
+	UE_LOG(LogTemp, Warning, TEXT("Shrine Reset"));
 }
 
 void ARitualShrine::OnEnterField(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -57,10 +88,14 @@ void ARitualShrine::OnEnterField(UPrimitiveComponent* OverlappedComponent, AActo
 		return;
 
 	ARitualPlayerState* PlayerState = Character->GetPlayerState<ARitualPlayerState>();
+
+	if (!PlayerState)
+		return;
+
 	if (PlayerState->GetSide() == TEXT("Offense"))
-		Attackers++;
+		AttackerCount++;
 	if (PlayerState->GetSide() == TEXT("Defense"))
-		Defenders++;
+		DefenderCount++;
 }
 
 void ARitualShrine::OnExitField(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -71,9 +106,24 @@ void ARitualShrine::OnExitField(UPrimitiveComponent* OverlappedComp, AActor* Oth
 		return;
 
 	ARitualPlayerState* PlayerState = Character->GetPlayerState<ARitualPlayerState>();
+
+	if (!PlayerState)
+		return;
+
 	if (PlayerState->GetSide() == TEXT("Offense"))
-		Attackers--;
+		AttackerCount--;
 	if (PlayerState->GetSide() == TEXT("Defense"))
-		Defenders--;
+		DefenderCount--;
+}
+
+bool ARitualShrine::ShouldRoundEnd() const
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Prog %f, Dur %f"), CaptureProgress, CaptureDuration);
+	return (CaptureProgress >= CaptureDuration);
+}
+
+float ARitualShrine::GetProgressPercent()
+{
+	return CaptureProgress / CaptureDuration;
 }
 

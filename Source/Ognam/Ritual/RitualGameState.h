@@ -134,4 +134,5 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	float NumAcolytes;
+
 };
