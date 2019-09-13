@@ -16,3 +16,4 @@ Saved
 *.uproject
 Content/StarterContent
 enc_temp_folder
+*_BuiltData.uasset
