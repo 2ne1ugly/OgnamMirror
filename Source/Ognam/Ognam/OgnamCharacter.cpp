@@ -12,6 +12,7 @@
 #include "Animation/AnimBlueprint.h"
 #include "UnrealNetwork.h"
 #include "OgnamPlayerController.h"
+#include "OgnamPlayerstate.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -141,6 +142,27 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Special", IE_Pressed, this, &AOgnamCharacter::SpecialPressed);
 	PlayerInputComponent->BindAction("Special", IE_Released, this, &AOgnamCharacter::SpecialReleased);
 
+}
+
+void AOgnamCharacter::OnRep_PlayerState()
+{
+	// Assign team color
+	UMaterialInstanceConstant* Material = nullptr;
+	AOgnamPlayerState* PlayerState = GetPlayerState<AOgnamPlayerState>();
+
+	if (!PlayerState)
+		return;
+
+	if (PlayerState->GetTeam() == TEXT("Green"))
+	{
+		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_GreenTeamBody.M_GreenTeamBody"));
+	}
+	else if (PlayerState->GetTeam() == TEXT("Blue"))
+	{
+		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_BlueTeamBody.M_BlueTeamBody"));
+	}
+
+	GetMesh()->SetMaterial(0, Material);
 }
 
 void AOgnamCharacter::MobilityPressed()
