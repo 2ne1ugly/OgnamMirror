@@ -78,12 +78,16 @@ protected:
 	*/
 	UPROPERTY(Replicated)
 	int32 Ammo;
+
 	UPROPERTY(Replicated)
 	int32 MaxAmmo;
+
 	UPROPERTY(Replicated)
 	bool bIsAiming;
+
 	UPROPERTY(Replicated)
 	bool bIsShooting;
+
 	UPROPERTY(Replicated)
 	bool bIsReloading;
 };

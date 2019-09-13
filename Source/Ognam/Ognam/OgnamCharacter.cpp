@@ -127,6 +127,80 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("CameraYaw", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("CameraPitch", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AOgnamCharacter::Jump);
+
+	PlayerInputComponent->BindAction("Basic", IE_Pressed, this, &AOgnamCharacter::BasicPressed);
+	PlayerInputComponent->BindAction("Basic", IE_Released, this, &AOgnamCharacter::BasicReleased);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AOgnamCharacter::ReloadPressed);
+	PlayerInputComponent->BindAction("Reload", IE_Released, this, &AOgnamCharacter::ReloadReleased);
+	PlayerInputComponent->BindAction("Mobility", IE_Pressed, this, &AOgnamCharacter::MobilityPressed);
+	PlayerInputComponent->BindAction("Mobility", IE_Released, this, &AOgnamCharacter::MobilityReleased);
+	PlayerInputComponent->BindAction("Unique", IE_Pressed, this, &AOgnamCharacter::UniquePressed);
+	PlayerInputComponent->BindAction("Unique", IE_Released, this, &AOgnamCharacter::UniqueReleased);
+	PlayerInputComponent->BindAction("Utility", IE_Pressed, this, &AOgnamCharacter::UtilityPressed);
+	PlayerInputComponent->BindAction("Utility", IE_Released, this, &AOgnamCharacter::UtilityReleased);
+	PlayerInputComponent->BindAction("Special", IE_Pressed, this, &AOgnamCharacter::SpecialPressed);
+	PlayerInputComponent->BindAction("Special", IE_Released, this, &AOgnamCharacter::SpecialReleased);
+
+}
+
+void AOgnamCharacter::MobilityPressed()
+{
+	OnMobilityPressed.Broadcast();
+}
+
+void AOgnamCharacter::MobilityReleased()
+{
+	OnMobilityReleased.Broadcast();
+}
+
+void AOgnamCharacter::UniquePressed()
+{
+	OnUniquePressed.Broadcast();
+}
+
+void AOgnamCharacter::UniqueReleased()
+{
+	OnUniqueReleased.Broadcast();
+}
+
+void AOgnamCharacter::UtilityPressed()
+{
+	OnUtilityPressed.Broadcast();
+}
+
+void AOgnamCharacter::UtilityReleased()
+{
+	OnUtilityReleased.Broadcast();
+}
+
+void AOgnamCharacter::SpecialPressed()
+{
+	OnSpecialPressed.Broadcast();
+}
+
+void AOgnamCharacter::SpecialReleased()
+{
+	OnSpecialReleased.Broadcast();
+}
+
+void AOgnamCharacter::ReloadPressed()
+{
+	OnReloadPressed.Broadcast();
+}
+
+void AOgnamCharacter::ReloadReleased()
+{
+	OnReloadReleased.Broadcast();
+}
+
+void AOgnamCharacter::BasicPressed()
+{
+	OnBasicPressed.Broadcast();
+}
+
+void AOgnamCharacter::BasicReleased()
+{
+	OnBasicReleased.Broadcast();
 }
  
 void AOgnamCharacter::MoveForward(float Amount)
@@ -183,6 +257,31 @@ bool AOgnamCharacter::GetIsJumping() const
 bool AOgnamCharacter::IsAlive() const
 {
 	return bIsAlive;
+}
+
+UWeapon* AOgnamCharacter::GetWeapon() const
+{
+	return Weapon;
+}
+
+UAbility* AOgnamCharacter::GetUnique() const
+{
+	return Unique;
+}
+
+UAbility* AOgnamCharacter::GetUtility() const
+{
+	return Utility;
+}
+
+UAbility* AOgnamCharacter::GetSpecial() const
+{
+	return Special;
+}
+
+UAbility* AOgnamCharacter::GetMobility() const
+{
+	return Mobility;
 }
 
 void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float far)

@@ -1,37 +1,67 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "HereiraSprint.h"
+#include "TimerManager.h"
+#include "HereiraSprinting.h"
 #include "Ognam/OgnamCharacter.h"
-#include "Engine/World.h"
-#include "Hereira.h"
+// Fill out your copyright notice in the Description page of Project Settings.
 
-bool UHereiraSprint::ShouldEnd()
+UHereiraSprint::UHereiraSprint()
 {
-	return bInterrupted || !GetWorld()->GetTimerManager().IsTimerActive(Duration);
+	AbilityType = EAbilityType::Mobility;
 }
 
-void UHereiraSprint::TickModifier(float DeltaTime)
+bool UHereiraSprint::ShouldShowNumber() const
 {
-	Target->Speed += Target->BaseSpeed * .35f;
+	return Target->GetWorldTimerManager().IsTimerActive(SprintCooldown);
 }
 
-void UHereiraSprint::Interrupt()
+float UHereiraSprint::GetNumber() const
 {
-	bInterrupted = true;
+	return Target->GetWorldTimerManager().GetTimerRemaining(SprintCooldown);
 }
 
-void UHereiraSprint::BeginModifier()
+void UHereiraSprint::OnButtonPressed()
 {
-	GetWorld()->GetTimerManager().SetTimer(Duration, 3.f, false);
-}
-
-void UHereiraSprint::EndModifier()
-{
-	if (bInterrupted)
+	if (Target->GetWorldTimerManager().IsTimerActive(SprintCooldown) || Target->GetModifier<UHereiraSprinting>())
 	{
 		return;
 	}
-	AHereira* Hereira = Cast<AHereira>(Target);
-	Hereira->EndSprint();
+	ServerStartSprint();
+}
+
+void UHereiraSprint::OnButtonReleased()
+{
+	if (!Target->GetModifier<UHereiraSprinting>())
+	{
+		return;
+	}
+	ServerStopSprint();
+}
+
+void UHereiraSprint::ServerStartSprint_Implementation()
+{
+	if (Target->GetWorldTimerManager().IsTimerActive(SprintCooldown) || Target->GetModifier<UHereiraSprinting>())
+	{
+		return;
+	}
+	UHereiraSprinting* Sprinting = NewObject<UHereiraSprinting>(Target);
+	Sprinting->SetAbility(this);
+	Sprinting->RegisterComponent();
+}
+
+void UHereiraSprint::ServerStopSprint_Implementation()
+{
+	UHereiraSprinting* Sprinting = Target->GetModifier<UHereiraSprinting>();
+	if (!Sprinting)
+	{
+		return;
+	}
+	Sprinting->Interrupt();
+	Target->GetWorldTimerManager().SetTimer(SprintCooldown, 6.f, false);
+	ClientEndSprint();
+}
+
+void UHereiraSprint::ClientEndSprint_Implementation()
+{
+	Target->GetWorldTimerManager().SetTimer(SprintCooldown, 6.f, false);
 }

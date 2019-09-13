@@ -12,7 +12,7 @@
  *	But for now, it's only intended for AOgnamCharacters.
  *	Access Target to get information to attached character.
  */
-UCLASS()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class OGNAM_API UModifier : public UActorComponent
 {
 	GENERATED_BODY()

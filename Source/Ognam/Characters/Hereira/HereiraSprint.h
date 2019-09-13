@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/Modifier.h"
+#include "Ognam/ActiveAbility.h"
 #include "TimerManager.h"
 #include "HereiraSprint.generated.h"
 
@@ -11,32 +11,37 @@
  * 
  */
 UCLASS()
-class OGNAM_API UHereiraSprint : public UModifier
+class OGNAM_API UHereiraSprint : public UActiveAbility
 {
 	GENERATED_BODY()
 
 public:
-	/*
-	**	Inherited Funcitons
-	*/
-	virtual bool ShouldEnd() override;
-	virtual void TickModifier(float DeltaTime) override;
+	UHereiraSprint();
 
-	/*
-	**	Exported Functions
-	*/
-	void Interrupt();
+	virtual bool ShouldShowNumber() const;
+	virtual float GetNumber() const;
+
+	UFUNCTION(Client, Unreliable)
+	void ClientEndSprint();
+	void ClientEndSprint_Implementation();
 
 protected:
-	virtual void BeginModifier() override;
-	virtual void EndModifier() override;
+	virtual void OnButtonPressed() override;
+	virtual void OnButtonReleased() override;
+
+	UFUNCTION(Server, WithValidation, Unreliable)
+	void ServerStartSprint();
+	bool ServerStartSprint_Validate() { return true; };
+	void ServerStartSprint_Implementation();
+
+	UFUNCTION(Server, WithValidation, Unreliable)
+	void ServerStopSprint();
+	bool ServerStopSprint_Validate() { return true; };
+	void ServerStopSprint_Implementation();
 
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere)
-	FTimerHandle Duration;
-
-	UPROPERTY(VisibleAnywhere)
-	bool bInterrupted;
+	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
+	FTimerHandle SprintCooldown;
 };

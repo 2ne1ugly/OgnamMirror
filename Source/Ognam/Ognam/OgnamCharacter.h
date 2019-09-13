@@ -13,7 +13,7 @@ class OGNAM_API AOgnamCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	/*
 	**	Components
 	*/
@@ -39,6 +39,19 @@ public:
 	virtual void MoveRight(float amount);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void MobilityPressed();
+	void MobilityReleased();
+	void UniquePressed();
+	void UniqueReleased();
+	void UtilityPressed();
+	void UtilityReleased();
+	void SpecialPressed();
+	void SpecialReleased();
+	void ReloadPressed();
+	void ReloadReleased();
+	void BasicPressed();
+	void BasicReleased();
+
 	/*
 	**	Getters, Setters
 	*/
@@ -53,6 +66,21 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable)
+	class UWeapon* GetWeapon() const;
+
+	UFUNCTION(BlueprintCallable)
+	class UAbility* GetUnique() const;
+
+	UFUNCTION(BlueprintCallable)
+	class UAbility* GetUtility() const;
+
+	UFUNCTION(BlueprintCallable)
+	class UAbility* GetSpecial() const;
+
+	UFUNCTION(BlueprintCallable)
+	class UAbility* GetMobility() const;
 
 	/*
 	**	Exported functions
@@ -107,6 +135,20 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<UModifier*> Modifiers;
 
+	DECLARE_MULTICAST_DELEGATE(FActionDelegate)
+	FActionDelegate OnMobilityPressed;
+	FActionDelegate OnMobilityReleased;
+	FActionDelegate OnUniquePressed;
+	FActionDelegate OnUniqueReleased;
+	FActionDelegate OnUtilityPressed;
+	FActionDelegate OnUtilityReleased;
+	FActionDelegate OnSpecialPressed;
+	FActionDelegate OnSpecialReleased;
+	FActionDelegate OnBasicPressed;
+	FActionDelegate OnBasicReleased;
+	FActionDelegate OnReloadPressed;
+	FActionDelegate OnReloadReleased;
+
 protected:
 	/*
 	**	Internal functions
@@ -130,4 +172,19 @@ protected:
 	FVector InputVector;
 	float	InputSpeed;
 	int		NumInputs;
+
+	UPROPERTY(VisibleAnywhere)
+	class UWeapon* Weapon;
+
+	UPROPERTY(VisibleAnywhere)
+	class UAbility* Mobility;
+
+	UPROPERTY(VisibleAnywhere)
+	class UAbility* Unique;
+
+	UPROPERTY(VisibleAnywhere)
+	class UAbility* Utility;
+
+	UPROPERTY(VisibleAnywhere)
+	class UAbility* Special;
 };
