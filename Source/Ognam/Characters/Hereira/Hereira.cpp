@@ -12,26 +12,27 @@
 
 AHereira::AHereira()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder(TEXT("/Game/UI/CharacterHUD/HereiraHUD"));
-	if (HUDFinder.Succeeded())
-	{
-		CharacterSpecificHUDClass = HUDFinder.Class;
-	}
+	//static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder(TEXT("/Game/UI/CharacterHUD/HereiraHUD"));
+	//if (HUDFinder.Succeeded())
+	//{
+	//	CharacterSpecificHUDClass = HUDFinder.Class;
+	//}
 
-	static ConstructorHelpers::FObjectFinder<USoundCue> ShotSound(TEXT("SoundCue'/Game/Sounds/Crossbow/CrossbowShot.CrossbowShot'"));
-	ShotAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotAudio"));
-	ShotAudio->SetSound(ShotSound.Object);
-	ShotAudio->SetupAttachment(RootComponent);
-	ShotAudio->SetRelativeLocation(FVector::ZeroVector);
-	ShotAudio->bAutoActivate = 0;
+	//static ConstructorHelpers::FObjectFinder<USoundCue> ShotSound(TEXT("SoundCue'/Game/Sounds/Crossbow/CrossbowShot.CrossbowShot'"));
+	//ShotAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotAudio"));
+	//ShotAudio->SetSound(ShotSound.Object);
+	//ShotAudio->SetupAttachment(RootComponent);
+	//ShotAudio->SetRelativeLocation(FVector::ZeroVector);
+	//ShotAudio->bAutoActivate = 0;
 }
 
 void AHereira::BeginPlay()
 {
 	Super::BeginPlay();
-	Weapon = NewObject<UHereiraCrossbow>(this);
-	Mobility = NewObject<UHereiraSprint>(this);
-	Unique = NewObject<UHereiraLoadExplosiveShot>(this);
+	Weapon = NewObject<UHereiraCrossbow>(this, TEXT("Sprint"));
+	Mobility = NewObject<UHereiraSprint>(this, TEXT("Mobility"));
+	Unique = NewObject<UHereiraLoadExplosiveShot>(this, TEXT("Unique"));
+
 	Weapon->RegisterComponent();
 	Mobility->RegisterComponent();
 	Unique->RegisterComponent();

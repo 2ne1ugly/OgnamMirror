@@ -6,7 +6,13 @@
 // Sets default values for this component's properties
 UWeapon::UWeapon()
 {
+	SetNetAddressable();
+	SetIsReplicated(true);
+}
 
+bool UWeapon::IsSupportedForNetworking() const
+{
+	return true;
 }
 
 void UWeapon::BeginPlay()

@@ -17,6 +17,7 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+	virtual bool IsSupportedForNetworking() const override;	
 
 protected:
 	virtual void BasicPressed();

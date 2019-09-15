@@ -8,7 +8,6 @@
 UClipWeapon::UClipWeapon()
 {
 	ReloadTime = 3.f;
-	SetIsReplicated(true);
 }
 
 void UClipWeapon::BeginPlay()
@@ -23,16 +22,6 @@ void UClipWeapon::EndPlay(EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 
 	Target->OnReloadPressed.Remove(ReloadPressHandle);
-}
-
-bool UClipWeapon::IsNameStableForNetworking() const
-{
-	return true;
-}
-
-bool UClipWeapon::IsSupportedForNetworking() const
-{
-	return true;
 }
 
 void UClipWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

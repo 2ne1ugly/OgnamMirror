@@ -12,6 +12,8 @@
 #include "Animation/AnimBlueprint.h"
 #include "UnrealNetwork.h"
 #include "OgnamPlayerController.h"
+#include "Weapon.h"
+#include "Ability.h"
 #include "OgnamPlayerstate.h"
 
 // Sets default values
@@ -19,7 +21,6 @@ AOgnamCharacter::AOgnamCharacter()
 {
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bCanEverTick = true;
-
 
 	//Create Spring arm and Camera
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
@@ -148,16 +149,18 @@ void AOgnamCharacter::OnRep_PlayerState()
 {
 	// Assign team color
 	UMaterialInstanceConstant* Material = nullptr;
-	AOgnamPlayerState* PlayerState = GetPlayerState<AOgnamPlayerState>();
+	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
 
-	if (!PlayerState)
+	if (!OgnamPlayerState)
+	{
 		return;
+	}
 
-	if (PlayerState->GetTeam() == TEXT("Green"))
+	if (OgnamPlayerState->GetTeam() == TEXT("Green"))
 	{
 		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_GreenTeamBody.M_GreenTeamBody"));
 	}
-	else if (PlayerState->GetTeam() == TEXT("Blue"))
+	else if (OgnamPlayerState->GetTeam() == TEXT("Blue"))
 	{
 		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_BlueTeamBody.M_BlueTeamBody"));
 	}

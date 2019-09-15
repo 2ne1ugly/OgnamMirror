@@ -6,8 +6,6 @@
 #include "HereiraExplosiveShotReady.h"
 #include "HereiraArrow.h"
 #include "HereiraExplosiveArrow.h"
-#include "Engine/World.h"
-
 UHereiraCrossbow::UHereiraCrossbow()
 {
 	MaxAmmo = 2;
