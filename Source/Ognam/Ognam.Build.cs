@@ -8,7 +8,7 @@ public class Ognam : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Niagara", "Core", "CoreUObject", "Engine", "InputCore", "UMG", "Slate", "SlateCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Niagara", "Core", "CoreUObject", "Engine", "InputCore", "UMG", "Slate", "SlateCore","OnlineSubsystem", "OnlineSubsystemUtils" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Projects" });
 
@@ -19,7 +19,8 @@ public class Ognam : ModuleRules
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
         // Uncomment if you are using online features
-        // PrivateDependencyModuleNames.Add("OnlineSubsystem");
+        PrivateDependencyModuleNames.Add("OnlineSubsystem");
+        DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
 
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
     }

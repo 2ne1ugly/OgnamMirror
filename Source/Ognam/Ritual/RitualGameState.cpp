@@ -45,6 +45,7 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ARitualGameState, RoundStartTime);
 	DOREPLIFETIME(ARitualGameState, PhaseStartTime);
 	DOREPLIFETIME(ARitualGameState, PhaseGivenTime);
+	DOREPLIFETIME(ARitualGameState, bRoundEnding);
 }
 
 FName ARitualGameState::GetCurrentOffenseTeam() const
@@ -263,4 +264,14 @@ void ARitualGameState::UpdateProperties()
 	GreenAliveCount = GreenAlive;
 	NumBluePlayers = Blue;
 	BlueAliveCount = BlueAlive;
+}
+
+void ARitualGameState::SetRoundEnding(bool b)
+{
+	bRoundEnding = b;
+}
+
+bool ARitualGameState::IsRoundEnding() const
+{
+	return bRoundEnding;
 }

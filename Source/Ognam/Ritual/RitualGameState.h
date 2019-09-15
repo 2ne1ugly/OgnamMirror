@@ -67,6 +67,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	const FString GetFormatRemainingTime() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsRoundEnding() const;
+
 	/*
 	**	Exported Functions
 	*/
@@ -76,6 +79,7 @@ public:
 	bool ShouldEndRound();
 	void DecideRoundWinner();
 	void UpdateProperties();
+	void SetRoundEnding(bool b);
 	void GiveAcolyteKillReward();
 
 	/*
@@ -133,6 +137,5 @@ protected:
 	float PhaseGivenTime;
 
 	UPROPERTY(VisibleAnywhere, Replicated)
-	float NumAcolytes;
-
+	bool bRoundEnding;
 };

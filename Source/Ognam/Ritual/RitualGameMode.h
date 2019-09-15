@@ -54,4 +54,13 @@ public:
 	**	Exported Props
 	*/
 	TArray<class ARitualPlayerController*> PlayerControllers;
+
+	UPROPERTY()
+	FTimerHandle MatchEndTimer;
+
+	UPROPERTY()
+	bool bRoundEnded;
+
+	UPROPERTY()
+	float PostRoundTime;
 };

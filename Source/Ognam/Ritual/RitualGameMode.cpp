@@ -7,6 +7,8 @@
 #include "Ognam/OgnamCharacter.h"
 #include "GameFramework/PlayerStart.h"
 #include "EngineUtils.h"
+#include "Engine.h"
+#include "Engine/World.h"
 
 ARitualGameMode::ARitualGameMode()
 {
@@ -15,6 +17,8 @@ ARitualGameMode::ARitualGameMode()
 	GameStateClass = ARitualGameState::StaticClass();
 	PlayerStateClass = ARitualPlayerState::StaticClass();
 	PlayerControllerClass = ARitualPlayerController::StaticClass();
+
+	PostRoundTime = 3.f;
 }
 
 void ARitualGameMode::Tick(float DeltaTime)
@@ -32,8 +36,11 @@ void ARitualGameMode::Tick(float DeltaTime)
 		return;
 	}
 	RitualGameState->UpdateProperties();
-	if (RitualGameState->ShouldEndRound())
-		EndRound();
+	if (RitualGameState->ShouldEndRound() && !RitualGameState->IsRoundEnding())
+	{
+		RitualGameState->SetRoundEnding(true);
+		GetWorld()->GetTimerManager().SetTimer(MatchEndTimer, this, &ARitualGameMode::EndRound, PostRoundTime, false);
+	}
 }
 
 // This is where you init game based on options and Maps
@@ -44,7 +51,12 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 	{
 		return;
 	}
-	MaxNumPlayers = 2;
+	MaxNumPlayers = 4;
+
+	if (GEngine != nullptr && GEngine->IsEditor())
+	{
+		MaxNumPlayers = 2;
+	}
 }
 
 bool ARitualGameMode::ReadyToStartMatch_Implementation()
@@ -126,12 +138,13 @@ void ARitualGameMode::StartFirstRound()
 void ARitualGameMode::RestartRound()
 {
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
-	if (GameState == nullptr)
+	if (RitualGameState == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
 
+	RitualGameState->SetRoundEnding(false);
 	RitualGameState->SwitchSides();
 	RespawnAllPlayer();
 	RitualGameState->StartNewRound();

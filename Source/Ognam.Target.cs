@@ -9,6 +9,7 @@ public class OgnamTarget : TargetRules
 	{
 		Type = TargetType.Game;
 
+        bUsesSteam = true;
 		ExtraModuleNames.AddRange( new string[] { "Ognam" } );
 	}
 }
