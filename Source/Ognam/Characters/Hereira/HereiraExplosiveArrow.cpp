@@ -36,6 +36,8 @@ AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 	AudioSystem->SetRelativeLocation(FVector::ZeroVector);
 	AudioSystem->SetSound(SparkFizzleCue.Object);
 	AudioSystem->bAutoActivate = true;
+
+	//BaseDamage = (Modify here to give different damage)
 }
 
 void AHereiraExplosiveArrow::EndLifeSpan()
@@ -62,7 +64,7 @@ void AHereiraExplosiveArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, con
 	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
 	{
 		AController* Controller = Instigator->GetController();
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
 		UHereiraWillExplode* Explosion = NewObject<UHereiraWillExplode>(OtherCharacter);
 		Explosion->SetInstigator(Instigator);
 		Explosion->RegisterComponent();

@@ -6,6 +6,7 @@
 #include "Ognam/OgnamPlayerState.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "MaxwellAimDowned.h"
 
 UMaxwellSniperRifle::UMaxwellSniperRifle()
 {
@@ -13,6 +14,22 @@ UMaxwellSniperRifle::UMaxwellSniperRifle()
 	Ammo = MaxAmmo;
 	RoundsPerSecond = 3.f;
 	ReloadTime = 6.f;
+
+	BaseDamage = 35.f;
+}
+
+void UMaxwellSniperRifle::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SubPressHandle = Target->OnSubPressed.AddUObject(this, &UMaxwellSniperRifle::ToggleAimDown);
+}
+
+void UMaxwellSniperRifle::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	Target->OnSubPressed.Remove(SubPressHandle);
 }
 
 void UMaxwellSniperRifle::FireBullet()
@@ -42,8 +59,7 @@ void UMaxwellSniperRifle::FireBullet()
 		BulletTo = BulletHit.ImpactPoint;
 	else
 		BulletTo = BulletHit.TraceEnd;
-	DrawDebugLine(GetWorld(), From, BulletTo, FColor::Red, false, 1.0f, 0, 10);
-
+	NetDrawTrajectory(From, BulletTo);
 	//Get Target's player state
 	ACharacter* OtherCharacter = Cast<ACharacter>(BulletHit.Actor);
 	if (!OtherCharacter)
@@ -59,6 +75,29 @@ void UMaxwellSniperRifle::FireBullet()
 
 	if (OtherPlayerState->GetTeam() != PlayerState->GetTeam())
 	{
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, 35.f, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, Direction, BulletHit, Target->GetController(), Target, nullptr);
+	}
+}
+
+void UMaxwellSniperRifle::NetDrawTrajectory_Implementation(FVector From, FVector To)
+{
+	DrawDebugLine(GetWorld(), From, To, FColor::Red, false, 1.0f, 0, 10);
+}
+
+void UMaxwellSniperRifle::ToggleAimDown()
+{
+	ServerToggleAimDown();
+}
+
+void UMaxwellSniperRifle::ServerToggleAimDown_Implementation()
+{
+	UMaxwellAimDowned* Modifier = Target->GetModifier<UMaxwellAimDowned>();
+	if (Modifier)
+	{
+		Modifier->Interrupt();
+	}
+	else
+	{
+		NewObject<UMaxwellAimDowned>(Target)->RegisterComponent();
 	}
 }

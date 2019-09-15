@@ -44,4 +44,5 @@ protected:
 	**	Props
 	*/
 	FTimerHandle LifeSpan;
+	float BaseDamage;
 };

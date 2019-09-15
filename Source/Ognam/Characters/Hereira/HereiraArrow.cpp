@@ -43,6 +43,8 @@ AHereiraArrow::AHereiraArrow()
 	Movement->ProjectileGravityScale = 1.5f;
 
 	RootComponent = Collision;
+
+	BaseDamage = 60.f;
 }
 
 // Called when the game starts or when spawned
@@ -89,7 +91,7 @@ void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitRe
 	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
 	{
 		AController* Controller = Instigator->GetController();
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, 30, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
 	}
 	Destroy();
 }

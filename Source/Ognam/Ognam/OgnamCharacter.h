@@ -52,6 +52,8 @@ public:
 	void ReloadReleased();
 	void BasicPressed();
 	void BasicReleased();
+	void SubPressed();
+	void SubReleased();
 
 	/*
 	**	Getters, Setters
@@ -147,6 +149,8 @@ public:
 	FActionDelegate OnSpecialReleased;
 	FActionDelegate OnBasicPressed;
 	FActionDelegate OnBasicReleased;
+	FActionDelegate OnSubPressed;
+	FActionDelegate OnSubReleased;
 	FActionDelegate OnReloadPressed;
 	FActionDelegate OnReloadReleased;
 
@@ -160,6 +164,7 @@ protected:
 	virtual void ServerJump_Implementation();
 
 	float GetDamageAfterDefense(float Damage);
+	float GetSpeedFromVector(FVector Vector);
 
 	/*
 	**	Props
@@ -171,7 +176,7 @@ protected:
 	bool bIsAlive;
 
 	FVector InputVector;
-	float	InputSpeed;
+	float	InputAmount;
 	int		NumInputs;
 
 	UPROPERTY(VisibleAnywhere)

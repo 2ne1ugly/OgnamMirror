@@ -11,9 +11,10 @@ AMaxwell::AMaxwell()
 void AMaxwell::BeginPlay()
 {
 	Super::BeginPlay();
-	Weapon = NewObject<UMaxwellSniperRifle>(this);
+	Weapon = NewObject<UMaxwellSniperRifle>(this, TEXT("Weapon"));
 	//Mobility = NewObject<UHereiraSprint>(this);
 	//Unique = NewObject<UHereiraLoadExplosiveShot>(this);
+
 	Weapon->RegisterComponent();
 	//Mobility->RegisterComponent();
 	//Unique->RegisterComponent();

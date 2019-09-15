@@ -52,7 +52,7 @@ AOgnamCharacter::AOgnamCharacter()
 		GetMesh()->SetAnimInstanceClass(AnimBP.Object);
 	//}
 
-	BaseMaxHealth = 100.f;
+	BaseMaxHealth = 200.f;
 	BaseDefense = 0.0f;
 	BaseSpeed = 600.0f;
 
@@ -111,12 +111,14 @@ void AOgnamCharacter::Tick(float DeltaTime)
 
 	if (NumInputs > 0)
 	{
-		InputVector = InputVector.GetSafeNormal();
-		InputSpeed /= NumInputs;
-		AddMovementInput(InputVector, InputSpeed);
+		InputAmount /= NumInputs;
+		FVector Normal = InputVector.GetSafeNormal();
+		float InputSpeed = GetSpeedFromVector(Normal);
+		AddMovementInput(GetActorTransform().TransformVector(Normal), InputSpeed * InputAmount);
+
 	}
 	InputVector = FVector::ZeroVector;
-	InputSpeed = 0;
+	InputAmount = 0;
 	NumInputs = 0;
 }
 
@@ -132,6 +134,8 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAction("Basic", IE_Pressed, this, &AOgnamCharacter::BasicPressed);
 	PlayerInputComponent->BindAction("Basic", IE_Released, this, &AOgnamCharacter::BasicReleased);
+	PlayerInputComponent->BindAction("Sub", IE_Pressed, this, &AOgnamCharacter::SubPressed);
+	PlayerInputComponent->BindAction("Sub", IE_Released, this, &AOgnamCharacter::SubReleased);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AOgnamCharacter::ReloadPressed);
 	PlayerInputComponent->BindAction("Reload", IE_Released, this, &AOgnamCharacter::ReloadReleased);
 	PlayerInputComponent->BindAction("Mobility", IE_Pressed, this, &AOgnamCharacter::MobilityPressed);
@@ -227,21 +231,23 @@ void AOgnamCharacter::BasicReleased()
 {
 	OnBasicReleased.Broadcast();
 }
+
+void AOgnamCharacter::SubPressed()
+{
+	OnSubPressed.Broadcast();
+}
+
+void AOgnamCharacter::SubReleased()
+{
+	OnSubReleased.Broadcast();
+}
  
 void AOgnamCharacter::MoveForward(float Amount)
 {
 	if (Controller != nullptr && Amount != 0.f)
 	{
-		if (Amount < 0)
-		{
-			InputVector += GetActorForwardVector() * -1;
-		}
-		else
-		{
-			InputVector += GetActorForwardVector();
-		}
-
-		InputSpeed += abs(Amount);
+		InputVector += FVector::ForwardVector * Amount;
+		InputAmount += FMath::Abs(Amount);
 		NumInputs++;
 	}
 }
@@ -250,16 +256,8 @@ void AOgnamCharacter::MoveRight(float Amount)
 {
 	if (Controller != nullptr && Amount != 0.f)
 	{
-		if (Amount < 0)
-		{
-			InputVector += GetActorRightVector() * -1;
-		}
-		else
-		{
-			InputVector += GetActorRightVector();
-		}
-
-		InputSpeed += abs(Amount);
+		InputVector += FVector::RightVector * Amount;
+		InputAmount += FMath::Abs(Amount);
 		NumInputs++;
 	}
 }
@@ -326,6 +324,12 @@ void AOgnamCharacter::ServerJump_Implementation()
 float AOgnamCharacter::GetDamageAfterDefense(float Damage)
 {
 	return Damage * Defense;
+}
+
+float AOgnamCharacter::GetSpeedFromVector(FVector Vector)
+{
+	return FMath::Square(Vector.Y) * .75f +
+		((Vector.X > 0.f) ? (FMath::Square(Vector.X) * 1.f) : (FMath::Square(Vector.X) * .6f));
 }
 
 void AOgnamCharacter::Jump()

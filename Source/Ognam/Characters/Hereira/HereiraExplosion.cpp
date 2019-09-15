@@ -42,6 +42,8 @@ AHereiraExplosion::AHereiraExplosion()
 	AudioSystem->SetSound(SoundCue.Object);
 	AudioSystem->SetupAttachment(Range);
 	AudioSystem->SetRelativeLocation(FVector::ZeroVector);
+
+	BaseDamage = 70.f;
 }
 
 // Called when the game starts or when spawned
@@ -93,13 +95,13 @@ void AHereiraExplosion::OnCharacterHit(AOgnamCharacter* OtherCharacter)
 	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
 	if (PlayerState && OtherPlayerState && PlayerState->GetTeam() != OtherPlayerState->GetTeam())
 	{
-		UGameplayStatics::ApplyDamage(OtherCharacter, 45, Instigator->GetController(), this, nullptr);
+		UGameplayStatics::ApplyDamage(OtherCharacter, BaseDamage, Instigator->GetController(), this, nullptr);
 	}
 }
 
 void AHereiraExplosion::OnActorHit(AActor* OtherActor)
 {
-	UGameplayStatics::ApplyDamage(OtherActor, 45, Instigator->GetController(), this, nullptr);
+	UGameplayStatics::ApplyDamage(OtherActor, BaseDamage, Instigator->GetController(), this, nullptr);
 }
 
 void AHereiraExplosion::EndLifeSpan()

@@ -49,4 +49,6 @@ protected:
 
 	UPROPERTY()
 	TSet<AActor*> AffectedActors;
+
+	float BaseDamage;
 };
