@@ -24,7 +24,6 @@ class OGNAM_API UAbility : public UActorComponent
 public:	
 	UAbility();
 
-	//virtual bool IsNameStableForNetworking() const override;
 	virtual bool IsSupportedForNetworking() const override;
 	virtual void BeginPlay() override;
 

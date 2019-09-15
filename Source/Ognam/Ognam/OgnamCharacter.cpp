@@ -85,11 +85,6 @@ void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AOgnamCharacter, Speed);
 	DOREPLIFETIME(AOgnamCharacter, bIsJumping);
 	DOREPLIFETIME(AOgnamCharacter, bIsAlive);
-	DOREPLIFETIME(AOgnamCharacter, Weapon);
-	DOREPLIFETIME(AOgnamCharacter, Mobility);
-	DOREPLIFETIME(AOgnamCharacter, Unique);
-	DOREPLIFETIME(AOgnamCharacter, Utility);
-	DOREPLIFETIME(AOgnamCharacter, Special);
 }
 
 void AOgnamCharacter::Tick(float DeltaTime)
@@ -154,16 +149,18 @@ void AOgnamCharacter::OnRep_PlayerState()
 {
 	// Assign team color
 	UMaterialInstanceConstant* Material = nullptr;
-	AOgnamPlayerState* PlayerState = GetPlayerState<AOgnamPlayerState>();
+	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
 
-	if (!PlayerState)
+	if (!OgnamPlayerState)
+	{
 		return;
+	}
 
-	if (PlayerState->GetTeam() == TEXT("Green"))
+	if (OgnamPlayerState->GetTeam() == TEXT("Green"))
 	{
 		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_GreenTeamBody.M_GreenTeamBody"));
 	}
-	else if (PlayerState->GetTeam() == TEXT("Blue"))
+	else if (OgnamPlayerState->GetTeam() == TEXT("Blue"))
 	{
 		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_BlueTeamBody.M_BlueTeamBody"));
 	}
@@ -329,47 +326,6 @@ void AOgnamCharacter::ServerJump_Implementation()
 float AOgnamCharacter::GetDamageAfterDefense(float Damage)
 {
 	return Damage * Defense;
-}
-
-void AOgnamCharacter::OnRep_Weapon()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Rep weapon"));
-	if (Weapon)
-	{
-		Weapon->RegisterComponent();
-	}
-}
-
-void AOgnamCharacter::OnRep_Mobility()
-{
-	if (Mobility)
-	{
-		Mobility->RegisterComponent();
-	}
-}
-
-void AOgnamCharacter::OnRep_Unique()
-{
-	if (Unique)
-	{
-		Unique->RegisterComponent();
-	}
-}
-
-void AOgnamCharacter::OnRep_Utility()
-{
-	if (Utility)
-	{
-		Utility->RegisterComponent();
-	}
-}
-
-void AOgnamCharacter::OnRep_Special()
-{
-	if (Special)
-	{
-		Special->RegisterComponent();
-	}
 }
 
 void AOgnamCharacter::Jump()

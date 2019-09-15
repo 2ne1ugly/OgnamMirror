@@ -19,8 +19,6 @@ public:
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 	virtual bool IsSupportedForNetworking() const override;	
 
-	//bool UAbility::IsNameStableForNetworking() const
-
 protected:
 	virtual void BasicPressed();
 	virtual void BasicReleased();

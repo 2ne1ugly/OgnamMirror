@@ -33,11 +33,6 @@ float UAbility::GetNumber() const
 	return 0.f;
 }
 
-//bool UAbility::IsNameStableForNetworking() const
-//{
-//	return true;
-//}
-
 bool UAbility::IsSupportedForNetworking() const
 {
 	return true;
