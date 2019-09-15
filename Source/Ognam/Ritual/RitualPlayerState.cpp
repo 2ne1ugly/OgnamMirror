@@ -22,6 +22,8 @@ void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	DOREPLIFETIME(ARitualPlayerState, Team);
 	DOREPLIFETIME(ARitualPlayerState, PawnClass);
+	DOREPLIFETIME(ARitualPlayerState, bIsAlive);
+	DOREPLIFETIME(ARitualPlayerState, TeamIndex);
 }
 
 void ARitualPlayerState::SetTeamIndex(int32 index)

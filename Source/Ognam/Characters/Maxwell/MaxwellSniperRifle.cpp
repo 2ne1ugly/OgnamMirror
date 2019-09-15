@@ -59,6 +59,6 @@ void UMaxwellSniperRifle::FireBullet()
 
 	if (OtherPlayerState->GetTeam() != PlayerState->GetTeam())
 	{
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, 45.f, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, 35.f, Direction, BulletHit, Target->GetController(), Target, nullptr);
 	}
 }

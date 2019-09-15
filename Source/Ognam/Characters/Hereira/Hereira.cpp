@@ -29,9 +29,10 @@ AHereira::AHereira()
 void AHereira::BeginPlay()
 {
 	Super::BeginPlay();
-	Weapon = NewObject<UHereiraCrossbow>(this);
-	Mobility = NewObject<UHereiraSprint>(this);
-	Unique = NewObject<UHereiraLoadExplosiveShot>(this);
+	Weapon = NewObject<UHereiraCrossbow>(this, TEXT("Sprint"));
+	Mobility = NewObject<UHereiraSprint>(this, TEXT("Mobility"));
+	Unique = NewObject<UHereiraLoadExplosiveShot>(this, TEXT("Unique"));
+
 	Weapon->RegisterComponent();
 	Mobility->RegisterComponent();
 	Unique->RegisterComponent();

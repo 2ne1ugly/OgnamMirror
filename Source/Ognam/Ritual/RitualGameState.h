@@ -131,8 +131,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	float PhaseGivenTime;
-
-	UPROPERTY(VisibleAnywhere, Replicated)
-	float NumAcolytes;
-
 };

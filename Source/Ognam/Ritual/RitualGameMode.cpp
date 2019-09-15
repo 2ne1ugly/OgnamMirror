@@ -106,7 +106,10 @@ void ARitualGameMode::RespawnAllPlayer()
 	{
 		RestartPlayer(PlayerController);
 		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
-		RitualPlayerState->SetIsAlive(true);
+		if (RitualPlayerState != nullptr)
+		{
+			RitualPlayerState->SetIsAlive(true);
+		}
 	}
 }
 

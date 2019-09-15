@@ -7,12 +7,20 @@
 UAbility::UAbility()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	SetNetAddressable();
+	SetIsReplicated(true);
+	bAutoRegister = true;
 }
 
 void UAbility::BeginPlay()
 {
 	Super::BeginPlay();
 	Target = Cast<AOgnamCharacter>(GetOwner());
+}
+
+bool UAbility::HasBegunPlay() const
+{
+	return Target != nullptr;
 }
 
 bool UAbility::ShouldShowNumber() const
@@ -25,10 +33,10 @@ float UAbility::GetNumber() const
 	return 0.f;
 }
 
-bool UAbility::IsNameStableForNetworking() const
-{
-	return true;
-}
+//bool UAbility::IsNameStableForNetworking() const
+//{
+//	return true;
+//}
 
 bool UAbility::IsSupportedForNetworking() const
 {

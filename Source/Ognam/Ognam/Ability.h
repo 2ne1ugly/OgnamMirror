@@ -24,11 +24,14 @@ class OGNAM_API UAbility : public UActorComponent
 public:	
 	UAbility();
 
-	virtual bool IsNameStableForNetworking() const override;
+	//virtual bool IsNameStableForNetworking() const override;
 	virtual bool IsSupportedForNetworking() const override;
 	virtual void BeginPlay() override;
 
 	//For UI
+	UFUNCTION(BlueprintCallable)
+	bool HasBegunPlay() const;
+
 	UFUNCTION(BlueprintCallable)
 	virtual bool ShouldShowNumber() const;
 

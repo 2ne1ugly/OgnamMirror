@@ -162,6 +162,24 @@ protected:
 	float GetDamageAfterDefense(float Damage);
 
 	/*
+	**	Auto-Register
+	*/
+	UFUNCTION()
+	void OnRep_Weapon();
+
+	UFUNCTION()
+	void OnRep_Mobility();
+
+	UFUNCTION()
+	void OnRep_Unique();
+
+	UFUNCTION()
+	void OnRep_Utility();
+
+	UFUNCTION()
+	void OnRep_Special();
+
+	/*
 	**	Props
 	*/
 	UPROPERTY(VisibleAnywhere, Replicated)
@@ -174,18 +192,18 @@ protected:
 	float	InputSpeed;
 	int		NumInputs;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Weapon)
 	class UWeapon* Weapon;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Mobility)
 	class UAbility* Mobility;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Unique)
 	class UAbility* Unique;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Utility)
 	class UAbility* Utility;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Special)
 	class UAbility* Special;
 };

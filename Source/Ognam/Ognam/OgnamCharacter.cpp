@@ -12,6 +12,8 @@
 #include "Animation/AnimBlueprint.h"
 #include "UnrealNetwork.h"
 #include "OgnamPlayerController.h"
+#include "Weapon.h"
+#include "Ability.h"
 #include "OgnamPlayerstate.h"
 
 // Sets default values
@@ -19,7 +21,6 @@ AOgnamCharacter::AOgnamCharacter()
 {
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bCanEverTick = true;
-
 
 	//Create Spring arm and Camera
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
@@ -84,6 +85,11 @@ void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AOgnamCharacter, Speed);
 	DOREPLIFETIME(AOgnamCharacter, bIsJumping);
 	DOREPLIFETIME(AOgnamCharacter, bIsAlive);
+	DOREPLIFETIME(AOgnamCharacter, Weapon);
+	DOREPLIFETIME(AOgnamCharacter, Mobility);
+	DOREPLIFETIME(AOgnamCharacter, Unique);
+	DOREPLIFETIME(AOgnamCharacter, Utility);
+	DOREPLIFETIME(AOgnamCharacter, Special);
 }
 
 void AOgnamCharacter::Tick(float DeltaTime)
@@ -323,6 +329,47 @@ void AOgnamCharacter::ServerJump_Implementation()
 float AOgnamCharacter::GetDamageAfterDefense(float Damage)
 {
 	return Damage * Defense;
+}
+
+void AOgnamCharacter::OnRep_Weapon()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Rep weapon"));
+	if (Weapon)
+	{
+		Weapon->RegisterComponent();
+	}
+}
+
+void AOgnamCharacter::OnRep_Mobility()
+{
+	if (Mobility)
+	{
+		Mobility->RegisterComponent();
+	}
+}
+
+void AOgnamCharacter::OnRep_Unique()
+{
+	if (Unique)
+	{
+		Unique->RegisterComponent();
+	}
+}
+
+void AOgnamCharacter::OnRep_Utility()
+{
+	if (Utility)
+	{
+		Utility->RegisterComponent();
+	}
+}
+
+void AOgnamCharacter::OnRep_Special()
+{
+	if (Special)
+	{
+		Special->RegisterComponent();
+	}
 }
 
 void AOgnamCharacter::Jump()

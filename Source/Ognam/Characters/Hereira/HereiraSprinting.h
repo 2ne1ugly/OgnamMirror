@@ -28,6 +28,7 @@ public:
 	**	Exported Functions
 	*/
 	void SetAbility(UHereiraSprint* SprintAbility);
+	void SetSpeed(float _Speed);
 	void Interrupt();
 
 protected:
