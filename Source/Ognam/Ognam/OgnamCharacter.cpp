@@ -174,7 +174,10 @@ void AOgnamCharacter::OnRep_PlayerState()
 
 void AOgnamCharacter::MobilityPressed()
 {
-	OnMobilityPressed.Broadcast();
+	if (!HasStatusEffect(EStatusEffect::Silenced))
+	{
+		OnMobilityPressed.Broadcast();
+	}
 }
 
 void AOgnamCharacter::MobilityReleased()
@@ -184,7 +187,10 @@ void AOgnamCharacter::MobilityReleased()
 
 void AOgnamCharacter::UniquePressed()
 {
-	OnUniquePressed.Broadcast();
+	if (!HasStatusEffect(EStatusEffect::Silenced))
+	{
+		OnUniquePressed.Broadcast();
+	}
 }
 
 void AOgnamCharacter::UniqueReleased()
@@ -194,7 +200,10 @@ void AOgnamCharacter::UniqueReleased()
 
 void AOgnamCharacter::UtilityPressed()
 {
-	OnUtilityPressed.Broadcast();
+	if (!HasStatusEffect(EStatusEffect::Silenced))
+	{
+		OnUtilityPressed.Broadcast();
+	}
 }
 
 void AOgnamCharacter::UtilityReleased()
@@ -204,7 +213,10 @@ void AOgnamCharacter::UtilityReleased()
 
 void AOgnamCharacter::SpecialPressed()
 {
-	OnSpecialPressed.Broadcast();
+	if (!HasStatusEffect(EStatusEffect::Silenced))
+	{
+		OnSpecialPressed.Broadcast();
+	}
 }
 
 void AOgnamCharacter::SpecialReleased()
@@ -224,27 +236,39 @@ void AOgnamCharacter::ReloadReleased()
 
 void AOgnamCharacter::BasicPressed()
 {
-	OnBasicPressed.Broadcast();
+	if (!HasStatusEffect(EStatusEffect::Unarmed))
+	{
+		OnBasicPressed.Broadcast();
+	}
 }
 
 void AOgnamCharacter::BasicReleased()
 {
-	OnBasicReleased.Broadcast();
+	if (!HasStatusEffect(EStatusEffect::Unarmed))
+	{
+		OnBasicReleased.Broadcast();
+	}
 }
 
 void AOgnamCharacter::SubPressed()
 {
-	OnSubPressed.Broadcast();
+	if (!HasStatusEffect(EStatusEffect::Unarmed))
+	{
+		OnSubPressed.Broadcast();
+	}
 }
 
 void AOgnamCharacter::SubReleased()
 {
-	OnSubReleased.Broadcast();
+	if (!HasStatusEffect(EStatusEffect::Unarmed))
+	{
+		OnSubReleased.Broadcast();
+	}
 }
  
 void AOgnamCharacter::MoveForward(float Amount)
 {
-	if (Controller != nullptr && Amount != 0.f)
+	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted))
 	{
 		InputVector += FVector::ForwardVector * Amount;
 		InputAmount += FMath::Abs(Amount);
@@ -254,7 +278,7 @@ void AOgnamCharacter::MoveForward(float Amount)
 
 void AOgnamCharacter::MoveRight(float Amount)
 {
-	if (Controller != nullptr && Amount != 0.f)
+	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted))
 	{
 		InputVector += FVector::RightVector * Amount;
 		InputAmount += FMath::Abs(Amount);
@@ -307,6 +331,11 @@ UAbility* AOgnamCharacter::GetMobility() const
 	return Mobility;
 }
 
+FVector AOgnamCharacter::GetInputVector() const
+{
+	return InputVector;
+}
+
 void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float far)
 {
 	//shoot ray from camera to see where it should land.
@@ -314,6 +343,18 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	FVector RayTo = RayFrom + Camera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
+}
+
+bool AOgnamCharacter::HasStatusEffect(EStatusEffect StatusEffect)
+{
+	for (UModifier* Modifier : Modifiers)
+	{
+		if ((Modifier->GetStatusEffect() & StatusEffect) != EStatusEffect::None)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void AOgnamCharacter::ServerJump_Implementation()

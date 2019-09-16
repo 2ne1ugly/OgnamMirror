@@ -17,6 +17,8 @@ class OGNAM_API UHereiraSprinting : public UModifier
 
 
 public:
+	UHereiraSprinting();
+
 	/*
 	**	Inherited Funcitons
 	*/
@@ -28,7 +30,6 @@ public:
 	**	Exported Functions
 	*/
 	void SetAbility(UHereiraSprint* SprintAbility);
-	void SetSpeed(float _Speed);
 	void Interrupt();
 
 protected:

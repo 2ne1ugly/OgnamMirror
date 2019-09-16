@@ -6,6 +6,20 @@
 #include "Components/ActorComponent.h"
 #include "Modifier.generated.h"
 
+/*
+**	Abilities can have multiple status effects
+**	Internally, it's a bit field(For now)
+*/
+UENUM()
+enum class EStatusEffect : uint64
+{
+	None = 0, //No Status effect
+	Rooted = 1,	//Cannot give movement input
+	Silenced = 2, //Cannot give ability input
+	Unarmed = 4, //Cannot give weapon input
+};
+ENUM_CLASS_FLAGS(EStatusEffect)
+
 /**
  *	Modifier can be applied to Characters.
  *	If Someone wants to expand this to specific Interface than characters, more than welcomed.
@@ -20,14 +34,13 @@ class OGNAM_API UModifier : public UActorComponent
 public:
 	UModifier();
 
-	/*
-	**	Exported Functions
-	*/
 	virtual bool ShouldEnd();
 	virtual void TickModifier(float DeltaTime);
 	virtual void BeginPlay() override;
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
-	//virtual void Deactivate() override;
+
+	EStatusEffect GetStatusEffect() const;
+
 protected:
 	virtual void BeginModifier();
 	virtual void EndModifier();
@@ -40,4 +53,5 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class AOgnamCharacter* Target;
 
+	EStatusEffect StatusEffect;
 };

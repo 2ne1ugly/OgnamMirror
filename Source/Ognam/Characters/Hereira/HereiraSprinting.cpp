@@ -5,6 +5,11 @@
 #include "Engine/World.h"
 #include "UnrealNetwork.h"
 
+UHereiraSprinting::UHereiraSprinting()
+{
+	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced;
+}
+
 void UHereiraSprinting::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

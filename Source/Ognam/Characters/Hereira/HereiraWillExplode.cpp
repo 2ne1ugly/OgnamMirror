@@ -11,7 +11,7 @@
 
 void UHereiraWillExplode::BeginModifier()
 {
-	GetWorld()->GetTimerManager().SetTimer(Duration, .5f, false);
+	GetWorld()->GetTimerManager().SetTimer(DurationTimer, .5f, false);
 }
 
 void UHereiraWillExplode::EndModifier()

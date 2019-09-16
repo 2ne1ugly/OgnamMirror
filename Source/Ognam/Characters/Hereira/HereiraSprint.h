@@ -42,6 +42,8 @@ protected:
 	/*
 	**	Props
 	*/
+	float Cooldown;
+
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle SprintCooldown;
 };

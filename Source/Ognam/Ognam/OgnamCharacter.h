@@ -85,6 +85,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	class UAbility* GetMobility() const;
 
+	UFUNCTION(BlueprintCallable)
+	FVector GetInputVector() const;
 	/*
 	**	Exported functions
 	*/
@@ -107,6 +109,8 @@ public:
 		}
 		return nullptr;
 	}
+
+	bool HasStatusEffect(EStatusEffect StatusEffect);
 
 	/*
 	**	Exported Props

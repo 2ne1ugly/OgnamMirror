@@ -39,6 +39,9 @@ protected:
 	/*
 	**	Props
 	*/
+	UPROPERTY(VisibleAnywhere)
+	float Cooldown;
+
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle ExplosiveShotCooldown;
 };

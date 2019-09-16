@@ -4,9 +4,14 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 
+UExpirableModifier::UExpirableModifier()
+{
+	Duration = 3.f;
+}
+
 bool UExpirableModifier::ShouldEnd()
 {
-	return !GetWorld()->GetTimerManager().IsTimerActive(Duration);
+	return !GetWorld()->GetTimerManager().IsTimerActive(DurationTimer);
 }
 
 void UExpirableModifier::TickModifier(float DeltaTime)
@@ -15,7 +20,7 @@ void UExpirableModifier::TickModifier(float DeltaTime)
 
 void UExpirableModifier::BeginModifier()
 {
-	GetWorld()->GetTimerManager().SetTimer(Duration, 3.f, false);
+	GetWorld()->GetTimerManager().SetTimer(DurationTimer, Duration, false);
 }
 
 void UExpirableModifier::EndModifier()

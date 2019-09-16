@@ -8,6 +8,7 @@
 UHereiraSprint::UHereiraSprint()
 {
 	AbilityType = EAbilityType::Mobility;
+	Cooldown = 6.f;
 }
 
 bool UHereiraSprint::ShouldShowNumber() const
@@ -31,10 +32,6 @@ void UHereiraSprint::OnButtonPressed()
 
 void UHereiraSprint::OnButtonReleased()
 {
-	if (!Target->GetModifier<UHereiraSprinting>())
-	{
-		return;
-	}
 	ServerStopSprint();
 }
 
@@ -57,11 +54,11 @@ void UHereiraSprint::ServerStopSprint_Implementation()
 		return;
 	}
 	Sprinting->Interrupt();
-	Target->GetWorldTimerManager().SetTimer(SprintCooldown, 6.f, false);
+	Target->GetWorldTimerManager().SetTimer(SprintCooldown, Cooldown, false);
 	ClientEndSprint();
 }
 
 void UHereiraSprint::ClientEndSprint_Implementation()
 {
-	Target->GetWorldTimerManager().SetTimer(SprintCooldown, 6.f, false);
+	Target->GetWorldTimerManager().SetTimer(SprintCooldown, Cooldown, false);
 }

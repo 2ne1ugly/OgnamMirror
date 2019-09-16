@@ -15,6 +15,8 @@ class OGNAM_API UExpirableModifier : public UModifier
 	GENERATED_BODY()
 
 public:
+	UExpirableModifier();
+
 	/*
 	**	Inherited Funcitons
 	*/
@@ -32,5 +34,8 @@ protected:
 	**	Props
 	*/
 	UPROPERTY(VisibleAnywhere)
-	FTimerHandle Duration;
+	float Duration;
+
+	UPROPERTY(VisibleAnywhere)
+	FTimerHandle DurationTimer;
 };

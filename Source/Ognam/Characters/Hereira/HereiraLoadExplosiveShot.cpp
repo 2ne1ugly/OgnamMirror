@@ -9,6 +9,7 @@
 UHereiraLoadExplosiveShot::UHereiraLoadExplosiveShot()
 {
 	AbilityType = EAbilityType::Unique;
+	Cooldown = 5.f;
 }
 
 bool UHereiraLoadExplosiveShot::ShouldShowNumber() const
@@ -42,7 +43,6 @@ void UHereiraLoadExplosiveShot::ServerLoadExplosiveShot_Implementation()
 	if (Target->GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) ||
 		Target->GetModifier<UHereiraExplosiveShotReady>() != nullptr)
 	{
-		//UE_LOG(LogNet, Warning, TEXT("%s Mismatch!"), __FUNCTIONW__);
 		return;
 	}
 	UHereiraExplosiveShotReady* ExplosiveShot = NewObject<UHereiraExplosiveShotReady>(Target);
@@ -52,5 +52,5 @@ void UHereiraLoadExplosiveShot::ServerLoadExplosiveShot_Implementation()
 
 void UHereiraLoadExplosiveShot::ClientFiredExplosiveShot_Implementation()
 {
-	Target->GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, 5.f, false);
+	Target->GetWorldTimerManager().SetTimer(ExplosiveShotCooldown, Cooldown, false);
 }

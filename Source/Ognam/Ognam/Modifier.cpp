@@ -44,6 +44,11 @@ void UModifier::EndPlay(EEndPlayReason::Type EndPlayReason)
 	Target->Modifiers.Remove(this);
 }
 
+EStatusEffect UModifier::GetStatusEffect() const
+{
+	return StatusEffect;
+}
+
 void UModifier::BeginModifier()
 {
 }
