@@ -69,7 +69,7 @@ void UMaxwellSniperRifle::FireBullet()
 	if (ClaretStrikeCharged && ClaretStrikeCharged->Use())
 	{
 		NewObject<UMaxwellRecovering>(Target)->RegisterComponent();
-		Damage = 100.f;
+		Damage = 80.f;
 	}
 
 

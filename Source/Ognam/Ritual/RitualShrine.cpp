@@ -37,7 +37,7 @@ ARitualShrine::ARitualShrine()
 
 	bReplicates = true;
 
-	CaptureDuration = 5.f;
+	CaptureDuration = 20.f;
 	SpeedMultiplier = .15f;
 }
 
