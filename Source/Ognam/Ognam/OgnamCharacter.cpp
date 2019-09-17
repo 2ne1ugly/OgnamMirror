@@ -437,5 +437,5 @@ void AOgnamCharacter::Die_Implementation()
 	}
 	DisableInput(PlayerController);
 	PlayerController->OnPawnDeath();
-	PlayerController->UnPossess();
+	//PlayerController->UnPossess();
 }

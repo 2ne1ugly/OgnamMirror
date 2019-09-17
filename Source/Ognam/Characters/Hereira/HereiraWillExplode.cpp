@@ -11,7 +11,7 @@
 
 UHereiraWillExplode::UHereiraWillExplode()
 {
-	Duration = 5.f;
+	Duration = .5f;
 }
 
 void UHereiraWillExplode::EndModifier()
