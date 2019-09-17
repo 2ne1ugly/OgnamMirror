@@ -25,5 +25,5 @@ bool UMaxwellClaretStrikeCharged::Use()
 {
 	bool bResult = !bUsed;
 	bUsed = true;
-	return false;
+	return bResult;
 }

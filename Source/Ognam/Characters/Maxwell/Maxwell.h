@@ -14,6 +14,8 @@ class OGNAM_API AMaxwell : public AOgnamCharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	class UCameraComponent* AimDownedCamera;
 public:
 	AMaxwell();
 

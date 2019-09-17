@@ -16,10 +16,9 @@ UMaxwellRecovering::UMaxwellRecovering()
 void UMaxwellRecovering::BeginModifier()
 {
 	Super::BeginModifier();
-	
-	UGameplayStatics::TakeDamage();
-	Target->Health -= HealthPenalty;
-	GetWorld()->GetTimerManager().SetTimer(HealTickTimer, this, &UMaxwellRecovering::HealTick, true);
+
+	UGameplayStatics::ApplyDamage(Target, HealthPenalty, Target->GetController(), Target, nullptr);
+	GetWorld()->GetTimerManager().SetTimer(HealTickTimer, this, &UMaxwellRecovering::HealTick, 1.f, true);
 }
 
 void UMaxwellRecovering::HealTick()

@@ -2,11 +2,14 @@
 
 #include "MaxwellSniperRifle.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Camera/CameraComponent.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Ognam/OgnamPlayerState.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "MaxwellAimDowned.h"
+#include "MaxwellClaretStrikeCharged.h"
+#include "MaxwellRecovering.h"
 
 UMaxwellSniperRifle::UMaxwellSniperRifle()
 {
@@ -60,6 +63,16 @@ void UMaxwellSniperRifle::FireBullet()
 	else
 		BulletTo = BulletHit.TraceEnd;
 	NetDrawTrajectory(From, BulletTo);
+
+	float Damage = BaseDamage;
+	UMaxwellClaretStrikeCharged* ClaretStrikeCharged = Target->GetModifier<UMaxwellClaretStrikeCharged>();
+	if (ClaretStrikeCharged && ClaretStrikeCharged->Use())
+	{
+		NewObject<UMaxwellRecovering>(Target)->RegisterComponent();
+		Damage = 100.f;
+	}
+
+
 	//Get Target's player state
 	ACharacter* OtherCharacter = Cast<ACharacter>(BulletHit.Actor);
 	if (!OtherCharacter)
@@ -75,13 +88,13 @@ void UMaxwellSniperRifle::FireBullet()
 
 	if (OtherPlayerState->GetTeam() != PlayerState->GetTeam())
 	{
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
 	}
 }
 
 void UMaxwellSniperRifle::NetDrawTrajectory_Implementation(FVector From, FVector To)
 {
-	DrawDebugLine(GetWorld(), From, To, FColor::Red, false, 1.0f, 0, 10);
+	DrawDebugLine(GetWorld(), From, To, FColor::Red, false, 1.0f, 0, 3);
 }
 
 void UMaxwellSniperRifle::ToggleAimDown()

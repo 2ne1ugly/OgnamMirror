@@ -343,9 +343,27 @@ FVector AOgnamCharacter::GetInputVector() const
 
 void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float far)
 {
+	TArray<UCameraComponent*> Cameras;
+	GetComponents(Cameras);
+	
+	UCameraComponent* ActiveCamera = nullptr;
+
+	for (UCameraComponent* CameraComponent : Cameras)
+	{
+		if (CameraComponent->bIsActive)
+		{
+			ActiveCamera = CameraComponent;
+			break;
+		}
+	}
+	if (!ActiveCamera)
+	{
+		return;
+	}
+
 	//shoot ray from camera to see where it should land.
-	FVector RayFrom = Camera->GetComponentLocation() + near;
-	FVector RayTo = RayFrom + Camera->GetForwardVector() * far;
+	FVector RayFrom = ActiveCamera->GetComponentLocation() + near;
+	FVector RayTo = RayFrom + ActiveCamera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
 }
@@ -419,4 +437,5 @@ void AOgnamCharacter::Die_Implementation()
 	}
 	DisableInput(PlayerController);
 	PlayerController->OnPawnDeath();
+	PlayerController->UnPossess();
 }
