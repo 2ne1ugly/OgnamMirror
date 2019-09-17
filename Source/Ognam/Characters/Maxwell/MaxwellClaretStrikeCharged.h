@@ -3,26 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/ExpirableModifier.h"
-#include "MaxwellShadowForm.generated.h"
+#include "Ognam/Modifier.h"
+#include "MaxwellClaretStrikeCharged.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UMaxwellShadowForm : public UExpirableModifier
+class OGNAM_API UMaxwellClaretStrikeCharged : public UModifier
 {
 	GENERATED_BODY()
 
 public:
-	UMaxwellShadowForm();
+	UMaxwellClaretStrikeCharged();
 
+	virtual bool ShouldEnd() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void TickModifier(float DeltaTime) override;
 
-	void SetDirection(FVector Vector);
+	bool Use();
+
 protected:
 
+	/*
+	**	Props
+	*/
 	UPROPERTY(VisibleAnywhere, Replicated)
-	FVector Direction;
+	bool bUsed;
 };

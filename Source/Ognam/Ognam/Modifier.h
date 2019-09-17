@@ -13,10 +13,11 @@
 UENUM()
 enum class EStatusEffect : uint64
 {
-	None = 0, //No Status effect
-	Rooted = 1,	//Cannot give movement input
-	Silenced = 2, //Cannot give ability input
-	Unarmed = 4, //Cannot give weapon input
+	None =			0x0, //No Status effect
+	Rooted =		0x1, //Cannot give movement input
+	Silenced =		0x2, //Cannot give ability input
+	Unarmed =		0x4, //Cannot give weapon input
+	Unbreakable =	0x8, //Cannot be damaged by outer damage (self damaging, dot damages are still applied), not implemented yet
 };
 ENUM_CLASS_FLAGS(EStatusEffect)
 

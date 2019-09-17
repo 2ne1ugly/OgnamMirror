@@ -7,7 +7,7 @@
 #include "MaxwellShadowShift.generated.h"
 
 /**
- * 
+ *	Issue: Fix the jitter from client side(Maybe find a way to sync modifier timers)
  */
 UCLASS()
 class OGNAM_API UMaxwellShadowShift : public UActiveAbility
@@ -25,9 +25,9 @@ protected:
 	virtual void OnButtonPressed() override;
 
 	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerCastShadowShift();
-	bool ServerCastShadowShift_Validate() { return true; };
-	void ServerCastShadowShift_Implementation();
+	void ServerCastShadowShift(FVector Direction);
+	bool ServerCastShadowShift_Validate(FVector Direction) { return true; }
+	void ServerCastShadowShift_Implementation(FVector Direction);
 
 	UFUNCTION(Client, Unreliable)
 	void ClientFeedbackShadowShift();

@@ -136,6 +136,12 @@ public:
 	UPROPERTY(VisibleAnywhere, Replicated)
 	float Speed;
 
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float BaseAcceleration;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float Acceleration;
+
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
 

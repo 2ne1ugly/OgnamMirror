@@ -8,6 +8,7 @@
 UHereiraSprinting::UHereiraSprinting()
 {
 	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced;
+	Duration = 3.f;
 }
 
 void UHereiraSprinting::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -20,7 +21,7 @@ void UHereiraSprinting::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 bool UHereiraSprinting::ShouldEnd()
 {
-	return bInterrupted || !GetWorld()->GetTimerManager().IsTimerActive(Duration);
+	return bInterrupted || Super::ShouldEnd();
 }
 
 void UHereiraSprinting::TickModifier(float DeltaTime)
@@ -40,7 +41,7 @@ void UHereiraSprinting::Interrupt()
 
 void UHereiraSprinting::BeginModifier()
 {
-	GetWorld()->GetTimerManager().SetTimer(Duration, 3.f, false);
+	Super::BeginModifier();
 }
 
 void UHereiraSprinting::EndModifier()

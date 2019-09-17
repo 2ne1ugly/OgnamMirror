@@ -20,7 +20,7 @@ public:
 	/*
 	**	Inherited Funcitons
 	*/
-	virtual bool ShouldEnd() override final;
+	virtual bool ShouldEnd() override;
 	virtual void TickModifier(float DeltaTime) override;
 
 protected:

@@ -8,7 +8,7 @@
 #include "HereiraCanFastReload.generated.h"
 
 /**
- * 
+ *	This class is not used!
  */
 UCLASS()
 class OGNAM_API UHereiraCanFastReload : public UModifier

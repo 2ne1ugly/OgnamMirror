@@ -9,9 +9,9 @@
 #include "GameFramework/GameStateBase.h"
 #include "UnrealNetwork.h"
 
-void UHereiraWillExplode::BeginModifier()
+UHereiraWillExplode::UHereiraWillExplode()
 {
-	GetWorld()->GetTimerManager().SetTimer(DurationTimer, .5f, false);
+	Duration = 5.f;
 }
 
 void UHereiraWillExplode::EndModifier()

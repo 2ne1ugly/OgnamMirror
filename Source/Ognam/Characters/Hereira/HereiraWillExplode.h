@@ -15,10 +15,8 @@ class OGNAM_API UHereiraWillExplode : public UExpirableModifier
 	GENERATED_BODY()
 
 public:
-	/*
-	**	Binded Function
-	*/
-	virtual void BeginModifier() override;
+	UHereiraWillExplode();
+
 	virtual void EndModifier() override;
 	
 	/*

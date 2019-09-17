@@ -17,17 +17,17 @@ void UMaxwellShadowShift::OnButtonPressed()
 	{
 		return;
 	}
-	ServerCastShadowShift();
+	ServerCastShadowShift(Target->GetLastMovementInputVector().GetSafeNormal());
 }
 
-void UMaxwellShadowShift::ServerCastShadowShift_Implementation()
+void UMaxwellShadowShift::ServerCastShadowShift_Implementation(FVector Direction)
 {
 	if (Target->GetWorldTimerManager().IsTimerActive(ShadowShiftCooldown))
 	{
 		return;
 	}
 	UMaxwellShadowForm* ShadowForm = NewObject<UMaxwellShadowForm>(Target);
-	ShadowForm->SetDirection(Target->GetLastMovementInputVector().GetSafeNormal());
+	ShadowForm->SetDirection(Direction);
 	ShadowForm->RegisterComponent();
 	Target->GetWorldTimerManager().SetTimer(ShadowShiftCooldown, Cooldown, false);
 	ClientFeedbackShadowShift();

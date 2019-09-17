@@ -62,13 +62,14 @@ AOgnamCharacter::AOgnamCharacter()
 
 	Health = MaxHealth;
 
-	GetCharacterMovement()->MaxAcceleration = 1536.f;
+	BaseAcceleration = 1536.f;
+
 	GetCharacterMovement()->BrakingFrictionFactor = .5f;
 	GetCharacterMovement()->AirControl = 2.f;
 	GetCharacterMovement()->GravityScale = 1.5f;
 	GetCharacterMovement()->JumpZVelocity = 510.f;
 
-	this->bReplicates = true;
+	bReplicates = true;
 	bIsAlive = true;
 }
 
@@ -83,6 +84,8 @@ void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AOgnamCharacter, Defense);
 	DOREPLIFETIME(AOgnamCharacter, BaseSpeed);
 	DOREPLIFETIME(AOgnamCharacter, Speed);
+	DOREPLIFETIME(AOgnamCharacter, BaseAcceleration);
+	DOREPLIFETIME(AOgnamCharacter, Acceleration);
 	DOREPLIFETIME(AOgnamCharacter, bIsJumping);
 	DOREPLIFETIME(AOgnamCharacter, bIsAlive);
 }
@@ -94,6 +97,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	MaxHealth = BaseMaxHealth;
 	Defense = BaseDefense;
 	Speed = BaseSpeed;
+	Acceleration = BaseAcceleration;
 
 	//Check ending conditions of Modiifers and apply tick.
 	for (int i = Modifiers.Num() - 1; i >= 0; i--)
@@ -108,6 +112,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 		}
 	}
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
+	GetCharacterMovement()->MaxAcceleration = Acceleration;
 
 	if (NumInputs > 0)
 	{
@@ -387,7 +392,8 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	if (HasAuthority())
+	//Should check for damage events.
+	if (HasAuthority() && (!HasStatusEffect(EStatusEffect::Unbreakable)))
 	{
 		Health -= Damage;
 		if (Health <= 0)

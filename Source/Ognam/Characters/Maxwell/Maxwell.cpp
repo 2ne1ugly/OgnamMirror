@@ -3,6 +3,7 @@
 #include "Maxwell.h"
 #include "MaxwellSniperRifle.h"
 #include "MaxwellShadowShift.h"
+#include "MaxwellClaretStrike.h"
 
 AMaxwell::AMaxwell()
 {
@@ -14,9 +15,9 @@ void AMaxwell::BeginPlay()
 	Super::BeginPlay();
 	Weapon = NewObject<UMaxwellSniperRifle>(this, TEXT("Weapon"));
 	Mobility = NewObject<UMaxwellShadowShift>(this, TEXT("Mobility"));
-	//Unique = NewObject<UHereiraLoadExplosiveShot>(this);
+	Unique = NewObject<UMaxwellClaretStrike>(this, TEXT("Unique"));
 
 	Weapon->RegisterComponent();
 	Mobility->RegisterComponent();
-	//Unique->RegisterComponent();
+	Unique->RegisterComponent();
 }
