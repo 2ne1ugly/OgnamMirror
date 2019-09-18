@@ -35,7 +35,7 @@ protected:
 	//Client call
 	void ToggleAimDown();
 
-	UFUNCTION(Server, Unreliable)
+	UFUNCTION(Server, Unreliable, WithValidation)
 	void ServerToggleAimDown();
 	bool ServerToggleAimDown_Validate() { return true; };
 	void ServerToggleAimDown_Implementation();
@@ -46,4 +46,6 @@ protected:
 	FDelegateHandle SubPressHandle;
 
 	float BaseDamage;
+
+	class UAudioComponent* ShotSound;
 };

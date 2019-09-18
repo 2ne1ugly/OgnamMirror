@@ -10,6 +10,9 @@
 #include "MaxwellAimDowned.h"
 #include "MaxwellClaretStrikeCharged.h"
 #include "MaxwellRecovering.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
+#include "ConstructorHelpers.h"
 
 UMaxwellSniperRifle::UMaxwellSniperRifle()
 {
@@ -19,6 +22,13 @@ UMaxwellSniperRifle::UMaxwellSniperRifle()
 	ReloadTime = 6.f;
 
 	BaseDamage = 35.f;
+
+	ConstructorHelpers::FObjectFinder<USoundCue> SniperShotCue(TEXT("SoundCue'/Game/Sounds/Maxwell/maxwell_shot_cue2.maxwell_shot_cue2'"));
+	ShotSound = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotSound"));
+	ShotSound->SetAutoActivate(false);
+	ShotSound->SetSound(SniperShotCue.Object);
+	ShotSound->SetRelativeLocation(FVector::ZeroVector);
+	ShotSound->SetIsReplicated(true);
 }
 
 void UMaxwellSniperRifle::BeginPlay()
@@ -48,11 +58,14 @@ void UMaxwellSniperRifle::FireBullet()
 	else
 		To = HitResult.TraceEnd;
 
+	ShotSound->Activate();
+
 	//find direction to shoot bullets
 	FVector Direction = To - From;
-	Direction.Normalize();
+	Direction = Direction.GetSafeNormal();
 
 	//shoot ray from camera to see where it should land.
+	UE_LOG(LogTemp, Warning, TEXT("X %f, Y %f, Z %f"), Direction.X, Direction.Y, Direction.Z);
 	FHitResult BulletHit;
 	GetWorld()->LineTraceSingleByProfile(BulletHit, From, From + Direction * 10000.f, TEXT("BlockAll"));
 

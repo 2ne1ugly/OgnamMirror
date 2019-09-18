@@ -177,6 +177,30 @@ void AOgnamCharacter::OnRep_PlayerState()
 	GetMesh()->SetMaterial(0, Material);
 }
 
+void AOgnamCharacter::PossessedBy(AController * Controller)
+{
+	Super::PossessedBy(Controller);
+	// Assign team color
+	UMaterialInstanceConstant* Material = nullptr;
+	AOgnamPlayerState* OgnamPlayerState = Controller->GetPlayerState<AOgnamPlayerState>();
+
+	if (!OgnamPlayerState)
+	{
+		return;
+	}
+
+	if (OgnamPlayerState->GetTeam() == TEXT("Green"))
+	{
+		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_GreenTeamBody.M_GreenTeamBody"));
+	}
+	else if (OgnamPlayerState->GetTeam() == TEXT("Blue"))
+	{
+		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_BlueTeamBody.M_BlueTeamBody"));
+	}
+
+	GetMesh()->SetMaterial(0, Material);
+}
+
 void AOgnamCharacter::MobilityPressed()
 {
 	if (!HasStatusEffect(EStatusEffect::Silenced))
@@ -350,7 +374,7 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 
 	for (UCameraComponent* CameraComponent : Cameras)
 	{
-		if (CameraComponent->bIsActive)
+		if (CameraComponent->IsActive())
 		{
 			ActiveCamera = CameraComponent;
 			break;
@@ -358,13 +382,15 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	}
 	if (!ActiveCamera)
 	{
-		return;
+		UE_LOG(LogTemp, Warning, TEXT("No active camera!"));
+		ActiveCamera = Camera;
 	}
 
 	//shoot ray from camera to see where it should land.
 	FVector RayFrom = ActiveCamera->GetComponentLocation() + near;
 	FVector RayTo = RayFrom + ActiveCamera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
+	Params.AddIgnoredActor(this);
 	GetWorld()->LineTraceSingleByProfile(HitResult, RayFrom, RayTo, TEXT("BlockAll"), Params);
 }
 
