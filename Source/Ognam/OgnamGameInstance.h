@@ -16,78 +16,31 @@ class OGNAM_API UOgnamGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
-	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
-
-	TSharedPtr<class FOnlineSessionSettings> SessionSettings;
-
 	UOgnamGameInstance(const FObjectInitializer& ObjectInitializer);
 
-	virtual void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+	//Creates and starts session
+	UFUNCTION(BlueprintCallable)
+	bool CreateSession(FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
 
-	void OnStartOnlineGameComplete(FName SessionName, bool bWasSuccessful);
+	//Finds Session
+	UFUNCTION(BlueprintCallable)
+	void FindSession(bool bIsLAN, bool bIsPresence);
 
-	/* Delegate called when session created */
-	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
-	/* Delegate called when session started */
-	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
+	void CreateSessionComplete(FName SessionName, bool bWasSuccessful);
+	void StartSessionComplete(FName SessionName, bool bWasSuccessful);
 
-	/** Handles to registered delegates for creating/starting a session */
-	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
-	FDelegateHandle OnStartSessionCompleteDelegateHandle;
+	void FindSessionComplete(bool bWasSuccessful);
+	void JoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
-	void FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
+	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 
-	/** Delegate for searching for sessions */
-	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
+	FOnCreateSessionCompleteDelegate OnCreateSessionComplete;
+	FOnFindSessionsCompleteDelegate OnFindSessionsComplete;
+	FOnStartSessionCompleteDelegate OnStartSessionComplete;
+	FOnJoinSessionCompleteDelegate OnJoinSessionComplete;
 
-	/** Handle to registered delegate for searching a session */
-	FDelegateHandle OnFindSessionsCompleteDelegateHandle;
-
-	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
-
-	void OnFindSessionsComplete(bool bWasSuccessful);
-
-	bool JoinSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
-
-	/** Delegate for joining a session */
-	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
-
-	/** Handle to registered delegate for joining a session */
-	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
-
-	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-
-	/** Delegate for destroying a session */
-	FOnDestroySessionCompleteDelegate OnDestroySessionCompleteDelegate;
-
-	/** Handle to registered delegate for destroying a session */
-	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
-
-	FOnSessionUserInviteAcceptedDelegate OnSessionUserInviteAcceptedDelegate;
-
-	FDelegateHandle OnSessionUserInviteAcceptedDelegateHandle;
-
-	FOnSessionInviteReceived OnSessionInviteReceivedDelegate;
-
-	FDelegateHandle InInviteReceivedDelegateHandle;
-
-	virtual void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
-
-	//virtual bool SendSessionInviteToFriend(int32 LocalUserNum, FName SessionName, const FUniqueNetId& Friend);
-
-	void SessionReceiveInvite(const FUniqueNetId& UserID, const FUniqueNetId& FromID, const FString& AppID, const FOnlineSessionSearchResult& Result);
-
-	void SessionAcceptInvite(const bool bWasSuccessful, const int32 ControllerId, TSharedPtr<const FUniqueNetId> UserId, const FOnlineSessionSearchResult& InviteResult);
-
-	UFUNCTION(BlueprintCallable, Category = "Network|Test")
-	void StartOnlineGame();
-
-	UFUNCTION(BlueprintCallable, Category = "Network|Test")
-	void FindOnlineGames();
-
-	UFUNCTION(BlueprintCallable, Category = "Network|Test")
-	void JoinOnlineGame();
-
-	UFUNCTION(BlueprintCallable, Category = "Network|Test")
-	void DestroySessionAndLeaveGame();
+	FDelegateHandle CreateSessionCompleteHandle;
+	FDelegateHandle StartSessionCompleteHandle;
+	FDelegateHandle FindSessionsCompleteHandle;
+	FDelegateHandle JoinSessionCompleteHandle;
 };
