@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Ognam/OgnamPlayerState.h"
+#include "Ognam/ImpactDamage.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "MaxwellAimDowned.h"
@@ -101,7 +102,7 @@ void UMaxwellSniperRifle::FireBullet()
 
 	if (OtherPlayerState->GetTeam() != PlayerState->GetTeam())
 	{
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, Damage, Direction, BulletHit, Target->GetController(), Target, UImpactDamage::StaticClass());
 	}
 }
 

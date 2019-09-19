@@ -27,6 +27,7 @@ public:
 	/*
 	**	Binded Functions
 	*/
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
@@ -45,4 +46,6 @@ protected:
 	*/
 	FTimerHandle LifeSpan;
 	float BaseDamage;
+	UPROPERTY(EditAnywhere)
+	float GravityScale;
 };

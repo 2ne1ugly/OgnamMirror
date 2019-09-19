@@ -10,15 +10,15 @@ UHereiraCrossbow::UHereiraCrossbow()
 {
 	MaxAmmo = 2;
 	Ammo = MaxAmmo;
-	RoundsPerSecond = 2.f;
+	RoundsPerSecond = 5.f;
 	ReloadTime = 1.5f;
 }
 
 void UHereiraCrossbow::FireBullet()
 {
-	float UpRatio = 0.1f;
+	float UpRatio = 0.06f;
 	FVector Direction = Target->Camera->GetForwardVector() * (1 - UpRatio) + FVector::UpVector * UpRatio;
-	FRotator Rotator = FRotationMatrix::MakeFromX(Direction).Rotator();
+	FRotator Rotator = FRotationMatrix::MakeFromX(Direction.GetSafeNormal()).Rotator();
 
 	//Set Spawner
 	FActorSpawnParameters SpawnParameters;

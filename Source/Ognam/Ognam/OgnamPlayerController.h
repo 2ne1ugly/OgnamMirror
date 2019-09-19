@@ -15,20 +15,17 @@ class OGNAM_API AOgnamPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
-	/*
-	**	Widgets
-	*/
 
 public:
 	AOgnamPlayerController();
 
-	/*
-	**	Binded Functions
-	*/
 	virtual void BeginPlay() override;
 	virtual void OnPawnDeath();
 	virtual void ClientRestart_Implementation(APawn* NewPawn) override;
 
+	UFUNCTION(Client, Unreliable)
+	void ClientFeedBackDamageDealt(FVector Location, float Damage);
+	void ClientFeedBackDamageDealt_Implementation(FVector Location, float Damage);
 private:
 
 	/*

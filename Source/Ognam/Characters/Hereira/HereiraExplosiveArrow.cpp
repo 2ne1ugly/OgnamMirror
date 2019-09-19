@@ -17,6 +17,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
+#include "Ognam/ImpactDamage.h"
 
 AHereiraExplosiveArrow::AHereiraExplosiveArrow()
 {
@@ -64,7 +65,7 @@ void AHereiraExplosiveArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, con
 	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
 	{
 		AController* Controller = Instigator->GetController();
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, Controller, this, UImpactDamage::StaticClass());
 		UHereiraWillExplode* Explosion = NewObject<UHereiraWillExplode>(OtherCharacter);
 		Explosion->SetInstigator(Instigator);
 		Explosion->RegisterComponent();

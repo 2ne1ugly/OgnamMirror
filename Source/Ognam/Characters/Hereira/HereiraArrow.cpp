@@ -13,6 +13,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "HereiraCanFastReload.h"
+#include "Ognam/ImpactDamage.h"
 
 // Sets default values
 AHereiraArrow::AHereiraArrow()
@@ -34,17 +35,22 @@ AHereiraArrow::AHereiraArrow()
 	Mesh->SetRelativeScale3D(FVector(0.66, 0.66, .66f));
 	Mesh->SetRelativeLocationAndRotation(FVector(-20.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
 
+	GravityScale = 1.f;
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->bInterpMovement = true;
 	Movement->bRotationFollowsVelocity = true;
 	Movement->bSweepCollision = true;
 	Movement->bShouldBounce = false;
-	Movement->InitialSpeed = 4000.f;
-	Movement->ProjectileGravityScale = 1.5f;
+	Movement->InitialSpeed = 6000.f;
 
 	RootComponent = Collision;
-
 	BaseDamage = 60.f;
+}
+
+void AHereiraArrow::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	Movement->ProjectileGravityScale = GravityScale;
 }
 
 // Called when the game starts or when spawned
@@ -91,7 +97,7 @@ void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitRe
 	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
 	{
 		AController* Controller = Instigator->GetController();
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, Controller, this, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, Controller, this, UImpactDamage::StaticClass());
 	}
 	Destroy();
 }

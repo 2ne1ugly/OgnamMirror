@@ -39,7 +39,7 @@ public:
 	virtual void MoveRight(float amount);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void OnRep_PlayerState() override;
-	virtual void PossessedBy(AController* Controller) override;
+	virtual void PossessedBy(AController* aController) override;
 
 	void MobilityPressed();
 	void MobilityReleased();

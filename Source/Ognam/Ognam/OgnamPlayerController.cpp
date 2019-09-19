@@ -8,6 +8,8 @@
 #include "OgnamCharacter.h"
 #include "UnrealNetwork.h"
 #include "OgnamCharacter.h"
+#include "Engine/World.h"
+#include "DamageText.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -64,4 +66,9 @@ void AOgnamPlayerController::ClientRestart_Implementation(APawn* aPawn)
 
 }
 
+void AOgnamPlayerController::ClientFeedBackDamageDealt_Implementation(FVector Location, float Damage)
+{
+	ADamageText* Text = GetWorld()->SpawnActor<ADamageText>(Location, FRotator::ZeroRotator);
+	Text->SetDamage(Damage);
+}
 

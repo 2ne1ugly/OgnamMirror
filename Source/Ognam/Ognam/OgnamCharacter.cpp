@@ -24,8 +24,8 @@ AOgnamCharacter::AOgnamCharacter()
 
 	//Create Spring arm and Camera
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm->TargetOffset = FVector(0, 0, 120);
-	SpringArm->SetRelativeRotation(FRotator(-30, 0, 0));
+	SpringArm->SocketOffset = FVector(0.f, 0.f, 120.f);
+	SpringArm->SetRelativeRotation(FRotator(-30.f, 0.f, 0.f));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->bUsePawnControlRotation = true;
 	SetActorScale3D(FVector(.75f, .75f, .75f));
@@ -36,8 +36,8 @@ AOgnamCharacter::AOgnamCharacter()
 	//Default mesh
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkMesh(TEXT("SkeletalMesh'/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.SK_Mannequin'"));
 	GetMesh()->SetSkeletalMesh(SkMesh.Object);
-	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
-	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	//Animations for the mesh, if animation starts to get buggy, check if this code is right.
 	static ConstructorHelpers::FObjectFinder<UClass> AnimBP(
 		TEXT("/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint_C"));
@@ -53,8 +53,8 @@ AOgnamCharacter::AOgnamCharacter()
 	//}
 
 	BaseMaxHealth = 200.f;
-	BaseDefense = 0.0f;
-	BaseSpeed = 600.0f;
+	BaseDefense = 0.f;
+	BaseSpeed = 600.f;
 
 	MaxHealth = BaseMaxHealth;
 	Defense = BaseDefense;
@@ -177,12 +177,12 @@ void AOgnamCharacter::OnRep_PlayerState()
 	GetMesh()->SetMaterial(0, Material);
 }
 
-void AOgnamCharacter::PossessedBy(AController * Controller)
+void AOgnamCharacter::PossessedBy(AController * aController)
 {
-	Super::PossessedBy(Controller);
+	Super::PossessedBy(aController);
 	// Assign team color
 	UMaterialInstanceConstant* Material = nullptr;
-	AOgnamPlayerState* OgnamPlayerState = Controller->GetPlayerState<AOgnamPlayerState>();
+	AOgnamPlayerState* OgnamPlayerState = aController->GetPlayerState<AOgnamPlayerState>();
 
 	if (!OgnamPlayerState)
 	{
@@ -436,16 +436,23 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	//Should check for damage events.
-	if (HasAuthority() && (!HasStatusEffect(EStatusEffect::Unbreakable)))
+	float AppliedDamage = Damage;
+	if (HasStatusEffect(EStatusEffect::Unbreakable))
 	{
-		Health -= Damage;
+		AppliedDamage = 0.f;
+	}
+
+	if (HasAuthority())
+	{
+		Health -= AppliedDamage;
 		if (Health <= 0)
 		{
 			Die();
 		}
+		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(EventInstigator);
+		PlayerController->ClientFeedBackDamageDealt(GetActorLocation(), AppliedDamage);
 	}
-	return Damage;
+	return AppliedDamage;
 }
 
 void AOgnamCharacter::Die_Implementation()
