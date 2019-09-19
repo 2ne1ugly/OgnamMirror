@@ -8,16 +8,6 @@
 
 AMaxwell::AMaxwell()
 {
-	/*
-	AimDownedCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Aim Down"));
-	AimDownedCamera->ComponentTags.Add(TEXT("ADS"));
-	AimDownedCamera->SetupAttachment(RootComponent);
-	AimDownedCamera->SetRelativeLocation(FVector(50.f, 0.f, 70.f));
-	AimDownedCamera->bUsePawnControlRotation = false;
-
-	AimDownedCamera->SetAbsolute(false, false);
-	AimDownedCamera->SetFieldOfView(30.f);
-	*/
 }
 
 void AMaxwell::BeginPlay()

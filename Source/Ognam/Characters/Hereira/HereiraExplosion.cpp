@@ -34,7 +34,6 @@ AHereiraExplosion::AHereiraExplosion()
 	ParticleSystem->SetRelativeLocation(FVector::ZeroVector);
 	ParticleSystem->SetTemplate(Emitter.Object);
 	ParticleSystem->bAutoActivate = false;
-	ParticleSystem->SetHiddenInGame(false);
 
 	ConstructorHelpers::FObjectFinder<USoundCue> SoundCue(TEXT("SoundCue'/Game/StarterContent/Audio/Explosion_Cue.Explosion_Cue'"));
 

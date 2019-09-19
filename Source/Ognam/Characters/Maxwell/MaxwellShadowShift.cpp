@@ -8,7 +8,7 @@
 UMaxwellShadowShift::UMaxwellShadowShift()
 {
 	AbilityType = EAbilityType::Mobility;
-	Cooldown = 3.5f;
+	Cooldown = 7.f;
 }
 
 void UMaxwellShadowShift::OnButtonPressed()

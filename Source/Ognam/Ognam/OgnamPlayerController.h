@@ -40,4 +40,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	class UUserWidget* CharacterHUD;
 
+	UPROPERTY()
+	class USoundCue* HitSound;
+
 };

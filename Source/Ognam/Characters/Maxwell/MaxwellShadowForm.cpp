@@ -22,8 +22,8 @@ void UMaxwellShadowForm::TickModifier(float DeltaTime)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Replicated, Vector: X %f, Y %f, Z %f"), Direction.X, Direction.Y, Direction.Z);
 	Target->AddMovementInput(Direction, 1.f, true);
-	Target->Acceleration += Target->BaseAcceleration * 2;
-	Target->Speed += Target->BaseSpeed * 2;
+	Target->Acceleration += Target->BaseAcceleration * 1;
+	Target->Speed += Target->BaseSpeed * 1;
 }
 
 void UMaxwellShadowForm::SetDirection(FVector Vector)

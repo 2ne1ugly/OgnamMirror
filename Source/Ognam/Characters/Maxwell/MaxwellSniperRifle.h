@@ -29,6 +29,10 @@ protected:
 	void NetDrawTrajectory(FVector From, FVector To);
 	void NetDrawTrajectory_Implementation(FVector From, FVector To);
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetPlayShotSound();
+	void NetPlayShotSound_Implementation();
+
 	friend class AOgnamCharacter;
 
 	//Sub
@@ -47,5 +51,11 @@ protected:
 
 	float BaseDamage;
 
+	UParticleSystem* ParticleSystem;
+
+	UPROPERTY(EditAnywhere)
 	class UAudioComponent* ShotSound;
+
+	UPROPERTY(EditAnywhere)
+	class UParticleSystemComponent* ShotTrail;
 };

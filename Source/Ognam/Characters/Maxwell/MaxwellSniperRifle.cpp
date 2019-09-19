@@ -14,15 +14,16 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
 #include "ConstructorHelpers.h"
+#include "Particles/ParticleSystemComponent.h"
 
 UMaxwellSniperRifle::UMaxwellSniperRifle()
 {
 	MaxAmmo = 5;
 	Ammo = MaxAmmo;
 	RoundsPerSecond = 3.f;
-	ReloadTime = 6.f;
+	ReloadTime = 4.f;
 
-	BaseDamage = 35.f;
+	BaseDamage = 50.f;
 
 	ConstructorHelpers::FObjectFinder<USoundCue> SniperShotCue(TEXT("SoundCue'/Game/Sounds/Maxwell/maxwell_shot_cue2.maxwell_shot_cue2'"));
 	ShotSound = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotSound"));
@@ -30,6 +31,9 @@ UMaxwellSniperRifle::UMaxwellSniperRifle()
 	ShotSound->SetSound(SniperShotCue.Object);
 	ShotSound->SetRelativeLocation(FVector::ZeroVector);
 	ShotSound->SetIsReplicated(true);
+	ShotSound->SetVolumeMultiplier(.345f);
+	ConstructorHelpers::FObjectFinder<UParticleSystem> SniperShotParticle(TEXT("ParticleSystem'/Game/ParagonMurdock/FX/Particles/Abilities/Primary/FX/P_Murdock_Bullet_Trail_Smoke_Spline.P_Murdock_Bullet_Trail_Smoke_Spline'"));
+	ParticleSystem = SniperShotParticle.Object;
 }
 
 void UMaxwellSniperRifle::BeginPlay()
@@ -37,6 +41,12 @@ void UMaxwellSniperRifle::BeginPlay()
 	Super::BeginPlay();
 
 	SubPressHandle = Target->OnSubPressed.AddUObject(this, &UMaxwellSniperRifle::ToggleAimDown);
+	ShotTrail = NewObject<UParticleSystemComponent>(Target);
+	ShotTrail->SetTemplate(ParticleSystem);
+	ShotTrail->SetAutoActivate(false);
+	ShotTrail->SetupAttachment(Target->GetRootComponent());
+	ShotTrail->SetRelativeLocation(FVector::ZeroVector);
+	ShotTrail->RegisterComponent();
 }
 
 void UMaxwellSniperRifle::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -59,14 +69,14 @@ void UMaxwellSniperRifle::FireBullet()
 	else
 		To = HitResult.TraceEnd;
 
-	ShotSound->Activate();
+	NetPlayShotSound();
 
 	//find direction to shoot bullets
 	FVector Direction = To - From;
 	Direction = Direction.GetSafeNormal();
 
 	//shoot ray from camera to see where it should land.
-	UE_LOG(LogTemp, Warning, TEXT("X %f, Y %f, Z %f"), Direction.X, Direction.Y, Direction.Z);
+	//UE_LOG(LogTemp, Warning, TEXT("X %f, Y %f, Z %f"), Direction.X, Direction.Y, Direction.Z);
 	FHitResult BulletHit;
 	GetWorld()->LineTraceSingleByProfile(BulletHit, From, From + Direction * 10000.f, TEXT("BlockAll"));
 
@@ -85,7 +95,6 @@ void UMaxwellSniperRifle::FireBullet()
 		NewObject<UMaxwellRecovering>(Target)->RegisterComponent();
 		Damage = 80.f;
 	}
-
 
 	//Get Target's player state
 	ACharacter* OtherCharacter = Cast<ACharacter>(BulletHit.Actor);
@@ -109,6 +118,14 @@ void UMaxwellSniperRifle::FireBullet()
 void UMaxwellSniperRifle::NetDrawTrajectory_Implementation(FVector From, FVector To)
 {
 	DrawDebugLine(GetWorld(), From, To, FColor::Red, false, 1.0f, 0, 3);
+	//ShotTrail->SetVectorParameter(TEXT("Length"), FVector((To - From).Size(), 0.f, 0.f));
+	//ShotTrail->SetVectorParameter(TEXT("Direction"), (To - From));
+	ShotTrail->ActivateSystem();
+}
+
+void UMaxwellSniperRifle::NetPlayShotSound_Implementation()
+{
+	ShotSound->Activate(true);
 }
 
 void UMaxwellSniperRifle::ToggleAimDown()

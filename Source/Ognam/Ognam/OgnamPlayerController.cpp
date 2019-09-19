@@ -10,6 +10,7 @@
 #include "OgnamCharacter.h"
 #include "Engine/World.h"
 #include "DamageText.h"
+#include "Sound/SoundCue.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -20,6 +21,10 @@ AOgnamPlayerController::AOgnamPlayerController()
 	}
 	else
 		UE_LOG(LogTemp, Warning, TEXT("%s Not Loaded"), __FUNCTION__);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundCue(TEXT("SoundCue'/Game/Sounds/General/hitsound_Cue.hitsound_Cue'"));
+
+	HitSound = HitSoundCue.Object;
 }
 
 void AOgnamPlayerController::BeginPlay()
@@ -70,5 +75,6 @@ void AOgnamPlayerController::ClientFeedBackDamageDealt_Implementation(FVector Lo
 {
 	ADamageText* Text = GetWorld()->SpawnActor<ADamageText>(Location, FRotator::ZeroRotator);
 	Text->SetDamage(Damage);
+	ClientPlaySound(HitSound, 1.f, 1.f);
 }
 
