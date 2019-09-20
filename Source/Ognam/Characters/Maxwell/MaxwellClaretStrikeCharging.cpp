@@ -38,7 +38,7 @@ void UMaxwellClaretStrikeCharging::EndModifier()
 	{
 		return;
 	}
-	Controller->ClientPlaySound(ChargeSoundCueStart, 1.f, 1.f);
+	Controller->ClientPlaySound(ChargeSoundCueStart, 25.f, 1.f);
 	NewObject<UMaxwellClaretStrikeCharged>(Target)->RegisterComponent();
 }
 
@@ -51,5 +51,5 @@ void UMaxwellClaretStrikeCharging::BeginModifier()
 	{
 		return;
 	}
-	Controller->ClientPlaySound(ChargeSoundCueStart, 1.f, 1.f);
+	Controller->ClientPlaySound(ChargeSoundCueStart, 25.f, 1.f);
 }
