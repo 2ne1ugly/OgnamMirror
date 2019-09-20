@@ -25,6 +25,10 @@ AOgnamPlayerController::AOgnamPlayerController()
 	static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundCue(TEXT("SoundCue'/Game/Sounds/General/hitsound_Cue.hitsound_Cue'"));
 
 	HitSound = HitSoundCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> KillSoundCue(TEXT("SoundCue'/Game/Sounds/General/Kill/ownage_Cue.ownage_Cue'"));
+
+	KillSound = KillSoundCue.Object;
 }
 
 void AOgnamPlayerController::BeginPlay()
@@ -76,5 +80,10 @@ void AOgnamPlayerController::ClientFeedBackDamageDealt_Implementation(FVector Lo
 	ADamageText* Text = GetWorld()->SpawnActor<ADamageText>(Location, FRotator::ZeroRotator);
 	Text->SetDamage(Damage);
 	ClientPlaySound(HitSound, 1.f, 1.f);
+}
+
+void AOgnamPlayerController::ClientFeedBackKill_Implementation()
+{
+	ClientPlaySound(KillSound, 10.f, 1.f);
 }
 

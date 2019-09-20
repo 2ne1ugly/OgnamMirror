@@ -26,6 +26,10 @@ public:
 	UFUNCTION(Client, Unreliable)
 	void ClientFeedBackDamageDealt(FVector Location, float Damage);
 	void ClientFeedBackDamageDealt_Implementation(FVector Location, float Damage);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientFeedBackKill();
+	void ClientFeedBackKill_Implementation();
 private:
 
 	/*
@@ -42,5 +46,8 @@ private:
 
 	UPROPERTY()
 	class USoundCue* HitSound;
+
+	UPROPERTY()
+	class USoundCue* KillSound;
 
 };

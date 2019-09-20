@@ -205,11 +205,11 @@ void ARitualGameState::DecideRoundWinner()
 	{
 		if (Itr->ShouldRoundEnd())
 		{
-			if (CurrentDefenseTeam == GreenName)
+			if (CurrentOffenseTeam == GreenName)
 			{
 				GreenScore++;
 			}
-			else if (CurrentDefenseTeam == BlueName)
+			else if (CurrentOffenseTeam == BlueName)
 			{
 				BlueScore++;
 			}

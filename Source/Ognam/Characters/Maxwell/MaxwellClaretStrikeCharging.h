@@ -21,4 +21,9 @@ public:
 
 protected:
 	virtual void EndModifier() override;
+	virtual void BeginModifier() override;
+
+private:
+	class USoundCue* ChargeSoundCueStart;
+	class USoundCue* ChargeSoundCueEnd;
 };

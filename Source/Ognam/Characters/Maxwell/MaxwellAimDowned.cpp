@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 bool UMaxwellAimDowned::ShouldEnd()
 {
 	return bInterrupted;
@@ -30,6 +31,7 @@ void UMaxwellAimDowned::BeginModifier()
 	Target->SpringArm->SocketOffset = FVector(15.f, 0.f, 50.f);
 	Target->SpringArm->TargetArmLength = 0.f;
 	Target->Camera->FieldOfView = 30.f;
+	Target->GetMesh()->SetOwnerNoSee(true);
 }
 
 void UMaxwellAimDowned::EndModifier()
@@ -42,4 +44,5 @@ void UMaxwellAimDowned::EndModifier()
 	Target->SpringArm->SocketOffset = FVector(0.f, 0.f, 120.f);
 	Target->SpringArm->TargetArmLength = 300.f;
 	Target->Camera->FieldOfView = 90.f;
+	Target->GetMesh()->SetOwnerNoSee(false);
 }

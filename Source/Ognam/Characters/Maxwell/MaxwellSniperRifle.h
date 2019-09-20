@@ -51,7 +51,11 @@ protected:
 
 	float BaseDamage;
 
-	UParticleSystem* ParticleSystem;
+	UPROPERTY()
+	class UParticleSystem* ParticleSystem;
+
+	UPROPERTY()
+	class USoundCue* ShotSoundCue;
 
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* ShotSound;

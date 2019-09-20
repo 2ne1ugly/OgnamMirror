@@ -27,12 +27,8 @@ UMaxwellSniperRifle::UMaxwellSniperRifle()
 	BaseDamage = 50.f;
 
 	ConstructorHelpers::FObjectFinder<USoundCue> SniperShotCue(TEXT("SoundCue'/Game/Sounds/Maxwell/maxwell_shot_cue2.maxwell_shot_cue2'"));
-	ShotSound = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotSound"));
-	ShotSound->SetAutoActivate(false);
-	ShotSound->SetSound(SniperShotCue.Object);
-	ShotSound->SetRelativeLocation(FVector::ZeroVector);
-	ShotSound->SetIsReplicated(true);
-	ShotSound->SetVolumeMultiplier(.345f);
+	ShotSoundCue = SniperShotCue.Object;
+
 	ConstructorHelpers::FObjectFinder<UParticleSystem> SniperShotParticle(TEXT("ParticleSystem'/Game/ParagonMurdock/FX/Particles/Abilities/Primary/FX/P_Murdock_Bullet_Trail_Smoke_Spline.P_Murdock_Bullet_Trail_Smoke_Spline'"));
 	ParticleSystem = SniperShotParticle.Object;
 }
@@ -48,6 +44,14 @@ void UMaxwellSniperRifle::BeginPlay()
 	ShotTrail->SetupAttachment(Target->GetRootComponent());
 	ShotTrail->SetRelativeLocation(FVector::ZeroVector);
 	ShotTrail->RegisterComponent();
+
+	ShotSound = NewObject<UAudioComponent>(Target);
+	ShotSound->SetAutoActivate(false);
+	ShotSound->SetSound(ShotSoundCue);
+	ShotSound->SetVolumeMultiplier(.345f);
+	ShotSound->SetupAttachment(Target->GetRootComponent());
+	ShotSound->SetRelativeLocation(FVector::ZeroVector);
+	ShotSound->RegisterComponent();
 }
 
 void UMaxwellSniperRifle::EndPlay(EEndPlayReason::Type EndPlayReason)

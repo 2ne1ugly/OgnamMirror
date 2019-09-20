@@ -44,7 +44,7 @@ AHereiraArrow::AHereiraArrow()
 	Movement->InitialSpeed = 6000.f;
 
 	RootComponent = Collision;
-	BaseDamage = 60.f;
+	BaseDamage = 75.f;
 }
 
 void AHereiraArrow::PostInitializeComponents()

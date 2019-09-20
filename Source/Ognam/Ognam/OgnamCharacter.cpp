@@ -444,13 +444,22 @@ float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	if (HasAuthority())
 	{
+		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(EventInstigator);
 		Health -= AppliedDamage;
+		if (PlayerController)
+		{
+			if (DamageCauser != this)
+				PlayerController->ClientFeedBackDamageDealt(GetActorLocation(), AppliedDamage);
+		}
 		if (Health <= 0)
 		{
 			Die();
+			if (PlayerController)
+			{
+				PlayerController->ClientFeedBackKill();
+			}
 		}
-		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(EventInstigator);
-		PlayerController->ClientFeedBackDamageDealt(GetActorLocation(), AppliedDamage);
+
 	}
 	return AppliedDamage;
 }
