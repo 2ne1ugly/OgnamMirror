@@ -15,6 +15,7 @@
 #include "Sound/SoundCue.h"
 #include "ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "MaxwellSniperTrail.h"
 
 UMaxwellSniperRifle::UMaxwellSniperRifle()
 {
@@ -117,10 +118,8 @@ void UMaxwellSniperRifle::FireBullet()
 
 void UMaxwellSniperRifle::NetDrawTrajectory_Implementation(FVector From, FVector To)
 {
-	DrawDebugLine(GetWorld(), From, To, FColor::Red, false, 1.0f, 0, 3);
-	//ShotTrail->SetVectorParameter(TEXT("Length"), FVector((To - From).Size(), 0.f, 0.f));
-	//ShotTrail->SetVectorParameter(TEXT("Direction"), (To - From));
-	ShotTrail->ActivateSystem();
+	AMaxwellSniperTrail* ShotTrail = GetWorld()->SpawnActor<AMaxwellSniperTrail>(From, (To - From).Rotation());
+	ShotTrail->SetActorScale3D(FVector((To - From).Size() / 95.f, 1.f, 1.f));
 }
 
 void UMaxwellSniperRifle::NetPlayShotSound_Implementation()
