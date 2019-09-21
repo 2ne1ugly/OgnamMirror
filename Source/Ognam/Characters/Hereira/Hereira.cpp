@@ -1,14 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Hereira.h"
-#include "ConstructorHelpers.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
 #include "HereiraSprint.h"
-#include "HereiraSprinting.h"
 #include "HereiraCrossbow.h"
-#include "HereiraLoadExplosiveShot.h"
+#include "HereiraThrowMolotov.h"
 
 AHereira::AHereira()
 {
@@ -31,7 +26,7 @@ void AHereira::BeginPlay()
 	Super::BeginPlay();
 	Weapon = NewObject<UHereiraCrossbow>(this, TEXT("Sprint"));
 	Mobility = NewObject<UHereiraSprint>(this, TEXT("Mobility"));
-	Unique = NewObject<UHereiraLoadExplosiveShot>(this, TEXT("Unique"));
+	Unique = NewObject<UHereiraThrowMolotov>(this, TEXT("Unique"));
 
 	Weapon->RegisterComponent();
 	Mobility->RegisterComponent();
