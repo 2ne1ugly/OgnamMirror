@@ -443,7 +443,7 @@ float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 	{
 		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(EventInstigator);
 		Health -= AppliedDamage;
-		if (PlayerController && EventInstigator != PlayerController)
+		if (PlayerController && GetController() != PlayerController)
 		{
 			PlayerController->ClientFeedBackDamageDealt(GetActorLocation(), AppliedDamage);
 		}
@@ -464,7 +464,8 @@ void AOgnamCharacter::Die_Implementation()
 {
 	GetMesh()->SetCollisionProfileName(TEXT("RagDoll"));
 	GetMesh()->SetSimulatePhysics(true);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	bIsAlive = false;
 
 	//For local player

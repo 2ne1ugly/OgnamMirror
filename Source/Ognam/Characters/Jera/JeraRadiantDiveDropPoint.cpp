@@ -6,8 +6,11 @@
 #include "Ognam/OgnamPlayerstate.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
+
 // Sets default values
 AJeraRadiantDiveDropPoint::AJeraRadiantDiveDropPoint()
 {
@@ -20,38 +23,39 @@ AJeraRadiantDiveDropPoint::AJeraRadiantDiveDropPoint()
 void AJeraRadiantDiveDropPoint::BeginPlay()
 {
 	Super::BeginPlay();
-	if (HasAuthority())
+	AOgnamPlayerState* PlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
+	if (!PlayerState)
 	{
-		AOgnamPlayerState* PlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
-		if (!PlayerState)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No player state in %s"), __FUNCTIONW__);
-			return;
-		}
+		UE_LOG(LogTemp, Warning, TEXT("No player state in %s"), __FUNCTIONW__);
+		return;
+	}
 
-		//Test Overlaps.
-		TArray<FOverlapResult> Overlaps;
-		TSet<AOgnamCharacter*> Affected;
-		FCollisionShape Shape;
-		Shape.SetSphere(300.f);
-		GetWorld()->OverlapMultiByObjectType(Overlaps, GetActorLocation(), FQuat(), ECollisionChannel::ECC_Pawn, Shape);
-		for (FOverlapResult& Result : Overlaps)
+	//Test Overlaps.
+	TArray<FOverlapResult> Overlaps;
+	FCollisionShape Shape;
+	Shape.SetSphere(300.f);
+	GetWorld()->OverlapMultiByObjectType(Overlaps, GetActorLocation(), FQuat(), ECollisionChannel::ECC_Pawn, Shape);
+	for (FOverlapResult& Result : Overlaps)
+	{
+		AOgnamCharacter* Character = Cast<AOgnamCharacter>(Result.Actor);
+		if (!Character)
 		{
-			AOgnamCharacter* Character = Cast<AOgnamCharacter>(Result.Actor);
-			if (!Character)
+			continue;
+		}
+		AOgnamPlayerState* OverlappedPlayerState = Character->GetPlayerState<AOgnamPlayerState>();
+		//if not on same team, push them up and deal damage
+		if ((!OverlappedPlayerState || OverlappedPlayerState->GetTeam() != PlayerState->GetTeam()) && !Affected.Contains(Character))
+		{
+			UGameplayStatics::ApplyDamage(Character, 50.f, Instigator->GetController(), this, nullptr);
+			if (Character->GetMesh()->IsSimulatingPhysics())
 			{
-				continue;
+				Character->GetMesh()->AddImpulse(FVector::UpVector * 50000.f);
 			}
-			AOgnamPlayerState* OverlappedPlayerState = Character->GetPlayerState<AOgnamPlayerState>();
-			//if not on same team, push them up and deal damage
-			if ((!OverlappedPlayerState || OverlappedPlayerState->GetTeam() != PlayerState->GetTeam()) && !Affected.Contains(Character))
+			else if (HasAuthority())
 			{
 				Character->GetCharacterMovement()->AddImpulse(FVector::UpVector * 100000.f);
-				UGameplayStatics::ApplyDamage(Character, 50.f, Instigator->GetController(), this, nullptr);
-				Affected.Add(Character);
 			}
+			Affected.Add(Character);
 		}
 	}
 }
-
-

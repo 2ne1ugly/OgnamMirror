@@ -17,4 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	AJeraRadiantDiveDropPoint();
 	virtual void BeginPlay() override;
+
+protected:
+	TSet<class AOgnamCharacter*> Affected;
 };
