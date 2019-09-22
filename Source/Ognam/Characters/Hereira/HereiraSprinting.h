@@ -33,7 +33,6 @@ public:
 	void Interrupt();
 
 protected:
-	virtual void BeginModifier() override;
 	virtual void EndModifier() override;
 
 	/*

@@ -19,7 +19,7 @@ AHereiraMolotovEmber::AHereiraMolotovEmber()
 	Collision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECR_Block);
 	Collision->SetSphereRadius(5.f);
-	Collision->bHiddenInGame = false;
+	//Collision->bHiddenInGame = false;
 	RootComponent = Collision;
 
 	Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Tirgger"));
@@ -27,7 +27,7 @@ AHereiraMolotovEmber::AHereiraMolotovEmber()
 	Trigger->SetupAttachment(RootComponent);
 	Trigger->SetRelativeLocation(FVector::ZeroVector);
 	Trigger->SetSphereRadius(64.f);
-	Trigger->bHiddenInGame = false;
+	//Trigger->bHiddenInGame = false;
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &AHereiraMolotovEmber::BeginOverlap);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &AHereiraMolotovEmber::EndOverlap);
 

@@ -63,9 +63,9 @@ AOgnamCharacter::AOgnamCharacter()
 	Health = MaxHealth;
 
 	BaseAcceleration = 1536.f;
+	BaseAirControl = 2.f;
 
 	GetCharacterMovement()->BrakingFrictionFactor = .5f;
-	GetCharacterMovement()->AirControl = 2.f;
 	GetCharacterMovement()->GravityScale = 1.5f;
 	GetCharacterMovement()->JumpZVelocity = 510.f;
 
@@ -78,14 +78,6 @@ void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AOgnamCharacter, Health);
-	DOREPLIFETIME(AOgnamCharacter, BaseMaxHealth);
-	DOREPLIFETIME(AOgnamCharacter, MaxHealth);
-	DOREPLIFETIME(AOgnamCharacter, BaseDefense);
-	DOREPLIFETIME(AOgnamCharacter, Defense);
-	DOREPLIFETIME(AOgnamCharacter, BaseSpeed);
-	DOREPLIFETIME(AOgnamCharacter, Speed);
-	DOREPLIFETIME(AOgnamCharacter, BaseAcceleration);
-	DOREPLIFETIME(AOgnamCharacter, Acceleration);
 	DOREPLIFETIME(AOgnamCharacter, bIsJumping);
 	DOREPLIFETIME(AOgnamCharacter, bIsAlive);
 }
@@ -98,7 +90,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	Defense = BaseDefense;
 	Speed = BaseSpeed;
 	Acceleration = BaseAcceleration;
-
+	AirControl = BaseAirControl;
 	//Check ending conditions of Modiifers and apply tick.
 	for (int i = Modifiers.Num() - 1; i >= 0; i--)
 	{
@@ -113,6 +105,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	}
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 	GetCharacterMovement()->MaxAcceleration = Acceleration;
+	GetCharacterMovement()->AirControl = AirControl;
 
 	if (NumInputs > 0)
 	{
@@ -424,6 +417,10 @@ float AOgnamCharacter::GetSpeedFromVector(FVector Vector)
 
 void AOgnamCharacter::Jump()
 {
+	if (!GetCharacterMovement()->IsMovingOnGround())
+	{
+		return;
+	}
 	ACharacter::Jump();
 	bIsJumping = true;
 	ServerJump();
@@ -442,14 +439,13 @@ float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 		AppliedDamage = 0.f;
 	}
 
-	if (HasAuthority())
+	if (HasAuthority() && bIsAlive)
 	{
 		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(EventInstigator);
 		Health -= AppliedDamage;
-		if (PlayerController)
+		if (PlayerController && EventInstigator != PlayerController)
 		{
-			if (DamageCauser != this)
-				PlayerController->ClientFeedBackDamageDealt(GetActorLocation(), AppliedDamage);
+			PlayerController->ClientFeedBackDamageDealt(GetActorLocation(), AppliedDamage);
 		}
 		if (Health <= 0)
 		{

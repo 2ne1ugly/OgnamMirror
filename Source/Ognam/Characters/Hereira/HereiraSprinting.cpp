@@ -39,11 +39,6 @@ void UHereiraSprinting::Interrupt()
 	bInterrupted = true;
 }
 
-void UHereiraSprinting::BeginModifier()
-{
-	Super::BeginModifier();
-}
-
 void UHereiraSprinting::EndModifier()
 {
 	if (bInterrupted || !Ability)

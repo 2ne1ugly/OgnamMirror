@@ -12,31 +12,8 @@ UHereiraThrowMolotov::UHereiraThrowMolotov()
 	Cooldown = 1.f;
 }
 
-bool UHereiraThrowMolotov::ShouldShowNumber() const
+void UHereiraThrowMolotov::ActivateAbility()
 {
-	return GetWorld()->GetTimerManager().IsTimerActive(MolotovCooldown);
-}
-
-float UHereiraThrowMolotov::GetNumber() const
-{
-	return GetWorld()->GetTimerManager().GetTimerRemaining(MolotovCooldown);
-}
-
-void UHereiraThrowMolotov::OnButtonPressed()
-{
-	if (GetWorld()->GetTimerManager().IsTimerActive(MolotovCooldown))
-	{
-		return;
-	}
-	ServerThrowMolotov();
-}
-
-void UHereiraThrowMolotov::ServerThrowMolotov_Implementation()
-{
-	if (GetWorld()->GetTimerManager().IsTimerActive(MolotovCooldown))
-	{
-		return;
-	}
 	float UpRatio = 0.1f;
 	FVector Direction = Target->Camera->GetForwardVector().GetSafeNormal();
 	FVector MolotovDirection = UpRatio * FVector::UpVector + (1 - UpRatio) * Direction;
@@ -46,11 +23,4 @@ void UHereiraThrowMolotov::ServerThrowMolotov_Implementation()
 	SpawnParam.Instigator = Target;
 	AHereiraMolotov* Molotov = GetWorld()->SpawnActor<AHereiraMolotov>(Target->GetActorLocation(), MolotovDirection.Rotation(), SpawnParam);
 	Molotov->SetReplicates(true);
-	Target->GetWorldTimerManager().SetTimer(MolotovCooldown, Cooldown, false);
-	ClientFeedbackThrowMolotov();
-}
-
-void UHereiraThrowMolotov::ClientFeedbackThrowMolotov_Implementation()
-{
-	Target->GetWorldTimerManager().SetTimer(MolotovCooldown, Cooldown, false);
 }

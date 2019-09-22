@@ -40,7 +40,10 @@ void UModifier::EndPlay(EEndPlayReason::Type EndPlayReason)
 		UE_LOG(LogTemp, Error, TEXT("Modifier applied to non-ognam character"));
 		return;
 	}
-	EndModifier();
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		EndModifier();
+	}
 	Target->Modifiers.Remove(this);
 }
 

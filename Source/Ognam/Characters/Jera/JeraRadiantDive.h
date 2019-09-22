@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/PromptActiveAbility.h"
-#include "HereiraThrowMolotov.generated.h"
+#include "JeraRadiantDive.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UHereiraThrowMolotov : public UPromptActiveAbility
+class OGNAM_API UJeraRadiantDive : public UPromptActiveAbility
 {
 	GENERATED_BODY()
 
 public:
-	UHereiraThrowMolotov();
+	UJeraRadiantDive();
 
 protected:
 	//Server Call
