@@ -16,7 +16,7 @@ AHereiraMolotov::AHereiraMolotov()
 	Collision->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	Collision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECR_Block);
-	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
+	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Block);
 	Collision->SetSphereRadius(17.f);
 	RootComponent = Collision;
 
@@ -62,5 +62,7 @@ void AHereiraMolotov::ProjectileStop(const FHitResult& ImpactResult)
 void AHereiraMolotov::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Collision->MoveIgnoreActors.Add(Instigator);
 }
 

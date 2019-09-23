@@ -24,14 +24,14 @@ AHereiraArrow::AHereiraArrow()
 	Collision->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	Collision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECR_Block);
-	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
-	Collision->OnComponentBeginOverlap.AddDynamic(this, &AHereiraArrow::OnBeginOverlap);
+	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Block);
+	RootComponent = Collision;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowObj(TEXT("StaticMesh'/Game/Meshes/Arrow/M_Arrow_Static.M_Arrow_Static'"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Collision);
 	Mesh->SetStaticMesh(ArrowObj.Object);
-	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh->SetRelativeScale3D(FVector(0.66, 0.66, .66f));
 	Mesh->SetRelativeLocationAndRotation(FVector(-20.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
 
@@ -42,8 +42,9 @@ AHereiraArrow::AHereiraArrow()
 	Movement->bSweepCollision = true;
 	Movement->bShouldBounce = false;
 	Movement->InitialSpeed = 6000.f;
+	Movement->OnProjectileStop.AddDynamic(this, &AHereiraArrow::ProjectileStop);
+	//Stop happens only when two collision is blocking eachother.
 
-	RootComponent = Collision;
 	BaseDamage = 75.f;
 }
 
@@ -61,23 +62,18 @@ void AHereiraArrow::BeginPlay()
 	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraArrow::EndLifeSpan, 3., false);
 }
 
-void AHereiraArrow::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AHereiraArrow::ProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!Instigator)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
 		return;
 	}
-	if (!bFromSweep)
-	{
-		return;
-	}
 
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(OtherActor);
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(ImpactResult.GetActor());
 	if (Character)
 	{
-		OnCharacterHit(Character, SweepResult);
+		OnCharacterHit(Character, ImpactResult);
 	}
 }
 

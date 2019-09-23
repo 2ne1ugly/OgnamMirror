@@ -3,6 +3,7 @@
 
 #include "Jera.h"
 #include "JeraRadiantDive.h"
+#include "JeraSuppressiveImpact.h"
 
 AJera::AJera()
 {
@@ -15,9 +16,9 @@ void AJera::BeginPlay()
 
 	//Weapon = NewObject<UHereiraCrossbow>(this, TEXT("Sprint"));
 	Mobility = NewObject<UJeraRadiantDive>(this, TEXT("Mobility"));
-	//Unique = NewObject<UHereiraThrowMolotov>(this, TEXT("Unique"));
+	Unique = NewObject<UJeraSuppressiveImpact>(this, TEXT("Unique"));
 
 	//Weapon->RegisterComponent();
 	Mobility->RegisterComponent();
-	//Unique->RegisterComponent();
+	Unique->RegisterComponent();
 }

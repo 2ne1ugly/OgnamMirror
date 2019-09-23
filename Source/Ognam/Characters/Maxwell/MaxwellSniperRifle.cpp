@@ -83,7 +83,9 @@ void UMaxwellSniperRifle::FireBullet()
 	//shoot ray from camera to see where it should land.
 	//UE_LOG(LogTemp, Warning, TEXT("X %f, Y %f, Z %f"), Direction.X, Direction.Y, Direction.Z);
 	FHitResult BulletHit;
-	GetWorld()->LineTraceSingleByProfile(BulletHit, From, From + Direction * 10000.f, TEXT("BlockAll"));
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(Target);
+	GetWorld()->LineTraceSingleByChannel(BulletHit, From, From + Direction * 10000.f, ECollisionChannel::ECC_GameTraceChannel1, Params);
 
 	//DrawLine
 	FVector BulletTo;
