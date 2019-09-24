@@ -43,19 +43,10 @@ AOgnamCharacter::AOgnamCharacter()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Overlap);
 
-	//Animations for the mesh, if animation starts to get buggy, check if this code is right.
 	static ConstructorHelpers::FObjectFinder<UClass> AnimBP(
 		TEXT("/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint_C"));
-	//static ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimBP_PIE(
-	//	TEXT("AnimBlueprint'/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint'"));
-	//if (AnimBP_PIE.Object != nullptr)
-	//{
-	//	GetMesh()->SetAnimInstanceClass(AnimBP_PIE.Object->GeneratedClass);
-	//}
-	//else
-	//{
-		GetMesh()->SetAnimInstanceClass(AnimBP.Object);
-	//}
+
+	GetMesh()->SetAnimInstanceClass(AnimBP.Object);
 
 	BaseMaxHealth = 200.f;
 	BaseDefense = 0.f;

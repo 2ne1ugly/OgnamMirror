@@ -4,16 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/OgnamCharacter.h"
-#include "Ismael.generated.h"
+#include "Gelasius.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API AIsmael : public AOgnamCharacter
+class OGNAM_API AGelasius : public AOgnamCharacter
 {
 	GENERATED_BODY()
+	
+public:
+	AGelasius();
 
 	virtual void BeginPlay() override;
-	
 };
