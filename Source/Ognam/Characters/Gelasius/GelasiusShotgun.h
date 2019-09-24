@@ -26,4 +26,7 @@ public:
 private:
 	float DamagePerPellet;
 	int32 PelletCount;
+	
+	UPROPERTY(EditAnywhere)
+	float Dist;
 };

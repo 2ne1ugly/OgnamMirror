@@ -9,7 +9,7 @@
 UHereiraThrowMolotov::UHereiraThrowMolotov()
 {
 	AbilityType = EAbilityType::Unique;
-	Cooldown = 1.f;
+	Cooldown = 10.f;
 }
 
 void UHereiraThrowMolotov::ActivateAbility()
