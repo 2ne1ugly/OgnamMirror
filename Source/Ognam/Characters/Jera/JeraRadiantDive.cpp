@@ -14,6 +14,8 @@ UJeraRadiantDive::UJeraRadiantDive()
 
 void UJeraRadiantDive::ActivateAbility()
 {
+	Target->GetCharacterMovement()->Velocity.Z = 0.f;
 	Target->GetCharacterMovement()->AddImpulse(FVector::UpVector * 100000.f + Target->GetActorForwardVector() * 100000.f);
+	Target->GetCharacterMovement()->MovementMode = MOVE_Falling;
 	NewObject<UJeraDescending>(Target)->RegisterComponent();
 }

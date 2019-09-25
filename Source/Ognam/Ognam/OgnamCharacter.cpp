@@ -133,7 +133,6 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MoveRight", this, &AOgnamCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("CameraYaw", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("CameraPitch", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AOgnamCharacter::Jump);
 
 	PlayerInputComponent->BindAction("Basic", IE_Pressed, this, &AOgnamCharacter::BasicPressed);
 	PlayerInputComponent->BindAction("Basic", IE_Released, this, &AOgnamCharacter::BasicReleased);
@@ -150,6 +149,7 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Special", IE_Pressed, this, &AOgnamCharacter::SpecialPressed);
 	PlayerInputComponent->BindAction("Special", IE_Released, this, &AOgnamCharacter::SpecialReleased);
 
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AOgnamCharacter::Jump);
 }
 
 void AOgnamCharacter::OnRep_PlayerState()
@@ -406,6 +406,11 @@ bool AOgnamCharacter::HasStatusEffect(EStatusEffect StatusEffect)
 
 void AOgnamCharacter::ServerJump_Implementation()
 {
+	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted) || GetCharacterMovement()->Velocity.Z > 0.f)
+	{
+		return;
+	}
+	ACharacter::Jump();
 	bIsJumping = true;
 }
 
@@ -422,7 +427,7 @@ float AOgnamCharacter::GetSpeedFromVector(FVector Vector)
 
 void AOgnamCharacter::Jump()
 {
-	if (!GetCharacterMovement()->IsMovingOnGround())
+	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted))
 	{
 		return;
 	}

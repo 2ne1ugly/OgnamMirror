@@ -124,8 +124,8 @@ void UMaxwellSniperRifle::FireBullet()
 
 void UMaxwellSniperRifle::NetDrawTrajectory_Implementation(FVector From, FVector To)
 {
-	AMaxwellSniperTrail* ShotTrail = GetWorld()->SpawnActor<AMaxwellSniperTrail>(From, (To - From).Rotation());
-	ShotTrail->SetActorScale3D(FVector((To - From).Size() / 95.f, 1.f, 1.f));
+	AMaxwellSniperTrail* Trail = GetWorld()->SpawnActor<AMaxwellSniperTrail>(From, (To - From).Rotation());
+	Trail->SetActorScale3D(FVector((To - From).Size() / 95.f, 1.f, 1.f));
 }
 
 void UMaxwellSniperRifle::NetPlayShotSound_Implementation()

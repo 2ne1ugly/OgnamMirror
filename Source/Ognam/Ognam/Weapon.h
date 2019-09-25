@@ -22,10 +22,20 @@ public:
 protected:
 	virtual void BasicPressed();
 	virtual void BasicReleased();
+	virtual void SubPressed();
+	virtual void SubReleased();
 
+	/*
+	**	Props
+	*/
 	UPROPERTY(VisibleAnywhere)
 	class AOgnamCharacter* Target;
 
 	FDelegateHandle BasicPressHandle;
 	FDelegateHandle BasicReleaseHandle;
+
+	bool bBindSub;
+
+	FDelegateHandle SubPressHandle;
+	FDelegateHandle SubReleaseHandle;
 };

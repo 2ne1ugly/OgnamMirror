@@ -25,4 +25,12 @@ class OGNAM_API AJeraCrystalSpear : public AActor
 
 public:
 	AJeraCrystalSpear();
+
+	virtual void BeginPlay() override;
+
+protected:
+	UFUNCTION()
+	virtual void ProjectileStop(const FHitResult& ImpactResult);
+
+	float BaseDamage;
 };

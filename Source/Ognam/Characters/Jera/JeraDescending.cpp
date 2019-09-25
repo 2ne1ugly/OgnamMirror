@@ -6,6 +6,11 @@
 #include "Engine/World.h"
 #include "JeraRadiantDiveDropPoint.h"
 
+UJeraDescending::UJeraDescending()
+{
+	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced;
+}
+
 bool UJeraDescending::ShouldEnd()
 {
 	return !Target->GetCharacterMovement()->IsFalling();

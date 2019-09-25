@@ -19,6 +19,7 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void TickModifier(float DeltaTime) override;
+	virtual void BeginModifier() override;
 
 	void SetDirection(FVector Vector);
 protected:

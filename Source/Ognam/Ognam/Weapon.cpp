@@ -22,6 +22,11 @@ void UWeapon::BeginPlay()
 
 	BasicPressHandle = Target->OnBasicPressed.AddUObject(this, &UWeapon::BasicPressed);
 	BasicReleaseHandle = Target->OnBasicReleased.AddUObject(this, &UWeapon::BasicReleased);
+	if (bBindSub)
+	{
+		SubPressHandle = Target->OnBasicPressed.AddUObject(this, &UWeapon::SubPressed);
+		SubReleaseHandle = Target->OnBasicReleased.AddUObject(this, &UWeapon::SubReleased);
+	}
 }
 
 void UWeapon::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -29,6 +34,11 @@ void UWeapon::EndPlay(EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 	Target->OnBasicPressed.Remove(BasicPressHandle);
 	Target->OnBasicReleased.Remove(BasicReleaseHandle);
+	if (SubPressHandle.IsValid())
+	{
+		Target->OnSubPressed.Remove(SubPressHandle);
+		Target->OnSubReleased.Remove(SubReleaseHandle);
+	}
 }
 
 void UWeapon::BasicPressed()
@@ -36,5 +46,13 @@ void UWeapon::BasicPressed()
 }
 
 void UWeapon::BasicReleased()
+{
+}
+
+void UWeapon::SubPressed()
+{
+}
+
+void UWeapon::SubReleased()
 {
 }

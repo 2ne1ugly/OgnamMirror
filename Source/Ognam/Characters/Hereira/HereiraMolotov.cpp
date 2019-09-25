@@ -35,6 +35,8 @@ AHereiraMolotov::AHereiraMolotov()
 	Movement->InitialSpeed = 2000.f;
 	Movement->ProjectileGravityScale = 1.5f;
 	Movement->OnProjectileStop.AddDynamic(this, &AHereiraMolotov::ProjectileStop);
+
+	InitialLifeSpan = 10.f;
 }
 
 void AHereiraMolotov::ProjectileStop(const FHitResult& ImpactResult)

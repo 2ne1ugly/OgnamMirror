@@ -15,6 +15,8 @@ class OGNAM_API UJeraDescending : public UModifier
 	GENERATED_BODY()
 
 public:
+	UJeraDescending();
+
 	virtual bool ShouldEnd() override;
 
 	virtual void TickModifier(float DeltaTime) override;
