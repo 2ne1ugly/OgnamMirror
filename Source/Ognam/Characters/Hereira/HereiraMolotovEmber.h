@@ -22,10 +22,17 @@ class OGNAM_API AHereiraMolotovEmber : public AActor
 
 	UPROPERTY(EditAnywhere)
 	class UParticleSystemComponent* ParticleSystem;
+
+	UPROPERTY(EditAnywhere)
+	class UAudioComponent* BurningAudio;
+
+	UPROPERTY(EditAnywhere)
+	class UAudioComponent* BreakingAudio;
 public:	
 	AHereiraMolotovEmber();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
 protected:
 	UFUNCTION()
