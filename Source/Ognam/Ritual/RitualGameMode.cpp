@@ -9,6 +9,7 @@
 #include "EngineUtils.h"
 #include "Engine.h"
 #include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 
 ARitualGameMode::ARitualGameMode()
 {
@@ -51,7 +52,14 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 	{
 		return;
 	}
-	MaxNumPlayers = 2;
+
+	FString PlayerCount = UGameplayStatics::ParseOption(Options, "numplayers");
+	UE_LOG(LogTemp, Warning, TEXT("%s\n"), *Options);
+	UE_LOG(LogTemp, Warning, TEXT("%s\n"), *PlayerCount);
+	MaxNumPlayers = FCString::Atoi(*PlayerCount);
+
+	if (MaxNumPlayers == 0)
+		MaxNumPlayers = 2;
 }
 
 bool ARitualGameMode::ReadyToStartMatch_Implementation()
@@ -207,6 +215,11 @@ void ARitualGameMode::PreLogin(const FString& Options, const FString& Address, c
 	if (NumPlayers == MaxNumPlayers)
 	{
 		ErrorMessage = TEXT("Match Full");
+	}
+	UE_LOG(LogTemp, Warning, TEXT("%s\n"), *Options);
+	if (IsRunningDedicatedServer())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("This is running Dedicated Server"));
 	}
 }
 

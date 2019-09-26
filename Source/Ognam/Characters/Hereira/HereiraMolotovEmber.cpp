@@ -46,12 +46,12 @@ AHereiraMolotovEmber::AHereiraMolotovEmber()
 	ParticleSystem->SetupAttachment(RootComponent);
 	ParticleSystem->SetRelativeLocation(FVector::ZeroVector);
 
-	static ConstructorHelpers::FObjectFinder<USoundCue> GlassBreak(TEXT("SoundCue'/Game/Sounds/Hereira/molotov_break_Cue.molotov_break_Cue'"));
-	BreakingAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("GlassAudioComponent"));
-	BreakingAudio->SetSound(GlassBreak.Object);
-	BreakingAudio->SetupAttachment(RootComponent);
-	BreakingAudio->SetRelativeLocation(FVector::ZeroVector);
-	BreakingAudio->bAutoActivate = false;
+	//static ConstructorHelpers::FObjectFinder<USoundCue> GlassBreak(TEXT("SoundCue'/Game/Sounds/Hereira/molotov_break_Cue.molotov_break_Cue'"));
+	//BreakingAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("GlassAudioComponent"));
+	//BreakingAudio->SetSound(GlassBreak.Object);
+	//BreakingAudio->SetupAttachment(RootComponent);
+	//BreakingAudio->SetRelativeLocation(FVector::ZeroVector);
+	//BreakingAudio->bAutoActivate = false;
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> Burning(TEXT("SoundCue'/Game/StarterContent/Audio/Fire01_Cue.Fire01_Cue'"));
 	BurningAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("BurningAudioComponent"));
@@ -68,7 +68,7 @@ void AHereiraMolotovEmber::BeginPlay()
 	Super::BeginPlay();
 
 	BurningAudio->Play();
-	BreakingAudio->Play();
+	//BreakingAudio->Play();
 }
 
 void AHereiraMolotovEmber::Tick(float DeltaTime)

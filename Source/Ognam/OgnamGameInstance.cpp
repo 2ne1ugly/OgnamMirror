@@ -35,10 +35,10 @@ bool UOgnamGameInstance::CreateSession(FName SessionName, bool bIsLAN, bool bIsP
 			SessionSettings.bShouldAdvertise = true;
 			SessionSettings.bAllowJoinInProgress = true;
 			SessionSettings.bIsLANMatch = bIsLAN;
-			SessionSettings.bIsDedicated = false;
+			SessionSettings.bIsDedicated = IsRunningDedicatedServer();;
 			SessionSettings.bUsesStats = false;
 			SessionSettings.bAllowInvites = true;
-			SessionSettings.bUsesPresence = bIsPresence;
+			SessionSettings.bUsesPresence = bIsPresence;//bIsPresence;
 			SessionSettings.bAllowJoinViaPresence = true;
 			SessionSettings.bAllowJoinViaPresenceFriendsOnly = false;
 			SessionSettings.bAntiCheatProtected = false;
@@ -127,8 +127,8 @@ void UOgnamGameInstance::StartSessionComplete(FName SessionName, bool bWasSucces
 
 	if (bWasSuccessful)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Opening Level...")));
-		UGameplayStatics::OpenLevel(GetWorld(), "de_ognam", true, "listen");
+//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Opening Level...")));
+//		UGameplayStatics::OpenLevel(GetWorld(), "de_ognam", true);
 	}
 }
 
