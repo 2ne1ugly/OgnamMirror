@@ -19,10 +19,15 @@ bool UJeraDescending::ShouldEnd()
 void UJeraDescending::TickModifier(float DeltaTime)
 {
 	Target->AirControl += Target->BaseAirControl * 3;
+	Target->Gravity += Target->BaseGravity;
 }
 
 void UJeraDescending::EndModifier()
 {
+	if (!Target->IsAlive())
+	{
+		return;
+	}
 	if (Target->HasAuthority())
 	{
 		FActorSpawnParameters Params;

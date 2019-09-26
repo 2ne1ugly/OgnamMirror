@@ -46,3 +46,17 @@ void UMaxwellAimDowned::EndModifier()
 	Target->Camera->FieldOfView = 90.f;
 	Target->GetMesh()->SetOwnerNoSee(false);
 }
+
+void UMaxwellAimDowned::StatusEffectApplied(EStatusEffect StatusEffect)
+{
+}
+
+void UMaxwellAimDowned::ActionTaken(EActionType ActionType)
+{
+	if (ActionType == EActionType::Jump ||
+		ActionType == EActionType::SpecialMovement ||
+		ActionType == EActionType::Death)
+	{
+		bInterrupted = true;
+	}
+}

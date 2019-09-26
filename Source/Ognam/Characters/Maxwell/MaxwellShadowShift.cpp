@@ -14,7 +14,8 @@ UMaxwellShadowShift::UMaxwellShadowShift()
 
 void UMaxwellShadowShift::OnButtonPressed()
 {
-	if (Target->GetWorldTimerManager().IsTimerActive(ShadowShiftCooldown))
+	if (Target->GetWorldTimerManager().IsTimerActive(ShadowShiftCooldown) ||
+		Target->HasStatusEffect(EStatusEffect::Rooted | EStatusEffect::Silenced))
 	{
 		return;
 	}
@@ -23,10 +24,12 @@ void UMaxwellShadowShift::OnButtonPressed()
 
 void UMaxwellShadowShift::ServerCastShadowShift_Implementation(FVector Direction)
 {
-	if (Target->GetWorldTimerManager().IsTimerActive(ShadowShiftCooldown))
+	if (Target->GetWorldTimerManager().IsTimerActive(ShadowShiftCooldown) ||
+		Target->HasStatusEffect(EStatusEffect::Rooted | EStatusEffect::Silenced))
 	{
 		return;
 	}
+	Target->TakeAction(EActionType::SpecialMovement);
 	UMaxwellShadowForm* ShadowForm = NewObject<UMaxwellShadowForm>(Target);
 	ShadowForm->SetDirection(Direction);
 	ShadowForm->RegisterComponent();

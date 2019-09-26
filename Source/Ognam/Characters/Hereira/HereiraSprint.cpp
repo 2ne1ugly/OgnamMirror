@@ -23,7 +23,9 @@ float UHereiraSprint::GetNumber() const
 
 void UHereiraSprint::OnButtonPressed()
 {
-	if (Target->GetWorldTimerManager().IsTimerActive(SprintCooldown) || Target->GetModifier<UHereiraSprinting>())
+	if (Target->GetWorldTimerManager().IsTimerActive(SprintCooldown) ||
+		Target->GetModifier<UHereiraSprinting>() || 
+		Target->HasStatusEffect(EStatusEffect::Silenced | EStatusEffect::Rooted))
 	{
 		return;
 	}
@@ -37,10 +39,13 @@ void UHereiraSprint::OnButtonReleased()
 
 void UHereiraSprint::ServerStartSprint_Implementation()
 {
-	if (Target->GetWorldTimerManager().IsTimerActive(SprintCooldown) || Target->GetModifier<UHereiraSprinting>())
+	if (Target->GetWorldTimerManager().IsTimerActive(SprintCooldown) ||
+		Target->GetModifier<UHereiraSprinting>() ||
+		Target->HasStatusEffect(EStatusEffect::Silenced | EStatusEffect::Rooted))
 	{
 		return;
 	}
+	Target->TakeAction(EActionType::Focus);
 	UHereiraSprinting* Sprinting = NewObject<UHereiraSprinting>(Target);
 	Sprinting->SetAbility(this);
 	Sprinting->RegisterComponent();
@@ -56,6 +61,20 @@ void UHereiraSprint::ServerStopSprint_Implementation()
 	Sprinting->Interrupt();
 	Target->GetWorldTimerManager().SetTimer(SprintCooldown, Cooldown, false);
 	ClientEndSprint();
+}
+
+void UHereiraSprint::StatusEffectApplied(EStatusEffect StatusEffect)
+{
+	//If status effect contains silenced
+	if ((StatusEffect & EStatusEffect::Rooted) != EStatusEffect::None &&
+		Target->GetModifier<UHereiraSprinting>())
+	{
+		ServerStopSprint_Implementation();
+	}
+}
+
+void UHereiraSprint::ActionTaken(EActionType ActionType)
+{
 }
 
 void UHereiraSprint::ClientEndSprint_Implementation()

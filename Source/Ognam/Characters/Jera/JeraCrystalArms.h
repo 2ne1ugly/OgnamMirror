@@ -22,7 +22,47 @@ public:
 protected:
 	virtual void StartPeriSwing() override;
 	virtual void StartPostSwing() override;
-	virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter) override;
 
-	class UBoxComponent* BoxTrigger;
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetStartPeriSwing();
+	void NetStartPeriSwing_Implementation();
+
+	void EndPeriSwing();
+
+
+	virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void SubPressed() override;
+
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void ServerSubPressed();
+	virtual bool ServerSubPressed_Validate() { return true; }
+	virtual void ServerSubPressed_Implementation();
+
+	//Server Call
+	virtual void ChargeShard();
+
+	//Server Call
+	virtual void FireShard();
+
+	/*
+	**	Props
+	*/
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* BoxTrigger;
+
+	UPROPERTY(VisibleAnywhere)
+	class UMaterial* DamageBoxMaterial;
+
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMesh* DamageBoxMesh;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	int32 ShardCharge;
+
+	int32 MaxShardCharge;
+	float ChargePeriod;
+
+	FTimerHandle ShardChargeTimer;
+	FTimerHandle BoxVisualizeTimer;
 };

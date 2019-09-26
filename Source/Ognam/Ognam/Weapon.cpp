@@ -24,8 +24,8 @@ void UWeapon::BeginPlay()
 	BasicReleaseHandle = Target->OnBasicReleased.AddUObject(this, &UWeapon::BasicReleased);
 	if (bBindSub)
 	{
-		SubPressHandle = Target->OnBasicPressed.AddUObject(this, &UWeapon::SubPressed);
-		SubReleaseHandle = Target->OnBasicReleased.AddUObject(this, &UWeapon::SubReleased);
+		SubPressHandle = Target->OnSubPressed.AddUObject(this, &UWeapon::SubPressed);
+		SubReleaseHandle = Target->OnSubReleased.AddUObject(this, &UWeapon::SubReleased);
 	}
 }
 

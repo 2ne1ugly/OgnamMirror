@@ -16,7 +16,8 @@ void UMaxwellClaretStrike::OnButtonPressed()
 {
 	if (!Target->GetModifier<UMaxwellAimDowned>() ||
 		Target->GetModifier<UMaxwellClaretStrikeCharged>() ||
-		Target->GetModifier<UMaxwellClaretStrikeCharging>())
+		Target->GetModifier<UMaxwellClaretStrikeCharging>() ||
+		Target->HasStatusEffect(EStatusEffect::Silenced))
 	{
 		return;
 	}
@@ -27,7 +28,8 @@ void UMaxwellClaretStrike::ServerChargeClaretStrike_Implementation()
 {
 	if (!Target->GetModifier<UMaxwellAimDowned>() ||
 		Target->GetModifier<UMaxwellClaretStrikeCharged>() ||
-		Target->GetModifier<UMaxwellClaretStrikeCharging>())
+		Target->GetModifier<UMaxwellClaretStrikeCharging>() ||
+		Target->HasStatusEffect(EStatusEffect::Silenced))
 	{
 		return;
 	}

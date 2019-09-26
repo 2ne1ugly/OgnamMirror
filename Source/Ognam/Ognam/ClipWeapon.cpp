@@ -72,3 +72,18 @@ void UClipWeapon::EndReload()
 	bReloading = false;
 	Ammo = MaxAmmo;
 }
+
+void UClipWeapon::StatusEffectApplied(EStatusEffect StatusEffect)
+{
+	//Status effects that will cancel reload.
+}
+
+void UClipWeapon::ActionTaken(EActionType ActionType)
+{
+	if (bReloading && ActionType == EActionType::Focus)
+	{
+		bReloading = false;
+		Target->GetWorldTimerManager().ClearTimer(ReloadTimer);
+//			SetTimer(ReloadTimer, this, &UClipWeapon::EndReload, ReloadTime, false);
+	}
+}

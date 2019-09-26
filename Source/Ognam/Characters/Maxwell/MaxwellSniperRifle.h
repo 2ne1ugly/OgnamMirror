@@ -18,7 +18,6 @@ public:
 	UMaxwellSniperRifle();
 
 	virtual void BeginPlay() override;
-	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
 protected:
 	//Basic
@@ -37,7 +36,7 @@ protected:
 
 	//Sub
 	//Client call
-	void ToggleAimDown();
+	virtual void SubPressed() override;
 
 	UFUNCTION(Server, Unreliable, WithValidation)
 	void ServerToggleAimDown();
@@ -47,8 +46,6 @@ protected:
 	/*
 	**	Props
 	*/
-	FDelegateHandle SubPressHandle;
-
 	float BaseDamage;
 
 	UPROPERTY()

@@ -44,11 +44,19 @@ void UMeleeWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 void UMeleeWeapon::BasicPressed()
 {
+	if (Target->HasStatusEffect(EStatusEffect::Unarmed))
+	{
+		return;
+	}
 	ServerBasicPressed();
 }
 
 void UMeleeWeapon::ServerBasicPressed_Implementation()
 {
+	if (Target->HasStatusEffect(EStatusEffect::Unarmed))
+	{
+		return;
+	}
 	bWantsToSwing = true;
 	if (!bSwinging)
 	{
@@ -111,5 +119,18 @@ void UMeleeWeapon::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 void UMeleeWeapon::CharacterStrike(AOgnamCharacter* OtherCharacter)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Character Striked!"));
+}
+
+void UMeleeWeapon::StatusEffectApplied(EStatusEffect StatusEffect)
+{
+	if ((StatusEffect & EStatusEffect::Unarmed) != EStatusEffect::None &&
+		Target->HasAuthority())
+	{
+		bWantsToSwing = false;
+	}
+}
+
+void UMeleeWeapon::ActionTaken(EActionType ActionType)
+{
 }
 

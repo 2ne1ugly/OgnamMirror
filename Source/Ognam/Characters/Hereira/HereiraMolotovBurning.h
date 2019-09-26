@@ -19,10 +19,10 @@ public:
 
 	void ResetDuration();
 	void SetInstigator(APawn* _Instigator);
+	virtual bool ShouldEnd() override;
 
 protected:
 	virtual void BeginModifier() override;
-
 	void TickDamage();
 
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)

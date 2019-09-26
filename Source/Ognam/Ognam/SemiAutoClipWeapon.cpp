@@ -11,6 +11,7 @@ USemiAutoClipWeapon::USemiAutoClipWeapon()
 {
 	RoundsPerSecond = 2;
 	bCanFire = true;
+	UnacceptedStatusEffects = EStatusEffect::Unarmed;
 }
 
 void USemiAutoClipWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -22,7 +23,7 @@ void USemiAutoClipWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 void USemiAutoClipWeapon::BasicPressed()
 {
-	if (bReloading || Ammo <= 0 || !bCanFire)
+	if (bReloading || Ammo <= 0 || !bCanFire || Target->HasStatusEffect(UnacceptedStatusEffects))
 	{
 		if (Ammo == 0)
 		{
@@ -35,7 +36,7 @@ void USemiAutoClipWeapon::BasicPressed()
 
 void USemiAutoClipWeapon::ServerBasicPressed_Implementation()
 {
-	if (bReloading || Ammo <= 0 || !bCanFire)
+	if (bReloading || Ammo <= 0 || !bCanFire || Target->HasStatusEffect(UnacceptedStatusEffects))
 	{
 		return;
 	}
@@ -43,6 +44,10 @@ void USemiAutoClipWeapon::ServerBasicPressed_Implementation()
 	FireBullet();
 	bCanFire = false;
 	Target->GetWorldTimerManager().SetTimer(PostDelay, this, &USemiAutoClipWeapon::EndPostDelay, 1.f / RoundsPerSecond, false);
+	if (Ammo <= 0)
+	{
+		ServerReload_Implementation();
+	}
 }
 
 void USemiAutoClipWeapon::FireBullet()
