@@ -45,6 +45,7 @@ void UHereiraSprint::ServerStartSprint_Implementation()
 	{
 		return;
 	}
+	Target->TakeAction(EActionType::Focus);
 	UHereiraSprinting* Sprinting = NewObject<UHereiraSprinting>(Target);
 	Sprinting->SetAbility(this);
 	Sprinting->RegisterComponent();

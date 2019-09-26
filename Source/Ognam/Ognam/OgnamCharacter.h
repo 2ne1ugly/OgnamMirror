@@ -150,6 +150,12 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	float AirControl;
 
+	UPROPERTY(VisibleAnywhere)
+	float BaseGravity;
+
+	UPROPERTY(VisibleAnywhere)
+	float Gravity;
+
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
 

@@ -62,9 +62,9 @@ AOgnamCharacter::AOgnamCharacter()
 
 	BaseAcceleration = 1536.f;
 	BaseAirControl = 2.f;
+	BaseGravity = 1.5f;
 
 	GetCharacterMovement()->BrakingFrictionFactor = .5f;
-	GetCharacterMovement()->GravityScale = 1.5f;
 	GetCharacterMovement()->JumpZVelocity = 510.f;
 
 	bReplicates = true;
@@ -89,6 +89,8 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	Speed = BaseSpeed;
 	Acceleration = BaseAcceleration;
 	AirControl = BaseAirControl;
+	Gravity = BaseGravity;
+
 	//Check ending conditions of Modiifers and apply tick.
 	for (int i = Modifiers.Num() - 1; i >= 0; i--)
 	{
@@ -104,6 +106,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 	GetCharacterMovement()->MaxAcceleration = Acceleration;
 	GetCharacterMovement()->AirControl = AirControl;
+	GetCharacterMovement()->GravityScale = Gravity;
 
 	if (NumInputs > 0)
 	{

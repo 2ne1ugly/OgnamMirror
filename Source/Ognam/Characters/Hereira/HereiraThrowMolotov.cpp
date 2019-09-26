@@ -14,6 +14,8 @@ UHereiraThrowMolotov::UHereiraThrowMolotov()
 
 void UHereiraThrowMolotov::ActivateAbility()
 {
+	Target->TakeAction(EActionType::Focus);
+
 	float UpRatio = 0.1f;
 	FVector Direction = Target->Camera->GetForwardVector().GetSafeNormal();
 	FVector MolotovDirection = UpRatio * FVector::UpVector + (1 - UpRatio) * Direction;

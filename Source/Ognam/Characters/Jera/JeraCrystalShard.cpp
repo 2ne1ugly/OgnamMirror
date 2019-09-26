@@ -6,6 +6,9 @@
 #include "ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Ognam/OgnamCharacter.h"
+#include "Ognam/OgnamPlayerstate.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AJeraCrystalShard::AJeraCrystalShard()
@@ -32,13 +35,13 @@ AJeraCrystalShard::AJeraCrystalShard()
 	Movement->bRotationFollowsVelocity = true;
 	Movement->bSweepCollision = true;
 	Movement->bShouldBounce = false;
-	Movement->InitialSpeed = 6000.f;
+	Movement->InitialSpeed = 4000.f;
 	Movement->ProjectileGravityScale = 0.f;
-	//Movement->OnProjectileStop.AddDynamic(this, &AJeraCrystalSpear::ProjectileStop);
+	Movement->OnProjectileStop.AddDynamic(this, &AJeraCrystalShard::ProjectileStop);
 
 	InitialLifeSpan = 5.f;
 
-	//BaseDamage = 60.f;
+	BaseDamage = 20.f;
 }
 
 void AJeraCrystalShard::BeginPlay()
@@ -46,4 +49,32 @@ void AJeraCrystalShard::BeginPlay()
 	Super::BeginPlay();
 
 	Collision->MoveIgnoreActors.Add(Instigator);
+}
+
+void AJeraCrystalShard::ProjectileStop(const FHitResult& ImpactResult)
+{
+	if (!Instigator)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
+		return;
+	}
+
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(ImpactResult.GetActor());
+	if (!Character)
+	{
+		return;
+	}
+	Collision->AttachToComponent(ImpactResult.GetComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), ImpactResult.BoneName);
+
+	if (!HasAuthority())
+	{
+		return;
+	}
+	AOgnamPlayerState* OtherPlayerState = Character->GetPlayerState<AOgnamPlayerState>();
+	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
+	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
+	{
+		AController* Controller = Instigator->GetController();
+		UGameplayStatics::ApplyPointDamage(Character, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, Controller, this, nullptr);
+	}
 }

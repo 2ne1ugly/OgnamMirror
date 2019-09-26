@@ -53,17 +53,20 @@ void AJeraCrystalSpear::BeginPlay()
 
 void AJeraCrystalSpear::ProjectileStop(const FHitResult& ImpactResult)
 {
-	if (!HasAuthority())
-	{
-		return;
-	}
 	if (!Instigator)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
 		return;
 	}
+
 	AOgnamCharacter* Character = Cast<AOgnamCharacter>(ImpactResult.GetActor());
 	if (!Character)
+	{
+		return;
+	}
+	Collision->AttachToComponent(ImpactResult.GetComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), ImpactResult.BoneName);
+
+	if (!HasAuthority())
 	{
 		return;
 	}

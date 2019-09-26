@@ -74,6 +74,7 @@ void AHereiraArrow::ProjectileStop(const FHitResult& ImpactResult)
 	if (Character)
 	{
 		OnCharacterHit(Character, ImpactResult);
+		Collision->AttachToComponent(ImpactResult.GetComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), ImpactResult.BoneName);
 	}
 }
 
@@ -95,7 +96,7 @@ void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitRe
 		AController* Controller = Instigator->GetController();
 		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, Controller, this, UImpactDamage::StaticClass());
 	}
-	Destroy();
+	//Destroy();
 }
 
 

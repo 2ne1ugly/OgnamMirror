@@ -24,4 +24,12 @@ public:
 	AJeraCrystalShard();
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	virtual void ProjectileStop(const FHitResult& ImpactResult);
+
+	/*
+	**	Props
+	*/
+	float BaseDamage;
 };

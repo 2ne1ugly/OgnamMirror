@@ -22,6 +22,11 @@ void UHereiraMolotovBurning::SetInstigator(APawn* _Instigator)
 	Instigator = _Instigator;
 }
 
+bool UHereiraMolotovBurning::ShouldEnd()
+{
+	return Target->HasAuthority() && Super::ShouldEnd();
+}
+
 void UHereiraMolotovBurning::BeginModifier()
 {
 	Super::BeginModifier();
