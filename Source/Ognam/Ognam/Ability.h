@@ -4,17 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "OgnamEnum.h"
 #include "Ability.generated.h"
-
-UENUM()
-enum class EAbilityType : uint8
-{
-	None,
-	Mobility,
-	Unique,
-	Utility,
-	Special,
-};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class OGNAM_API UAbility : public UActorComponent

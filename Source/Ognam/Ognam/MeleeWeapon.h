@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/Weapon.h"
+#include "Interfaces/Dispellable.h"
 #include "TimerManager.h"
 #include "MeleeWeapon.generated.h"
 
@@ -11,7 +12,7 @@
  * 
  */
 UCLASS()
-class OGNAM_API UMeleeWeapon : public UWeapon
+class OGNAM_API UMeleeWeapon : public UWeapon, public IDispellable
 {
 	GENERATED_BODY()
 
@@ -54,6 +55,9 @@ protected:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter);
+
+	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
+	virtual void ActionTaken(EActionType ActionType) override;
 
 	/*
 	**	Props

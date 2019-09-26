@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/Modifier.h"
+#include "Interfaces/Dispellable.h"
 #include "MaxwellAimDowned.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UMaxwellAimDowned : public UModifier
+class OGNAM_API UMaxwellAimDowned : public UModifier, public IDispellable
 {
 	GENERATED_BODY()
 
@@ -26,6 +27,9 @@ public:
 protected:
 	virtual void BeginModifier() override;
 	virtual void EndModifier() override;
+
+	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
+	virtual void ActionTaken(EActionType ActionType) override;
 
 	/*
 	**	Props

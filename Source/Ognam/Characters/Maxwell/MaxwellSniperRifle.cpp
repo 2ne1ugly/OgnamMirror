@@ -31,13 +31,14 @@ UMaxwellSniperRifle::UMaxwellSniperRifle()
 
 	ConstructorHelpers::FObjectFinder<UParticleSystem> SniperShotParticle(TEXT("ParticleSystem'/Game/ParagonMurdock/FX/Particles/Abilities/Primary/FX/P_Murdock_Bullet_Trail_Smoke_Spline.P_Murdock_Bullet_Trail_Smoke_Spline'"));
 	ParticleSystem = SniperShotParticle.Object;
+
+	bBindSub = true;
 }
 
 void UMaxwellSniperRifle::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SubPressHandle = Target->OnSubPressed.AddUObject(this, &UMaxwellSniperRifle::ToggleAimDown);
 	ShotTrail = NewObject<UParticleSystemComponent>(Target);
 	ShotTrail->SetTemplate(ParticleSystem);
 	ShotTrail->SetAutoActivate(false);
@@ -52,13 +53,6 @@ void UMaxwellSniperRifle::BeginPlay()
 	ShotSound->SetupAttachment(Target->GetRootComponent());
 	ShotSound->SetRelativeLocation(FVector::ZeroVector);
 	ShotSound->RegisterComponent();
-}
-
-void UMaxwellSniperRifle::EndPlay(EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-
-	Target->OnSubPressed.Remove(SubPressHandle);
 }
 
 void UMaxwellSniperRifle::FireBullet()
@@ -133,13 +127,21 @@ void UMaxwellSniperRifle::NetPlayShotSound_Implementation()
 	ShotSound->Activate(true);
 }
 
-void UMaxwellSniperRifle::ToggleAimDown()
+void UMaxwellSniperRifle::SubPressed()
 {
+	if (Target->HasStatusEffect(EStatusEffect::Unarmed))
+	{
+		return;
+	}
 	ServerToggleAimDown();
 }
 
 void UMaxwellSniperRifle::ServerToggleAimDown_Implementation()
 {
+	if (Target->HasStatusEffect(EStatusEffect::Unarmed))
+	{
+		return;
+	}
 	UMaxwellAimDowned* Modifier = Target->GetModifier<UMaxwellAimDowned>();
 	if (Modifier)
 	{

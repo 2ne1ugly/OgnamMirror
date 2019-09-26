@@ -28,6 +28,10 @@ void UModifier::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Modifier applied to non-ognam character"));
 		return;
 	}
+	if (StatusEffect != EStatusEffect::None)
+	{
+		Target->ApplyStatusEffect(StatusEffect);
+	}
 	BeginModifier();
 	Target->Modifiers.Add(this);
 }

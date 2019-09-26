@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/Weapon.h"
+#include "Interfaces/Dispellable.h"
 #include "ClipWeapon.generated.h"
 
 /**
@@ -12,7 +13,7 @@
  *	Reload always takes some interval. And handled equally.
  */
 UCLASS()
-class OGNAM_API UClipWeapon : public UWeapon
+class OGNAM_API UClipWeapon : public UWeapon, public IDispellable
 {
 	GENERATED_BODY()
 
@@ -43,6 +44,9 @@ protected:
 
 	//ServerCall
 	virtual void EndReload();
+
+	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
+	virtual void ActionTaken(EActionType ActionType) override;
 
 	/*
 	**	Props

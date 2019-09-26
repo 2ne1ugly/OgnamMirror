@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Modifier.h"
+#include "OgnamEnum.h"
 #include "OgnamCharacter.generated.h"
 
 // Contains What's common between every Character.
@@ -112,7 +112,8 @@ public:
 	}
 
 	bool HasStatusEffect(EStatusEffect StatusEffect);
-
+	void TakeAction(EActionType ActionType);
+	void ApplyStatusEffect(EStatusEffect StatusEffect);
 	/*
 	**	Exported Props
 	*/
@@ -153,7 +154,7 @@ public:
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<UModifier*> Modifiers;
+	TArray<class UModifier*> Modifiers;
 
 	DECLARE_MULTICAST_DELEGATE(FActionDelegate)
 	FActionDelegate OnMobilityPressed;

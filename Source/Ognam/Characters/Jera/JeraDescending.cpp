@@ -23,6 +23,10 @@ void UJeraDescending::TickModifier(float DeltaTime)
 
 void UJeraDescending::EndModifier()
 {
+	if (!Target->IsAlive())
+	{
+		return;
+	}
 	if (Target->HasAuthority())
 	{
 		FActorSpawnParameters Params;

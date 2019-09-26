@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/ClipWeapon.h"
+#include "Ognam/OgnamEnum.h"
 #include "SemiAutoClipWeapon.generated.h"
 
 /**
@@ -43,4 +44,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Replicated)
 	bool bCanFire;
+
+	EStatusEffect UnacceptedStatusEffects;
 };

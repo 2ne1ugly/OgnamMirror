@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "Ognam/ActiveAbility.h"
 #include "TimerManager.h"
+#include "Interfaces/Dispellable.h"
 #include "HereiraSprint.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UHereiraSprint : public UActiveAbility
+class OGNAM_API UHereiraSprint : public UActiveAbility, public IDispellable
 {
 	GENERATED_BODY()
 
@@ -38,6 +39,13 @@ protected:
 	void ServerStopSprint();
 	bool ServerStopSprint_Validate() { return true; };
 	void ServerStopSprint_Implementation();
+
+
+	/*
+	**	Dispellable interface
+	*/
+	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
+	virtual void ActionTaken(EActionType ActionType) override;
 
 	/*
 	**	Props

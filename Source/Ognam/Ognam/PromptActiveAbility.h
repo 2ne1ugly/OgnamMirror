@@ -16,6 +16,8 @@ class OGNAM_API UPromptActiveAbility : public UActiveAbility
 	GENERATED_BODY()
 
 public:
+	UPromptActiveAbility();
+
 	virtual bool ShouldShowNumber() const override final;
 	virtual float GetNumber() const override final;
 
@@ -41,4 +43,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle CooldownTimer;
+
+	EStatusEffect UnacceptedStatusEffects;
 };

@@ -14,7 +14,9 @@
 #include "OgnamPlayerController.h"
 #include "Weapon.h"
 #include "Ability.h"
+#include "Modifier.h"
 #include "OgnamPlayerstate.h"
+#include "Interfaces/Dispellable.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -192,10 +194,7 @@ void AOgnamCharacter::PossessedBy(AController * aController)
 
 void AOgnamCharacter::MobilityPressed()
 {
-	if (!HasStatusEffect(EStatusEffect::Silenced))
-	{
-		OnMobilityPressed.Broadcast();
-	}
+	OnMobilityPressed.Broadcast();
 }
 
 void AOgnamCharacter::MobilityReleased()
@@ -205,10 +204,7 @@ void AOgnamCharacter::MobilityReleased()
 
 void AOgnamCharacter::UniquePressed()
 {
-	if (!HasStatusEffect(EStatusEffect::Silenced))
-	{
-		OnUniquePressed.Broadcast();
-	}
+	OnUniquePressed.Broadcast();
 }
 
 void AOgnamCharacter::UniqueReleased()
@@ -218,10 +214,7 @@ void AOgnamCharacter::UniqueReleased()
 
 void AOgnamCharacter::UtilityPressed()
 {
-	if (!HasStatusEffect(EStatusEffect::Silenced))
-	{
-		OnUtilityPressed.Broadcast();
-	}
+	OnUtilityPressed.Broadcast();
 }
 
 void AOgnamCharacter::UtilityReleased()
@@ -231,10 +224,7 @@ void AOgnamCharacter::UtilityReleased()
 
 void AOgnamCharacter::SpecialPressed()
 {
-	if (!HasStatusEffect(EStatusEffect::Silenced))
-	{
-		OnSpecialPressed.Broadcast();
-	}
+	OnSpecialPressed.Broadcast();
 }
 
 void AOgnamCharacter::SpecialReleased()
@@ -254,34 +244,22 @@ void AOgnamCharacter::ReloadReleased()
 
 void AOgnamCharacter::BasicPressed()
 {
-	if (!HasStatusEffect(EStatusEffect::Unarmed))
-	{
-		OnBasicPressed.Broadcast();
-	}
+	OnBasicPressed.Broadcast();
 }
 
 void AOgnamCharacter::BasicReleased()
 {
-	if (!HasStatusEffect(EStatusEffect::Unarmed))
-	{
-		OnBasicReleased.Broadcast();
-	}
+	OnBasicReleased.Broadcast();
 }
 
 void AOgnamCharacter::SubPressed()
 {
-	if (!HasStatusEffect(EStatusEffect::Unarmed))
-	{
-		OnSubPressed.Broadcast();
-	}
+	OnSubPressed.Broadcast();
 }
 
 void AOgnamCharacter::SubReleased()
 {
-	if (!HasStatusEffect(EStatusEffect::Unarmed))
-	{
-		OnSubReleased.Broadcast();
-	}
+	OnSubReleased.Broadcast();
 }
  
 void AOgnamCharacter::MoveForward(float Amount)
@@ -395,12 +373,77 @@ bool AOgnamCharacter::HasStatusEffect(EStatusEffect StatusEffect)
 	return false;
 }
 
+void AOgnamCharacter::TakeAction(EActionType ActionType)
+{
+	//Give them a chance to dispell.
+	if (Weapon && Weapon->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Weapon)->ActionTaken(ActionType);
+	}
+	if (Mobility && Mobility->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Mobility)->ActionTaken(ActionType);
+	}
+	if (Unique && Unique->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Unique)->ActionTaken(ActionType);
+	}
+	if (Utility && Utility->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Utility)->ActionTaken(ActionType);
+	}
+	if (Special && Special->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Special)->ActionTaken(ActionType);
+	}
+	for (UModifier* Modifier : Modifiers)
+	{
+		if (Modifier && Modifier->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+		{
+			Cast<IDispellable>(Modifier)->ActionTaken(ActionType);
+		}
+	}
+}
+
+void AOgnamCharacter::ApplyStatusEffect(EStatusEffect StatusEffect)
+{
+	//Give them a chance to dispell.
+	if (Weapon && Weapon->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Weapon)->StatusEffectApplied(StatusEffect);
+	}
+	if (Mobility && Mobility->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Mobility)->StatusEffectApplied(StatusEffect);
+	}
+	if (Unique && Unique->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Unique)->StatusEffectApplied(StatusEffect);
+	}
+	if (Utility && Utility->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Utility)->StatusEffectApplied(StatusEffect);
+	}
+	if (Special && Special->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	{
+		Cast<IDispellable>(Special)->StatusEffectApplied(StatusEffect);
+	}
+	for (UModifier* Modifier : Modifiers)
+	{
+		if (Modifier && Modifier->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+		{
+			Cast<IDispellable>(Modifier)->StatusEffectApplied(StatusEffect);
+		}
+	}
+}
+
 void AOgnamCharacter::ServerJump_Implementation()
 {
 	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted) || GetCharacterMovement()->Velocity.Z > 0.f)
 	{
 		return;
 	}
+	TakeAction(EActionType::Jump);
 	ACharacter::Jump();
 	bIsJumping = true;
 }
@@ -422,6 +465,7 @@ void AOgnamCharacter::Jump()
 	{
 		return;
 	}
+	TakeAction(EActionType::Jump);
 	ACharacter::Jump();
 	bIsJumping = true;
 	ServerJump();
@@ -478,5 +522,6 @@ void AOgnamCharacter::Die_Implementation()
 	}
 	DisableInput(PlayerController);
 	PlayerController->OnPawnDeath();
+	TakeAction(EActionType::Death);
 	//PlayerController->UnPossess();
 }

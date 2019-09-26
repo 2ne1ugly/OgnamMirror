@@ -4,6 +4,11 @@
 #include "OgnamCharacter.h"
 #include "TimerManager.h"
 
+UPromptActiveAbility::UPromptActiveAbility()
+{
+	UnacceptedStatusEffects = EStatusEffect::Silenced;
+}
+
 bool UPromptActiveAbility::ShouldShowNumber() const
 {
 	return Target->GetWorldTimerManager().IsTimerActive(CooldownTimer);
@@ -16,7 +21,8 @@ float UPromptActiveAbility::GetNumber() const
 
 void UPromptActiveAbility::OnButtonPressed()
 {
-	if (Target->GetWorldTimerManager().IsTimerActive(CooldownTimer))
+	if (Target->GetWorldTimerManager().IsTimerActive(CooldownTimer) ||
+		Target->HasStatusEffect(UnacceptedStatusEffects))
 	{
 		return;
 	}
@@ -25,7 +31,8 @@ void UPromptActiveAbility::OnButtonPressed()
 
 void UPromptActiveAbility::ServerOnButtonPressed_Implementation()
 {
-	if (Target->GetWorldTimerManager().IsTimerActive(CooldownTimer))
+	if (Target->GetWorldTimerManager().IsTimerActive(CooldownTimer) ||
+		Target->HasStatusEffect(UnacceptedStatusEffects))
 	{
 		return;
 	}

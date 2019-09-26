@@ -31,7 +31,8 @@ void UHereiraLoadExplosiveShot::FiredExplosiveShot()
 void UHereiraLoadExplosiveShot::OnButtonPressed()
 {
 	if (Target->GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) ||
-		Target->GetModifier<UHereiraExplosiveShotReady>() != nullptr)
+		Target->GetModifier<UHereiraExplosiveShotReady>() != nullptr ||
+		Target->HasStatusEffect(EStatusEffect::Silenced))
 	{
 		return;
 	}
@@ -41,7 +42,8 @@ void UHereiraLoadExplosiveShot::OnButtonPressed()
 void UHereiraLoadExplosiveShot::ServerLoadExplosiveShot_Implementation()
 {
 	if (Target->GetWorldTimerManager().IsTimerActive(ExplosiveShotCooldown) ||
-		Target->GetModifier<UHereiraExplosiveShotReady>() != nullptr)
+		Target->GetModifier<UHereiraExplosiveShotReady>() != nullptr ||
+		Target->HasStatusEffect(EStatusEffect::Silenced))
 	{
 		return;
 	}
