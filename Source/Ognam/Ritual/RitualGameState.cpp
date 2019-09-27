@@ -8,7 +8,6 @@
 #include "UnrealNetwork.h"
 #include "Engine/World.h"
 #include "RitualShrine.h"
-#include "RitualAcolyte.h"
 #include "EngineUtils.h"
 
 ARitualGameState::ARitualGameState()
