@@ -8,7 +8,6 @@
 #include "Components/BoxComponent.h"
 #include "RitualPlayerState.h"
 #include "Ognam/OgnamCharacter.h"
-#include "RitualAcolyte.h"
 #include "UnrealNetwork.h"
 
 // Sets default values
