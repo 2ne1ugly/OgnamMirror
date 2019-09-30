@@ -70,6 +70,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsRoundEnding() const;
 
+	UFUNCTION(Netmulticast, Unreliable)
+	void NetStartSlowMotion();
+	void NetStartSlowMotion_Implementation();
+
+	UFUNCTION(Netmulticast, Reliable)
+	void NetEndSlowMotion();
+	void NetEndSlowMotion_Implementation();
+
 	/*
 	**	Exported Functions
 	*/
@@ -80,7 +88,6 @@ public:
 	void DecideRoundWinner();
 	void UpdateProperties();
 	void SetRoundEnding(bool b);
-	void GiveAcolyteKillReward();
 
 	/*
 	**	Exported Props
@@ -138,4 +145,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bRoundEnding;
+
+	UPROPERTY(EditAnywhere)
+	float DilationAmount;
 };

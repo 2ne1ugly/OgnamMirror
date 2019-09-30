@@ -55,12 +55,12 @@ public:
 	*/
 	TArray<class ARitualPlayerController*> PlayerControllers;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	FTimerHandle MatchEndTimer;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	bool bRoundEnded;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	float PostRoundTime;
 };

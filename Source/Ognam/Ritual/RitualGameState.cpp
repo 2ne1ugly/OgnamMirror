@@ -9,6 +9,7 @@
 #include "Engine/World.h"
 #include "RitualShrine.h"
 #include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
 
 ARitualGameState::ARitualGameState()
 {
@@ -25,6 +26,7 @@ ARitualGameState::ARitualGameState()
 	RoundStartTime = 0;
 	PhaseStartTime = 0;
 	PhaseGivenTime = 0;
+	DilationAmount = .5f;
 }
 
 void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -273,4 +275,14 @@ void ARitualGameState::SetRoundEnding(bool b)
 bool ARitualGameState::IsRoundEnding() const
 {
 	return bRoundEnding;
+}
+
+void ARitualGameState::NetEndSlowMotion_Implementation()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+}
+
+void ARitualGameState::NetStartSlowMotion_Implementation()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), DilationAmount);
 }

@@ -19,7 +19,7 @@ ARitualGameMode::ARitualGameMode()
 	PlayerStateClass = ARitualPlayerState::StaticClass();
 	PlayerControllerClass = ARitualPlayerController::StaticClass();
 
-	PostRoundTime = 3.f;
+	PostRoundTime = 1.5f;
 }
 
 void ARitualGameMode::Tick(float DeltaTime)
@@ -40,6 +40,7 @@ void ARitualGameMode::Tick(float DeltaTime)
 	if (RitualGameState->ShouldEndRound() && !RitualGameState->IsRoundEnding())
 	{
 		RitualGameState->SetRoundEnding(true);
+		RitualGameState->NetStartSlowMotion();
 		GetWorld()->GetTimerManager().SetTimer(MatchEndTimer, this, &ARitualGameMode::EndRound, PostRoundTime, false);
 	}
 }
@@ -167,6 +168,7 @@ void ARitualGameMode::EndRound()
 
 	//Decide Round Winnder;
 	RitualGameState->DecideRoundWinner();
+	RitualGameState->NetEndSlowMotion();
 
 	//If Match should be done End match
 	if (RitualGameState->ShouldEndMatch())
