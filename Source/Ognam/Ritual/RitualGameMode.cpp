@@ -20,6 +20,7 @@ ARitualGameMode::ARitualGameMode()
 	PlayerControllerClass = ARitualPlayerController::StaticClass();
 
 	PostRoundTime = 1.5f;
+	CharacterSelectionTime = 5.f;
 }
 
 void ARitualGameMode::Tick(float DeltaTime)
@@ -39,9 +40,7 @@ void ARitualGameMode::Tick(float DeltaTime)
 	RitualGameState->UpdateProperties();
 	if (RitualGameState->ShouldEndRound() && !RitualGameState->IsRoundEnding())
 	{
-		RitualGameState->SetRoundEnding(true);
-		RitualGameState->NetStartSlowMotion();
-		GetWorld()->GetTimerManager().SetTimer(MatchEndTimer, this, &ARitualGameMode::EndRound, PostRoundTime, false);
+		PostRoundBegin();
 	}
 }
 
@@ -78,12 +77,112 @@ bool ARitualGameMode::ReadyToStartMatch_Implementation()
 void ARitualGameMode::HandleMatchHasStarted()
 {
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
-	if (RitualGameState == nullptr)
+	if (!RitualGameState)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s Not a Ritual Gamestate"), __FUNCTION__);
 		return;
 	}
-	StartFirstRound();
+	RitualGameState->SetPreRoundStage(true);
+	PreRoundBegin();
+}
+
+void ARitualGameMode::PreRoundBegin()
+{
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (!RitualGameState)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		return;
+	}
+	RitualGameState->SetPreRoundStage(true);
+	for (ARitualPlayerController* PlayerController : PlayerControllers)
+	{
+		//RestartPlayer(PlayerController);
+		PlayerController->PreRoundBegin();
+		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
+		if (RitualPlayerState != nullptr)
+		{
+			RitualPlayerState->SetIsAlive(true);
+		}
+	}
+	GetWorld()->GetTimerManager().SetTimer(PreRoundTimer, this, &ARitualGameMode::PreRoundEnd, CharacterSelectionTime, false);
+}
+
+void ARitualGameMode::PreRoundEnd()
+{
+	for (ARitualPlayerController* PlayerController : PlayerControllers)
+	{
+		RestartPlayer(PlayerController);
+		PlayerController->PreRoundEnd();
+	}
+	BeginRound();
+}
+
+void ARitualGameMode::BeginRound()
+{
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (RitualGameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		return;
+	}
+	RitualGameState->SetPreRoundStage(false);
+	RitualGameState->SetRoundEnding(false);
+	RitualGameState->StartNewRound();
+}
+
+void ARitualGameMode::PostRoundBegin()
+{
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (RitualGameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		return;
+	}
+	RitualGameState->SetRoundEnding(true);
+	RitualGameState->NetStartSlowMotion();
+	GetWorld()->GetTimerManager().SetTimer(PostRoundTimer, this, &ARitualGameMode::PostRoundEnd, PostRoundTime, false);
+}
+
+void ARitualGameMode::PostRoundEnd()
+{
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (RitualGameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		return;
+	}
+	RitualGameState->NetEndSlowMotion();
+	EndRound();
+}
+
+void ARitualGameMode::EndRound()
+{
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (GameState == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		return;
+	}
+
+	RitualGameState->DecideRoundWinner();
+
+	RitualGameState->NetEndSlowMotion();
+
+	//If Match should be done End match
+	if (RitualGameState->ShouldEndMatch())
+	{
+		EndMatch();
+	}
+
+	//Start round no matter what for testing purpose
+	RitualGameState->SwitchSides();
+
+	for (ARitualPlayerController* RitualPlayerController : PlayerControllers)
+	{
+		KillPlayer(RitualPlayerController);
+	}
+	PreRoundBegin();
 }
 
 void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
@@ -109,73 +208,6 @@ void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s Not Player Controller"), __FUNCTION__);
 	}
-}
-
-void ARitualGameMode::RespawnPlayer(ARitualPlayerController* PlayerController)
-{
-}
-
-void ARitualGameMode::RespawnAllPlayer()
-{
-	//Restart all player and set them to alive
-	for (ARitualPlayerController* PlayerController : PlayerControllers)
-	{
-		RestartPlayer(PlayerController);
-		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
-		if (RitualPlayerState != nullptr)
-		{
-			RitualPlayerState->SetIsAlive(true);
-		}
-	}
-}
-
-void ARitualGameMode::StartFirstRound()
-{
-	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
-	if (GameState == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
-		return;
-	}
-
-	RespawnAllPlayer();
-	RitualGameState->StartNewRound();
-}
-
-void ARitualGameMode::RestartRound()
-{
-	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
-	if (RitualGameState == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
-		return;
-	}
-
-	RitualGameState->SetRoundEnding(false);
-	RitualGameState->SwitchSides();
-	RespawnAllPlayer();
-	RitualGameState->StartNewRound();
-}
-
-void ARitualGameMode::EndRound()
-{
-	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
-	if (GameState == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
-		return;
-	}
-
-	//Decide Round Winnder;
-	RitualGameState->DecideRoundWinner();
-	RitualGameState->NetEndSlowMotion();
-
-	//If Match should be done End match
-	if (RitualGameState->ShouldEndMatch())
-		EndMatch();
-
-	//Start round no matter what for testing purpose
-	RestartRound();
 }
 
 void ARitualGameMode::PostLogin(APlayerController* NewPlayer)

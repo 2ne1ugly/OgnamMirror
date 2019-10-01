@@ -69,6 +69,7 @@ AOgnamCharacter::AOgnamCharacter()
 
 	bReplicates = true;
 	bIsAlive = true;
+	bCanMove = true;
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -267,7 +268,7 @@ void AOgnamCharacter::SubReleased()
  
 void AOgnamCharacter::MoveForward(float Amount)
 {
-	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted))
+	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted) && bCanMove)
 	{
 		InputVector += FVector::ForwardVector * Amount;
 		InputAmount += FMath::Abs(Amount);
@@ -277,7 +278,7 @@ void AOgnamCharacter::MoveForward(float Amount)
 
 void AOgnamCharacter::MoveRight(float Amount)
 {
-	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted))
+	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted) && bCanMove)
 	{
 		InputVector += FVector::RightVector * Amount;
 		InputAmount += FMath::Abs(Amount);
@@ -303,6 +304,16 @@ bool AOgnamCharacter::GetIsJumping() const
 bool AOgnamCharacter::IsAlive() const
 {
 	return bIsAlive;
+}
+
+bool AOgnamCharacter::CanMove() const
+{
+	return bCanMove;
+}
+
+void AOgnamCharacter::SetCanMove(bool b)
+{
+	bCanMove = b;
 }
 
 UWeapon* AOgnamCharacter::GetWeapon() const
@@ -464,7 +475,7 @@ float AOgnamCharacter::GetSpeedFromVector(FVector Vector)
 
 void AOgnamCharacter::Jump()
 {
-	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted))
+	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted) || !bCanMove)
 	{
 		return;
 	}

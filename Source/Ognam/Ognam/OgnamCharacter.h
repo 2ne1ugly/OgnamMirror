@@ -87,6 +87,12 @@ public:
 	class UAbility* GetMobility() const;
 
 	UFUNCTION(BlueprintCallable)
+	bool CanMove() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetCanMove(bool b);
+
+	UFUNCTION(BlueprintCallable)
 	FVector GetInputVector() const;
 	/*
 	**	Exported functions
@@ -156,6 +162,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	float Gravity;
 
+	UPROPERTY(VisibleAnywhere)
+	bool	bCanMove;
+
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
 
@@ -202,6 +211,8 @@ protected:
 	FVector InputVector;
 	float	InputAmount;
 	int		NumInputs;
+
+	
 
 	UPROPERTY(VisibleAnywhere)
 	class UWeapon* Weapon;

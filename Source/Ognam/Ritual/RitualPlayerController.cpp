@@ -12,6 +12,7 @@
 #include "Interfaces/Interactable.h"
 #include "UnrealNetwork.h"
 #include "Engine.h"
+#include "Camera/CameraActor.h"
 	
 ARitualPlayerController::ARitualPlayerController()
 {
@@ -41,10 +42,6 @@ void ARitualPlayerController::BeginPlay()
 	//Create all using widget
 	if (IsLocalPlayerController())
 	{
-		if (CharacterSelectionHUDClass)
-		{
-			CharacterSelectionHUD = CreateWidget<UUserWidget>(this, CharacterSelectionHUDClass);
-		}
 		if (InteractionBarClass)
 		{
 			InteractionBar = CreateWidget<UUserWidget>(this, InteractionBarClass);
@@ -119,16 +116,24 @@ void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* Chara
 	RitualPlayerState->SetPawnClass(CharacterClass);
 
 	//respawn character
-	ARitualGameMode* GameMode = Cast<ARitualGameMode>(GetWorld()->GetGameState()->AuthorityGameMode);
-	GameMode->RestartPlayer(this);
+	//ARitualGameMode* GameMode = Cast<ARitualGameMode>(GetWorld()->GetGameState()->AuthorityGameMode);
+	//GameMode->RestartPlayer(this);
 }
 
 void ARitualPlayerController::ShowCharacterSelection()
 {
-	//Find a better way to set input mode
+	if (IsLocalPlayerController())
+	{
+		if (!CharacterSelectionHUD && CharacterSelectionHUDClass)
+		{
+			CharacterSelectionHUD = CreateWidget<UUserWidget>(this, CharacterSelectionHUDClass);
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Show characterselection"));
+	}
 	if (CharacterSelectionHUD)
 	{
 		CharacterSelectionHUD->AddToViewport();
+		UE_LOG(LogTemp, Warning, TEXT("Showing characterselection"));
 	}
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
@@ -141,6 +146,7 @@ void ARitualPlayerController::HideCharacterSelection()
 	{
 		CharacterSelectionHUD->RemoveFromViewport();
 	}
+
 	bShowMouseCursor = false;
 	bEnableClickEvents = false;
 	SetInputMode(FInputModeGameOnly());
@@ -284,4 +290,28 @@ void ARitualPlayerController::InterruptInteract_Implementation()
 	bIsInteracting = false;
 	InteractedActor = nullptr;
 	InteractionTime = 0;
+}
+
+void ARitualPlayerController::PreRoundBegin_Implementation()
+{
+	ShowCharacterSelection();
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
+	if (Character)
+	{
+		Character->SetCanMove(false);
+		Character->DisableInput(this);
+		//Character->disa;
+	}
+}
+
+void ARitualPlayerController::PreRoundEnd_Implementation()
+{
+	HideCharacterSelection();
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
+	if (Character)
+	{
+		Character->SetCanMove(true);
+		Character->EnableInput(this);
+		//Character->GetCharacterMovement()->movement;
+	}
 }

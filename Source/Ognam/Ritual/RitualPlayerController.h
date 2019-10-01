@@ -71,6 +71,14 @@ public:
 	void InterruptInteract();
 	void InterruptInteract_Implementation();
 
+	UFUNCTION(Client, Reliable)
+	void PreRoundBegin();
+	void PreRoundBegin_Implementation();
+
+	UFUNCTION(Client, Reliable)
+	void PreRoundEnd();
+	void PreRoundEnd_Implementation();
+
 protected:
 	/*
 	**	Internal Function

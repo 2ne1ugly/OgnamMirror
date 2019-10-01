@@ -70,6 +70,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsRoundEnding() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsPreRound() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetPreRoundStage(bool bIsPreRound);
+
 	UFUNCTION(Netmulticast, Unreliable)
 	void NetStartSlowMotion();
 	void NetStartSlowMotion_Implementation();
@@ -148,4 +154,7 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float DilationAmount;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	bool bPreRound;
 };

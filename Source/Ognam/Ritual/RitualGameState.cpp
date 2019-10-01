@@ -47,6 +47,7 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ARitualGameState, PhaseStartTime);
 	DOREPLIFETIME(ARitualGameState, PhaseGivenTime);
 	DOREPLIFETIME(ARitualGameState, bRoundEnding);
+	DOREPLIFETIME(ARitualGameState, bPreRound);
 }
 
 FName ARitualGameState::GetCurrentOffenseTeam() const
@@ -109,6 +110,16 @@ float ARitualGameState::GetPhaseGivenTime() const
 	return PhaseGivenTime;
 }
 
+bool ARitualGameState::IsPreRound() const
+{
+	return bPreRound;
+}
+
+void ARitualGameState::SetPreRoundStage(bool bIsPreRound)
+{
+	bPreRound = bIsPreRound;
+}
+
 float ARitualGameState::GetPhaseRemainingTime() const
 {
 	float CurrentTime;
@@ -149,6 +160,8 @@ void ARitualGameState::StartNewRound()
 	{
 		Itr->Reset();
 	}
+
+	bPreRound = false;
 }
 
 void ARitualGameState::SwitchSides()
@@ -170,6 +183,8 @@ bool ARitualGameState::ShouldEndMatch()
 
 bool ARitualGameState::ShouldEndRound()
 {
+	if (bPreRound)
+		return false;
 	if (GreenAliveCount == 0 || BlueAliveCount == 0 || GetPhaseRemainingTime() <= 0)
 	{
 		return true;
