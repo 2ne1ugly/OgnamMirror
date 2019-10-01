@@ -5,7 +5,7 @@
 UJeraSuppressiveImpact::UJeraSuppressiveImpact()
 {
 	AbilityType = EAbilityType::Unique;
-	Cooldown = 1.f;
+	Cooldown = 4.f;
 }
 
 void UJeraSuppressiveImpact::ActivateAbility()

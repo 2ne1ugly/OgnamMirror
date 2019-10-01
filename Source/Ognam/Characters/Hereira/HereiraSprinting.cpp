@@ -26,7 +26,7 @@ bool UHereiraSprinting::ShouldEnd()
 
 void UHereiraSprinting::TickModifier(float DeltaTime)
 {
-	Target->Speed += Target->BaseSpeed;
+	Target->Speed += Target->BaseSpeed * .8f;
 }
 
 void UHereiraSprinting::SetAbility(UHereiraSprint* SprintAbility)

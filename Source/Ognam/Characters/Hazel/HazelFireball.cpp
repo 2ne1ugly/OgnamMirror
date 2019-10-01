@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JeraCrystalSpear.h"
+#include "HazelFireball.h"
 #include "Components/BoxComponent.h"
 #include "ConstructorHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -9,9 +9,8 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Ognam/OgnamPlayerstate.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
-AJeraCrystalSpear::AJeraCrystalSpear()
+AHazelFireball::AHazelFireball()
 {
 	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	Collision->SetBoxExtent(FVector(40.f, 5.f, 5.f));
@@ -35,23 +34,21 @@ AJeraCrystalSpear::AJeraCrystalSpear()
 	Movement->bRotationFollowsVelocity = true;
 	Movement->bSweepCollision = true;
 	Movement->bShouldBounce = false;
-	Movement->InitialSpeed = 6000.f;
-	Movement->ProjectileGravityScale = 0.f;
-	Movement->OnProjectileStop.AddDynamic(this, &AJeraCrystalSpear::ProjectileStop);
+	Movement->InitialSpeed = 4000.f;
+	Movement->OnProjectileStop.AddDynamic(this, &AHazelFireball::ProjectileStop);
+	//Stop happens only when two collision is blocking eachother.
 
-	InitialLifeSpan = 5.f;
-
-	BaseDamage = 60.f;
+	BaseDamage = 20.f;
+	InitialLifeSpan = 3.f;
 }
 
-void AJeraCrystalSpear::BeginPlay()
+void AHazelFireball::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Collision->MoveIgnoreActors.Add(Instigator);
+	Collision->MoveIgnoreActors.Add(Instigator);	
 }
 
-void AJeraCrystalSpear::ProjectileStop(const FHitResult& ImpactResult)
+void AHazelFireball::ProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!Instigator)
 	{
@@ -77,5 +74,4 @@ void AJeraCrystalSpear::ProjectileStop(const FHitResult& ImpactResult)
 		AController* Controller = Instigator->GetController();
 		UGameplayStatics::ApplyPointDamage(Character, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, Controller, this, nullptr);
 	}
-	Character->GetCharacterMovement()->AddImpulse(GetActorForwardVector().GetSafeNormal2D() * 500000.f);
 }

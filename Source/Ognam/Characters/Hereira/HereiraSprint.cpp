@@ -8,7 +8,7 @@
 UHereiraSprint::UHereiraSprint()
 {
 	AbilityType = EAbilityType::Mobility;
-	Cooldown = 6.f;
+	Cooldown = 8.f;
 }
 
 bool UHereiraSprint::ShouldShowNumber() const

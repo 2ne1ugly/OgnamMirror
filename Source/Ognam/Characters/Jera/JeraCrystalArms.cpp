@@ -118,7 +118,7 @@ void UJeraCrystalArms::FireShard()
 	FHitResult Aim;
 	Target->GetAimHitResult(Aim, 0.f, 10000.f);
 
-	FVector From = Target->GetActorLocation();
+	FVector From = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
 	FVector To;
 	if (Aim.bBlockingHit)
 		To = Aim.ImpactPoint;

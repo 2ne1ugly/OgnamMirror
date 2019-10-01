@@ -1,20 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JeraSuppressiveImpactBackSwing.h"
+#include "HazelPyromancy.h"
 #include "Ognam/OgnamCharacter.h"
-#include "JeraCrystalSpear.h"
 #include "Engine/World.h"
-
-UJeraSuppressiveImpactBackSwing::UJeraSuppressiveImpactBackSwing()
+#include "HazelFireball.h"
+UHazelPyromancy::UHazelPyromancy()
 {
-	StatusEffect |= EStatusEffect::Rooted | EStatusEffect::Unarmed | EStatusEffect::Silenced;
-	Duration = .5f;
+	bInfiniteAmmo = true;
+	RoundsPerSecond = 4;
 }
 
-void UJeraSuppressiveImpactBackSwing::EndModifier()
+void UHazelPyromancy::FireBullet()
 {
-	Super::EndModifier();
 	if (!Target->HasAuthority())
 	{
 		return;
@@ -33,5 +31,5 @@ void UJeraSuppressiveImpactBackSwing::EndModifier()
 	FActorSpawnParameters Params;
 	Params.bNoFail = true;
 	Params.Instigator = Target;
-	GetWorld()->SpawnActor<AJeraCrystalSpear>(From, Direction.Rotation(), Params)->SetReplicates(true);
+	GetWorld()->SpawnActor<AHazelFireball>(From, Direction.Rotation(), Params)->SetReplicates(true);
 }

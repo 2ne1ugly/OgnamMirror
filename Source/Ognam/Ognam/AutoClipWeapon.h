@@ -4,27 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/ClipWeapon.h"
-#include "Ognam/OgnamEnum.h"
-#include "SemiAutoClipWeapon.generated.h"
+#include "AutoClipWeapon.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API USemiAutoClipWeapon : public UClipWeapon
+class OGNAM_API UAutoClipWeapon : public UClipWeapon
 {
 	GENERATED_BODY()
 
 public:
-	USemiAutoClipWeapon();
+	UAutoClipWeapon();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	UPROPERTY(EditAnywhere)
-	bool bFireOnRelease;
-
-	UPROPERTY(VisibleAnywhere, Replicated)
-	bool bCharging;
 
 	UPROPERTY(EditAnywhere)
 	bool bReloadOnNoAmmo;
@@ -44,11 +37,13 @@ protected:
 	virtual void ServerBasicReleased_Implementation();
 
 	//Server call
+	virtual void StartFireBullet();
+	virtual void RepeatFireBullet();
+	virtual void EndFireBullet();
+
 	virtual void PreFireBullet();
 	virtual void FireBullet();
 	virtual void PostFireBullet();
-
-	virtual void EndPostDelay();
 
 	/*
 	**	Props
@@ -60,7 +55,10 @@ protected:
 	FTimerHandle PostDelay;
 
 	UPROPERTY(EditAnywhere, Replicated)
-	bool bCanFire;
+	bool bFiring;
+
+	bool bWantsToFire;
+	bool bInfiniteAmmo;
 
 	EStatusEffect UnacceptedStatusEffects;
 };
