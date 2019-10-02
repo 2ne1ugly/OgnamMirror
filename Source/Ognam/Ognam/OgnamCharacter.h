@@ -23,6 +23,9 @@ public:
 	UPROPERTY(EditAnywhere, category = Camera)
 	class UCameraComponent* Camera;
 
+	UPROPERTY(EditAnywhere)
+	class UOverwallHidden* OverwallHidden;
+
 
 public:
 	AOgnamCharacter();
@@ -162,6 +165,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<class UModifier*> Modifiers;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FPlane CameraBlockingPlane;
+
+	bool bCameraBlocked;
+
 	DECLARE_MULTICAST_DELEGATE(FActionDelegate)
 	FActionDelegate OnMobilityPressed;
 	FActionDelegate OnMobilityReleased;
@@ -189,6 +197,7 @@ protected:
 
 	float GetDamageAfterDefense(float Damage);
 	float GetSpeedFromVector(FVector Vector);
+	void UpdateCameraBlockingPlane();
 
 	/*
 	**	Props
