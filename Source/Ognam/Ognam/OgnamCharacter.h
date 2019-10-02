@@ -166,6 +166,9 @@ public:
 	TArray<class UModifier*> Modifiers;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FHitResult> CameraHits;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FPlane CameraBlockingPlane;
 
 	bool bCameraBlocked;

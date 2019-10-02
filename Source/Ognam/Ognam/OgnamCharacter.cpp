@@ -479,13 +479,13 @@ void AOgnamCharacter::UpdateCameraBlockingPlane()
 	bCameraBlocked = false;
 	FVector From = GetActorLocation();
 	FVector To = Camera->GetComponentLocation();
-	FHitResult Sweep;
-	GetWorld()->SweepSingleByChannel(Sweep, From, To,
-		FQuat(), ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(32.f));
-	if (Sweep.bBlockingHit)
+	GetWorld()->SweepMultiByChannel(CameraHits, From, To,
+		FQuat(), ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(32.f),
+		FCollisionQueryParams::DefaultQueryParam, ECollisionResponse::ECR_Overlap);
+	if (CameraHits.Num() > 0)
 	{
 		bCameraBlocked = true;
-		CameraBlockingPlane = FPlane(Sweep.ImpactPoint, Sweep.ImpactNormal);
+		CameraBlockingPlane = FPlane(CameraHits[0].ImpactPoint, CameraHits[0].ImpactNormal);
 	}
 }
 

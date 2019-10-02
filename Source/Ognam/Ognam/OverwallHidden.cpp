@@ -28,14 +28,14 @@ void UOverwallHidden::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(PlayerController->GetCharacter());
 	if (!OgnamCharacter)
 	{
-		if (bHidden)
+		if (bOverwallHidden)
 		{
 			ShowComponents();
 		}
 		return;
 	}
 
-	if (bHidden)
+	if (bOverwallHidden)
 	{
 		//if hidden
 		if (!OgnamCharacter->bCameraBlocked || OgnamCharacter->CameraBlockingPlane.PlaneDot(GetOwner()->GetActorLocation()) > 0.f)
@@ -55,7 +55,7 @@ void UOverwallHidden::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 void UOverwallHidden::HideComponents()
 {
-	bHidden = true;
+	bOverwallHidden = true;
 	for (int i = 0; i < TargetComponents.Num(); i++)
 	{
 		//This uses set visibility which may cause bugs in the future.
@@ -66,7 +66,7 @@ void UOverwallHidden::HideComponents()
 
 void UOverwallHidden::ShowComponents()
 {
-	bHidden = false;
+	bOverwallHidden = false;
 	for (int i = 0; i < TargetComponents.Num(); i++)
 	{
 		TargetComponents[i]->SetVisibility(true);
