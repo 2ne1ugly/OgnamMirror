@@ -55,7 +55,7 @@ void AJeraCrystalShard::ProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
+		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
 		return;
 	}
 
