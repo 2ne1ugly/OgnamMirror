@@ -9,6 +9,7 @@
 /*
 **	Component for scene components that should be hidden when looking through walls
 **	This is done automatically.
+**	Right now, this thing does not work for multiple walls.
 */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class OGNAM_API UOverwallHidden : public UActorComponent

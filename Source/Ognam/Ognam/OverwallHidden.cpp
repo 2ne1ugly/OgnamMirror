@@ -26,7 +26,7 @@ void UOverwallHidden::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 	//If Ognam character is not there and this is hidden, show again.
 	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(PlayerController->GetCharacter());
-	if (!OgnamCharacter)
+	if (!OgnamCharacter || OgnamCharacter == GetOwner())
 	{
 		if (bOverwallHidden)
 		{

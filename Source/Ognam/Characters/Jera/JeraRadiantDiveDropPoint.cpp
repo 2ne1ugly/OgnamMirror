@@ -16,6 +16,7 @@ AJeraRadiantDiveDropPoint::AJeraRadiantDiveDropPoint()
 {
 	InitialLifeSpan = 3.f;
 	PlaceHolder = CreateDefaultSubobject<USphereComponent>(TEXT("Place Holder"));
+	PlaceHolder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//PlaceHolder->bHiddenInGame = false;
 	RootComponent = PlaceHolder;
 }

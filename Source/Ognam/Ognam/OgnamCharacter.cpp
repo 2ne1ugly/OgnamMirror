@@ -127,7 +127,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	NumInputs = 0;
 
 	//Find Camera blocking plane
-	if (Controller && Controller->IsLocalPlayerController())
+	if (HasAuthority() || (Controller && Controller->IsLocalPlayerController()))
 	{
 		UpdateCameraBlockingPlane();
 	}
@@ -373,6 +373,10 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	FVector RayTo = RayFrom + ActiveCamera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	Params.AddIgnoredActor(this);
+	for (FHitResult& Hit : CameraHits)
+	{
+		Params.AddIgnoredActor(Hit.GetActor());
+	}
 	GetWorld()->LineTraceSingleByChannel(HitResult, RayFrom, RayTo, ECollisionChannel::ECC_GameTraceChannel1, Params);
 }
 
