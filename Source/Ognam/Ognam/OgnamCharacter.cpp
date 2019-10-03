@@ -17,6 +17,7 @@
 #include "Modifier.h"
 #include "OgnamPlayerstate.h"
 #include "Interfaces/Dispellable.h"
+#include "OverwallHidden.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -30,6 +31,7 @@ AOgnamCharacter::AOgnamCharacter()
 	SpringArm->SetRelativeRotation(FRotator(-30.f, 0.f, 0.f));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->bUsePawnControlRotation = true;
+	SpringArm->bDoCollisionTest = false;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
@@ -49,6 +51,10 @@ AOgnamCharacter::AOgnamCharacter()
 		TEXT("/Game/Animation/OgnamCharacterAnimBlueprint.OgnamCharacterAnimBlueprint_C"));
 
 	GetMesh()->SetAnimInstanceClass(AnimBP.Object);
+
+	//For now, hide mesh only.
+	OverwallHidden = CreateDefaultSubobject<UOverwallHidden>(TEXT("Overwall Hide"));
+	OverwallHidden->AddTargetComponents(GetMesh());
 
 	BaseMaxHealth = 200.f;
 	BaseDefense = 0.f;
@@ -120,6 +126,12 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	InputVector = FVector::ZeroVector;
 	InputAmount = 0;
 	NumInputs = 0;
+
+	//Find Camera blocking plane
+	if (HasAuthority() || (Controller && Controller->IsLocalPlayerController()))
+	{
+		UpdateCameraBlockingPlane();
+	}
 }
 
 // Called to bind functionality to input
@@ -372,6 +384,10 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	FVector RayTo = RayFrom + ActiveCamera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	Params.AddIgnoredActor(this);
+	for (FHitResult& Hit : CameraHits)
+	{
+		Params.AddIgnoredActor(Hit.GetActor());
+	}
 	GetWorld()->LineTraceSingleByChannel(HitResult, RayFrom, RayTo, ECollisionChannel::ECC_GameTraceChannel1, Params);
 }
 
@@ -471,6 +487,21 @@ float AOgnamCharacter::GetSpeedFromVector(FVector Vector)
 {
 	return FMath::Square(Vector.Y) * .75f +
 		((Vector.X > 0.f) ? (FMath::Square(Vector.X) * 1.f) : (FMath::Square(Vector.X) * .6f));
+}
+
+void AOgnamCharacter::UpdateCameraBlockingPlane()
+{
+	bCameraBlocked = false;
+	FVector From = GetActorLocation();
+	FVector To = Camera->GetComponentLocation();
+	GetWorld()->SweepMultiByChannel(CameraHits, From, To,
+		FQuat(), ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(32.f),
+		FCollisionQueryParams::DefaultQueryParam, ECollisionResponse::ECR_Overlap);
+	if (CameraHits.Num() > 0)
+	{
+		bCameraBlocked = true;
+		CameraBlockingPlane = FPlane(CameraHits[0].ImpactPoint, CameraHits[0].ImpactNormal);
+	}
 }
 
 void AOgnamCharacter::Jump()

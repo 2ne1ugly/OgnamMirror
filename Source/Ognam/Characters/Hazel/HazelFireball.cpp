@@ -36,6 +36,7 @@ AHazelFireball::AHazelFireball()
 	Movement->bShouldBounce = false;
 	Movement->InitialSpeed = 4000.f;
 	Movement->OnProjectileStop.AddDynamic(this, &AHazelFireball::ProjectileStop);
+	Movement->ProjectileGravityScale = 0.f;
 	//Stop happens only when two collision is blocking eachother.
 
 	BaseDamage = 20.f;
