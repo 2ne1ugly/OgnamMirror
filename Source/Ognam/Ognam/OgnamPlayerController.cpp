@@ -22,6 +22,12 @@ AOgnamPlayerController::AOgnamPlayerController()
 	else
 		UE_LOG(LogTemp, Warning, TEXT("%s Not Loaded"), __FUNCTION__);
 
+	static ConstructorHelpers::FClassFinder<UUserWidget> MenuHUDFinder(TEXT("/Game/UI/GameMenu"));
+	if (MenuHUDFinder.Succeeded())
+	{
+		MenuHUDClass = MenuHUDFinder.Class;
+	}
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundCue(TEXT("SoundCue'/Game/Sounds/General/hitsound_Cue.hitsound_Cue'"));
 
 	HitSound = HitSoundCue.Object;
@@ -33,6 +39,8 @@ AOgnamPlayerController::AOgnamPlayerController()
 
 void AOgnamPlayerController::BeginPlay()
 {
+	//LoadSensitivity();
+	LoadConfig();
 	if (OgnamHUDClass && IsLocalPlayerController())
 	{
 		OgnamHUD = CreateWidget<UUserWidget>(this, OgnamHUDClass);
@@ -43,6 +51,17 @@ void AOgnamPlayerController::BeginPlay()
 			OgnamHUD->AddToViewport();
 		}
 	}
+	if (MenuHUDClass && IsLocalPlayerController())
+	{
+		MenuHUD = CreateWidget<UUserWidget>(this, MenuHUDClass);
+		MenuHUD->bIsFocusable = true;
+	}
+}
+
+void AOgnamPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	InputComponent->BindAction(TEXT("GameMenu"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowMenu);
 }
 
 void AOgnamPlayerController::OnPawnDeath()
@@ -87,3 +106,38 @@ void AOgnamPlayerController::ClientFeedBackKill_Implementation()
 	ClientPlaySound(KillSound, 10.f, 1.f);
 }
 
+void AOgnamPlayerController::ShowMenu()
+{
+	if (MenuHUD->IsInViewport())
+	{
+		MenuHUD->RemoveFromViewport();
+		if (GetPawn())
+		{
+			GetPawn()->EnableInput(this);
+		}
+		SetInputMode(FInputModeGameOnly());
+		bShowMouseCursor = false;
+	}
+	else
+	{
+		MenuHUD->AddToViewport();
+		if (GetPawn())
+		{
+			GetPawn()->DisableInput(this);
+		}
+		SetInputMode(FInputModeGameAndUI());
+		bShowMouseCursor = true;
+	}
+}
+
+float AOgnamPlayerController::GetSensitivity() const
+{
+	return InputYawScale;
+}
+
+void AOgnamPlayerController::SetSensitivity(float Sens)
+{
+	SaveConfig();
+	InputPitchScale = -Sens;
+	InputYawScale = Sens;
+}
