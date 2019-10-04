@@ -135,9 +135,12 @@ void ARitualPlayerController::ShowCharacterSelection()
 		CharacterSelectionHUD->AddToViewport();
 		UE_LOG(LogTemp, Warning, TEXT("Showing characterselection"));
 	}
+	if (GetPawn())
+	{
+		GetPawn()->DisableInput(this);
+	}
 	bShowMouseCursor = true;
-	bEnableClickEvents = true;
-	SetInputMode(FInputModeUIOnly());
+	SetInputMode(FInputModeGameAndUI());
 }
 
 void ARitualPlayerController::HideCharacterSelection()
@@ -146,9 +149,11 @@ void ARitualPlayerController::HideCharacterSelection()
 	{
 		CharacterSelectionHUD->RemoveFromViewport();
 	}
-
+	if (GetPawn())
+	{
+		GetPawn()->EnableInput(this);
+	}
 	bShowMouseCursor = false;
-	bEnableClickEvents = false;
 	SetInputMode(FInputModeGameOnly());
 }
 

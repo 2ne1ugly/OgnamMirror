@@ -22,6 +22,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void OnPawnDeath();
 	virtual void ClientRestart_Implementation(APawn* NewPawn) override;
+	virtual void SetupInputComponent() override;
 
 	UFUNCTION(Client, Unreliable)
 	void ClientFeedBackDamageDealt(FVector Location, float Damage);
@@ -30,6 +31,15 @@ public:
 	UFUNCTION(Client, Unreliable)
 	void ClientFeedBackKill();
 	void ClientFeedBackKill_Implementation();
+
+	UFUNCTION(exec)
+	void ShowMenu();
+
+	UFUNCTION(BlueprintCallable)
+	float GetSensitivity() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetSensitivity(float Sens);
 private:
 
 	/*
@@ -40,6 +50,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	class UUserWidget* OgnamHUD;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> MenuHUDClass;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	class UUserWidget* MenuHUD;
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	class UUserWidget* CharacterHUD;

@@ -3,3 +3,11 @@
 
 #include "BloodhoundPiercingThorns.h"
 
+UBloodhoundPiercingThorns::UBloodhoundPiercingThorns()
+{
+
+}
+
+void UBloodhoundPiercingThorns::ActivateAbility()
+{
+}
