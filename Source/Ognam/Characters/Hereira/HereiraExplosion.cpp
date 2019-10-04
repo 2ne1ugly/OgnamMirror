@@ -73,7 +73,7 @@ void AHereiraExplosion::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 
 	if (Instigator == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTIONW__);
+		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
 		return;
 	}
 

@@ -26,13 +26,13 @@ void AJeraRadiantDiveDropPoint::BeginPlay()
 	Super::BeginPlay();
 	if (!Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No Instigator in %s"), __FUNCTIONW__);
+		UE_LOG(LogTemp, Warning, TEXT("No Instigator in %s"), __FUNCTION__);
 		return;
 	}
 	AOgnamPlayerState* PlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
 	if (!PlayerState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No player state in %s"), __FUNCTIONW__);
+		UE_LOG(LogTemp, Warning, TEXT("No player state in %s"), __FUNCTION__);
 		return;
 	}
 
