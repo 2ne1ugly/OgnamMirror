@@ -39,6 +39,8 @@ AOgnamPlayerController::AOgnamPlayerController()
 
 void AOgnamPlayerController::BeginPlay()
 {
+	//LoadSensitivity();
+	LoadConfig();
 	if (OgnamHUDClass && IsLocalPlayerController())
 	{
 		OgnamHUD = CreateWidget<UUserWidget>(this, OgnamHUDClass);
@@ -135,7 +137,7 @@ float AOgnamPlayerController::GetSensitivity() const
 
 void AOgnamPlayerController::SetSensitivity(float Sens)
 {
+	SaveConfig();
 	InputPitchScale = -Sens;
 	InputYawScale = Sens;
 }
-

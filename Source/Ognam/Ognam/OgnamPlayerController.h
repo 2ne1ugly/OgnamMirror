@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Config=OgnamGame)
 class OGNAM_API AOgnamPlayerController : public APlayerController
 {
 	GENERATED_BODY()
@@ -40,6 +40,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetSensitivity(float Sens);
+
 private:
 
 	/*
@@ -65,5 +66,4 @@ private:
 
 	UPROPERTY()
 	class USoundCue* KillSound;
-
 };
