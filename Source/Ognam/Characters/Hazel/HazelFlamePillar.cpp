@@ -48,6 +48,12 @@ void AHazelFlamePillar::ActivateCollision()
 	Collision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);	//This will be on when activation
 }
 
+void AHazelFlamePillar::DealDamage(AOgnamCharacter* Character)
+{
+	UGameplayStatics::ApplyDamage(Character, BaseDamage, Instigator->GetController(), this, nullptr);
+
+}
+
 void AHazelFlamePillar::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -65,7 +71,7 @@ void AHazelFlamePillar::BeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 	AOgnamPlayerState* PlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
 	if (OtherPlayerState && PlayerState && OtherPlayerState->GetTeam() != PlayerState->GetTeam())
 	{
-		UGameplayStatics::ApplyDamage(Character, BaseDamage, Instigator->GetController(), this, nullptr);
+		DealDamage(Character);
 		AffectedCharacters.Add(Character);
 	}
 }

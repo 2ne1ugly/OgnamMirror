@@ -18,4 +18,5 @@ public:
 	UHazelPyromancy();
 
 	virtual void FireBullet() override;
+	virtual void PostFireBullet() override;
 };

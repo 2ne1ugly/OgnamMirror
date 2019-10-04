@@ -1,18 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JeraSuppressiveImpactBackSwing.h"
+#include "JeraSuppressiveImpactAction.h"
 #include "Ognam/OgnamCharacter.h"
 #include "JeraCrystalSpear.h"
 #include "Engine/World.h"
 
-UJeraSuppressiveImpactBackSwing::UJeraSuppressiveImpactBackSwing()
+UJeraSuppressiveImpactAction::UJeraSuppressiveImpactAction()
 {
-	StatusEffect |= EStatusEffect::Rooted | EStatusEffect::Unarmed | EStatusEffect::Silenced;
-	Duration = .5f;
+	PreDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Unarmed | EStatusEffect::Silenced;
+	PostDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Unarmed | EStatusEffect::Silenced;
+
+	PreDelayDuration = .5f;
+	ChannelDuration = .0f;
+	PostDelayDuration = .2f;
 }
 
-void UJeraSuppressiveImpactBackSwing::EndModifier()
+void UJeraSuppressiveImpactAction::EndChannel()
 {
 	Super::EndModifier();
 	if (!Target->HasAuthority())

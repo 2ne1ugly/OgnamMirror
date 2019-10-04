@@ -57,7 +57,7 @@ protected:
 	virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter);
 
 	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
-	virtual void ActionTaken(EActionType ActionType) override;
+	virtual void ActionTaken(EActionNotifier ActionType) override;
 
 	/*
 	**	Props

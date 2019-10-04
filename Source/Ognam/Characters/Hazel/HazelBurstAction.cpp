@@ -1,30 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HazelBursting.h"
+#include "HazelBurstAction.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Ognam/OgnamCharacter.h"
 #include "HazelFireball.h"
-UHazelBursting::UHazelBursting()
+
+UHazelBurstAction::UHazelBurstAction()
 {
+	PreDelayDuration = 0.f;
+	PostDelayDuration = 0.f;
+
+	ChannelDuration = 1.f;
 	TotalCount = 15;
 	Count = TotalCount;
-	Duration = 1.f;
-	StatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
+	ChannelStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
 }
 
-bool UHazelBursting::ShouldEnd()
-{
-	return Count <= 0;
-}
-
-void UHazelBursting::BeginModifier()
-{
-	GetWorld()->GetTimerManager().SetTimer(ReleaseTimer, this, &UHazelBursting::ReleaseFireBall, Duration / (TotalCount - 1), false);
-}
-
-void UHazelBursting::ReleaseFireBall()
+void UHazelBurstAction::ReleaseFireBall()
 {
 	if (!Target->HasAuthority())
 	{
@@ -46,9 +40,15 @@ void UHazelBursting::ReleaseFireBall()
 	Params.Instigator = Target;
 	GetWorld()->SpawnActor<AHazelFireball>(From, Direction.Rotation(), Params)->SetReplicates(true);
 
+	//Check if this releases lower number of fire balls sometimes
 	Count--;
 	if (Count > 0)
 	{
-		GetWorld()->GetTimerManager().SetTimer(ReleaseTimer, this, &UHazelBursting::ReleaseFireBall, Duration / (TotalCount - 1), false);
+		GetWorld()->GetTimerManager().SetTimer(ReleaseTimer, this, &UHazelBurstAction::ReleaseFireBall, ChannelDuration / (TotalCount - 1), false);
 	}
+}
+
+void UHazelBurstAction::BeginChannel()
+{
+	GetWorld()->GetTimerManager().SetTimer(ReleaseTimer, this, &UHazelBurstAction::ReleaseFireBall, ChannelDuration / (TotalCount - 1), false);
 }

@@ -121,7 +121,7 @@ public:
 	}
 
 	bool HasStatusEffect(EStatusEffect StatusEffect);
-	void TakeAction(EActionType ActionType);
+	void TakeAction(EActionNotifier ActionType);
 	void ApplyStatusEffect(EStatusEffect StatusEffect);
 	/*
 	**	Exported Props

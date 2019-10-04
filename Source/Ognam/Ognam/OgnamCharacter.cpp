@@ -403,7 +403,7 @@ bool AOgnamCharacter::HasStatusEffect(EStatusEffect StatusEffect)
 	return false;
 }
 
-void AOgnamCharacter::TakeAction(EActionType ActionType)
+void AOgnamCharacter::TakeAction(EActionNotifier ActionType)
 {
 	//Give them a chance to dispell.
 	if (Weapon && Weapon->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
@@ -473,7 +473,7 @@ void AOgnamCharacter::ServerJump_Implementation()
 	{
 		return;
 	}
-	TakeAction(EActionType::Jump);
+	TakeAction(EActionNotifier::Jump);
 	ACharacter::Jump();
 	bIsJumping = true;
 }
@@ -510,7 +510,7 @@ void AOgnamCharacter::Jump()
 	{
 		return;
 	}
-	TakeAction(EActionType::Jump);
+	TakeAction(EActionNotifier::Jump);
 	ACharacter::Jump();
 	bIsJumping = true;
 	ServerJump();
@@ -567,6 +567,6 @@ void AOgnamCharacter::Die_Implementation()
 	}
 	DisableInput(PlayerController);
 	PlayerController->OnPawnDeath();
-	TakeAction(EActionType::Death);
+	TakeAction(EActionNotifier::Death);
 	//PlayerController->UnPossess();
 }

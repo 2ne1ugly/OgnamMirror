@@ -5,6 +5,9 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Engine/World.h"
 #include "HazelFireball.h"
+#include "HazelBlazed.h"
+#include "TimerManager.h"
+
 UHazelPyromancy::UHazelPyromancy()
 {
 	bInfiniteAmmo = true;
@@ -32,4 +35,16 @@ void UHazelPyromancy::FireBullet()
 	Params.bNoFail = true;
 	Params.Instigator = Target;
 	GetWorld()->SpawnActor<AHazelFireball>(From, Direction.Rotation(), Params)->SetReplicates(true);
+}
+
+void UHazelPyromancy::PostFireBullet()
+{
+	if (Target->GetModifier<UHazelBlazed>())
+	{
+		Target->GetWorldTimerManager().SetTimer(PostDelay, this, &UHazelPyromancy::RepeatFireBullet, 1.f / (RoundsPerSecond * 2.f), false);
+	}
+	else
+	{
+		Super::PostFireBullet();
+	}
 }

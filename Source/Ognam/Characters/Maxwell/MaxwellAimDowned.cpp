@@ -51,11 +51,11 @@ void UMaxwellAimDowned::StatusEffectApplied(EStatusEffect StatusEffect)
 {
 }
 
-void UMaxwellAimDowned::ActionTaken(EActionType ActionType)
+void UMaxwellAimDowned::ActionTaken(EActionNotifier ActionType)
 {
-	if (ActionType == EActionType::Jump ||
-		ActionType == EActionType::SpecialMovement ||
-		ActionType == EActionType::Death)
+	if (ActionType == EActionNotifier::Jump ||
+		ActionType == EActionNotifier::SpecialMovement ||
+		ActionType == EActionNotifier::Death)
 	{
 		bInterrupted = true;
 	}

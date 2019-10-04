@@ -3,15 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/PromptActiveAbility.h"
-#include "HazelBlazingSpirit.generated.h"
+#include "Ognam/ExpirableModifier.h"
+#include "HazelBlazed.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UHazelBlazingSpirit : public UPromptActiveAbility
+class OGNAM_API UHazelBlazed : public UExpirableModifier
 {
 	GENERATED_BODY()
-	
+
+public:
+	UHazelBlazed();
 };

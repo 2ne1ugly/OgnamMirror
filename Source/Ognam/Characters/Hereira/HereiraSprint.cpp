@@ -45,7 +45,7 @@ void UHereiraSprint::ServerStartSprint_Implementation()
 	{
 		return;
 	}
-	Target->TakeAction(EActionType::Focus);
+	Target->TakeAction(EActionNotifier::Focus);
 	UHereiraSprinting* Sprinting = NewObject<UHereiraSprinting>(Target);
 	Sprinting->SetAbility(this);
 	Sprinting->RegisterComponent();
@@ -73,7 +73,7 @@ void UHereiraSprint::StatusEffectApplied(EStatusEffect StatusEffect)
 	}
 }
 
-void UHereiraSprint::ActionTaken(EActionType ActionType)
+void UHereiraSprint::ActionTaken(EActionNotifier ActionType)
 {
 }
 

@@ -3,24 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/Modifier.h"
-#include "HazelBursting.generated.h"
+#include "Ognam/ActionModifier.h"
+#include "HazelBurstAction.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UHazelBursting : public UModifier
+class OGNAM_API UHazelBurstAction : public UActionModifier
 {
 	GENERATED_BODY()
 
 public:
-	UHazelBursting();
-
-	virtual bool ShouldEnd() override;
-	virtual void BeginModifier() override;
+	UHazelBurstAction();
 
 protected:
+	virtual void BeginChannel() override;
+
 	void ReleaseFireBall();
 
 	/*
@@ -28,7 +27,6 @@ protected:
 	*/
 	int32 Count;
 	int32 TotalCount;
-	float Duration;
 
 	FTimerHandle ReleaseTimer;
 };

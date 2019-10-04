@@ -33,10 +33,10 @@ enum class EStatusEffect : uint64
 ENUM_CLASS_FLAGS(EStatusEffect)
 
 /*
-**	Action Type is used for dispelling
+**	Action Notifier Type is used for dispelling
 */
 UENUM()
-enum class EActionType : uint64
+enum class EActionNotifier : uint64
 {
 	None,
 	Jump,
@@ -44,4 +44,17 @@ enum class EActionType : uint64
 	SpecialMovement,
 	Focus,	//General ability that requires focus. Can cancel reload
 	Death
+};
+
+/*
+**	Action Stage is used in Action modifier
+*/
+UENUM()
+enum class EActionStage : uint64
+{
+	PreAction,
+	PreDelay,
+	Channel,
+	PostDelay,
+	PostAction,
 };

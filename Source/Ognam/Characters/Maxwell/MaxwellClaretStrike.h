@@ -7,7 +7,7 @@
 #include "MaxwellClaretStrike.generated.h"
 
 /**
- * 
+ *	Potentially make it use  action modifier
  */
 UCLASS()
 class OGNAM_API UMaxwellClaretStrike : public UActiveAbility

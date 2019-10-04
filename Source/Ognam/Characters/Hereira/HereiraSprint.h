@@ -9,7 +9,7 @@
 #include "HereiraSprint.generated.h"
 
 /**
- * 
+ *	Potentially make it use action modifier.
  */
 UCLASS()
 class OGNAM_API UHereiraSprint : public UActiveAbility, public IDispellable
@@ -45,7 +45,7 @@ protected:
 	**	Dispellable interface
 	*/
 	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
-	virtual void ActionTaken(EActionType ActionType) override;
+	virtual void ActionTaken(EActionNotifier ActionType) override;
 
 	/*
 	**	Props

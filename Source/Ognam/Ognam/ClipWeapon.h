@@ -46,7 +46,7 @@ protected:
 	virtual void EndReload();
 
 	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
-	virtual void ActionTaken(EActionType ActionType) override;
+	virtual void ActionTaken(EActionNotifier ActionType) override;
 
 	/*
 	**	Props

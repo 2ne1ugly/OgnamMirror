@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HazelBlazingWill.h"
+#include "HazelLightenedWill.h"
 #include "Ognam/OgnamCharacter.h"
 
-UHazelBlazingWill::UHazelBlazingWill()
+UHazelLightenedWill::UHazelLightenedWill()
 {
 	AbilityType = EAbilityType::Mobility;
 }
 
-void UHazelBlazingWill::BeginPlay()
+void UHazelLightenedWill::BeginPlay()
 {
 	Super::BeginPlay();
 

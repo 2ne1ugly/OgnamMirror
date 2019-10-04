@@ -2,8 +2,10 @@
 
 
 #include "HazelDisruptiveBurst.h"
-#include "HazelBursting.h"
-#include "Engine/World.h"
+#include "HazelBurstAction.h"
+#include "HazelEnhancedBurstAction.h"
+#include "HazelBlazed.h"
+
 UHazelDisruptiveBurst::UHazelDisruptiveBurst()
 {
 	AbilityType = EAbilityType::Special;
@@ -12,5 +14,13 @@ UHazelDisruptiveBurst::UHazelDisruptiveBurst()
 
 void UHazelDisruptiveBurst::ActivateAbility()
 {
-	NewObject<UHazelBursting>(Target)->RegisterComponent();
+	//Make this more smooth.
+	if (Target->GetModifier<UHazelBlazed>())
+	{
+		NewObject<UHazelEnhancedBurstAction>(Target)->RegisterComponent();
+	}
+	else
+	{
+		NewObject<UHazelBurstAction>(Target)->RegisterComponent();
+	}
 }

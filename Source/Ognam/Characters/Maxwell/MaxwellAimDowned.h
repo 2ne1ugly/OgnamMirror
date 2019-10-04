@@ -29,7 +29,7 @@ protected:
 	virtual void EndModifier() override;
 
 	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
-	virtual void ActionTaken(EActionType ActionType) override;
+	virtual void ActionTaken(EActionNotifier ActionType) override;
 
 	/*
 	**	Props

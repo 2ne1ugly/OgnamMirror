@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/Ability.h"
-#include "HazelBlazingWill.generated.h"
+#include "Ognam/OgnamCharacter.h"
+#include "Bloodhound.generated.h"
 
 /**
- * 
+ *	Cthulhu/demon possessed? Steampunk robot machine thing.
  */
 UCLASS()
-class OGNAM_API UHazelBlazingWill : public UAbility
+class OGNAM_API ABloodhound : public AOgnamCharacter
 {
 	GENERATED_BODY()
-	
+
 public:
-	UHazelBlazingWill();
+	ABloodhound();
 
 	virtual void BeginPlay() override;
 };

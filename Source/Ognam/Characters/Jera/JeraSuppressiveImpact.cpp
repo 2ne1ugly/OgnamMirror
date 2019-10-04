@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "JeraSuppressiveImpact.h"
-#include "JeraSuppressiveImpactBackSwing.h"
+#include "JeraSuppressiveImpactAction.h"
 UJeraSuppressiveImpact::UJeraSuppressiveImpact()
 {
 	AbilityType = EAbilityType::Unique;
@@ -10,5 +10,5 @@ UJeraSuppressiveImpact::UJeraSuppressiveImpact()
 
 void UJeraSuppressiveImpact::ActivateAbility()
 {
-	NewObject<UJeraSuppressiveImpactBackSwing>(Target)->RegisterComponent();
+	NewObject<UJeraSuppressiveImpactAction>(Target)->RegisterComponent();
 }

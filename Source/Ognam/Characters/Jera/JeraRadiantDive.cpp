@@ -15,7 +15,7 @@ UJeraRadiantDive::UJeraRadiantDive()
 
 void UJeraRadiantDive::ActivateAbility()
 {
-	Target->TakeAction(EActionType::Focus);
+	Target->TakeAction(EActionNotifier::Focus);
 
 	FVector FacingDirection = Target->Camera->GetForwardVector();
 	FacingDirection.Z = FMath::Min(FacingDirection.Z, 0.f);

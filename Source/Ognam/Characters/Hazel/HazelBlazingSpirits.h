@@ -4,20 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/PromptActiveAbility.h"
-#include "HereiraThrowMolotov.generated.h"
+#include "HazelBlazingSpirits.generated.h"
 
 /**
- *	Potentially make this use actions
+ * 
  */
 UCLASS()
-class OGNAM_API UHereiraThrowMolotov : public UPromptActiveAbility
+class OGNAM_API UHazelBlazingSpirits : public UPromptActiveAbility
 {
 	GENERATED_BODY()
 
 public:
-	UHereiraThrowMolotov();
+	UHazelBlazingSpirits();
 
 protected:
-	//Server Call
 	virtual void ActivateAbility() override;
 };

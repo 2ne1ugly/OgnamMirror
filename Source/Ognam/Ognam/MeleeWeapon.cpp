@@ -130,7 +130,7 @@ void UMeleeWeapon::StatusEffectApplied(EStatusEffect StatusEffect)
 	}
 }
 
-void UMeleeWeapon::ActionTaken(EActionType ActionType)
+void UMeleeWeapon::ActionTaken(EActionNotifier ActionType)
 {
 }
 

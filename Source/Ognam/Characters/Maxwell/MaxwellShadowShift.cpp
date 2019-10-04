@@ -29,7 +29,7 @@ void UMaxwellShadowShift::ServerCastShadowShift_Implementation(FVector Direction
 	{
 		return;
 	}
-	Target->TakeAction(EActionType::SpecialMovement);
+	Target->TakeAction(EActionNotifier::SpecialMovement);
 	UMaxwellShadowForm* ShadowForm = NewObject<UMaxwellShadowForm>(Target);
 	ShadowForm->SetDirection(Direction);
 	ShadowForm->RegisterComponent();

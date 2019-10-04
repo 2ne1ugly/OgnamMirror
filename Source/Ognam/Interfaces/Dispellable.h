@@ -26,6 +26,6 @@ class OGNAM_API IDispellable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void StatusEffectApplied(EStatusEffect StatusEffect) = 0;
-	virtual void ActionTaken(EActionType ActionType) = 0;
+	virtual void ActionTaken(EActionNotifier ActionType) = 0;
 
 };

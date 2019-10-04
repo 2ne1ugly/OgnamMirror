@@ -26,6 +26,8 @@ protected:
 
 	void ActivateCollision();
 
+	virtual void DealDamage(class AOgnamCharacter* Character);
+
 	/*
 	**	Props
 	*/

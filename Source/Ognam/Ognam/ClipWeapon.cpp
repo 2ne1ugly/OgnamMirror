@@ -78,9 +78,9 @@ void UClipWeapon::StatusEffectApplied(EStatusEffect StatusEffect)
 	//Status effects that will cancel reload.
 }
 
-void UClipWeapon::ActionTaken(EActionType ActionType)
+void UClipWeapon::ActionTaken(EActionNotifier ActionType)
 {
-	if (bReloading && ActionType == EActionType::Focus)
+	if (bReloading && ActionType == EActionNotifier::Focus)
 	{
 		bReloading = false;
 		Target->GetWorldTimerManager().ClearTimer(ReloadTimer);
