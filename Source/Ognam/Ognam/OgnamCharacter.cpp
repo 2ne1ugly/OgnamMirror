@@ -18,6 +18,7 @@
 #include "OgnamPlayerstate.h"
 #include "Interfaces/Dispellable.h"
 #include "OverwallHidden.h"
+#include "OverwallTransparency.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -44,6 +45,8 @@ AOgnamCharacter::AOgnamCharacter()
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
+	GetMesh()->SetCustomDepthStencilValue(2);
+
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Overlap);
 
@@ -497,7 +500,8 @@ void AOgnamCharacter::UpdateCameraBlockingPlane()
 	GetWorld()->SweepMultiByChannel(CameraHits, From, To,
 		FQuat(), ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(32.f),
 		FCollisionQueryParams::DefaultQueryParam, ECollisionResponse::ECR_Overlap);
-	if (CameraHits.Num() > 0)
+
+	if (CameraHits.Num() > 0 && CameraHits[0].GetActor()->GetComponentByClass(UOverwallTransparency::StaticClass()))
 	{
 		bCameraBlocked = true;
 		CameraBlockingPlane = FPlane(CameraHits[0].ImpactPoint, CameraHits[0].ImpactNormal);
