@@ -48,11 +48,6 @@ void UJeraCrystalArms::StartPeriSwing()
 	NetStartPeriSwing();
 }
 
-void UJeraCrystalArms::StartPostSwing()
-{
-	Super::StartPostSwing();
-}
-
 void UJeraCrystalArms::NetStartPeriSwing_Implementation()
 {
 	BoxTrigger->SetVisibility(true);

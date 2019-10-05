@@ -6,6 +6,8 @@
 #include "Ognam/OgnamPlayerstate.h"
 #include "EngineUtils.h"
 #include "Engine.h"
+#include "BloodhoundHuntingHour.h"
+#include "BloodhoundMarked.h"
 
 UBloodhoundStalking::UBloodhoundStalking()
 {
@@ -66,7 +68,7 @@ void UBloodhoundStalking::BeginModifier()
 
 void UBloodhoundStalking::TickModifier(float DeltaTime)
 {
-	Target->Speed /= .8f;
+	Target->Speed *= .7f;
 	if (!Target->HasAuthority())
 	{
 		return;
@@ -98,9 +100,12 @@ void UBloodhoundStalking::EndModifier()
 	{
 		for (AOgnamCharacter* Character : StalkedCharacters)
 		{
+			UBloodhoundMarked* Marked = NewObject<UBloodhoundMarked>(Character);
+			Marked->SetInstigator(Target);
+			Marked->RegisterComponent();
 			ClientStalkLost(Character);
 		}
-
+		NewObject<UBloodhoundHuntingHour>(Target)->RegisterComponent();
 	}
 }
 

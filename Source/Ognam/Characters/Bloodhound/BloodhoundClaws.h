@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/MeleeWeapon.h"
-#include "JeraCrystalArms.generated.h"
+#include "BloodhoundClaws.generated.h"
 
 /**
- * 
+ *	Todo: make leap attack.
  */
 UCLASS()
-class OGNAM_API UJeraCrystalArms : public UMeleeWeapon
+class OGNAM_API UBloodhoundClaws : public UMeleeWeapon
 {
 	GENERATED_BODY()
 
 public:
-	UJeraCrystalArms();
+	UBloodhoundClaws();
 
 	virtual void BeginPlay() override;
 
@@ -28,25 +28,8 @@ protected:
 
 	void EndPeriSwing();
 
-
 	virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void SubPressed() override;
 
-	UFUNCTION(Server, Unreliable, WithValidation)
-	void ServerSubPressed();
-	virtual bool ServerSubPressed_Validate() { return true; }
-	virtual void ServerSubPressed_Implementation();
-
-	//Server Call
-	virtual void ChargeShard();
-
-	//Server Call
-	virtual void FireShard();
-
-	/*
-	**	Props
-	*/
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* BoxTrigger;
 
@@ -56,12 +39,5 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMesh* DamageBoxMesh;
 
-	UPROPERTY(Transient, VisibleAnywhere, Replicated)
-	int32 ShardCharge;
-
-	int32 MaxShardCharge;
-	float ChargePeriod;
-
-	FTimerHandle ShardChargeTimer;
 	FTimerHandle BoxVisualizeTimer;
 };

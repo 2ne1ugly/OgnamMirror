@@ -497,9 +497,9 @@ void AOgnamCharacter::UpdateCameraBlockingPlane()
 	bCameraBlocked = false;
 	FVector From = GetActorLocation();
 	FVector To = Camera->GetComponentLocation();
-	GetWorld()->SweepMultiByChannel(CameraHits, From, To,
-		FQuat(), ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(32.f),
+	GetWorld()->LineTraceMultiByChannel(CameraHits, From, To, ECollisionChannel::ECC_Camera,
 		FCollisionQueryParams::DefaultQueryParam, ECollisionResponse::ECR_Overlap);
+	
 
 	if (CameraHits.Num() > 0 && CameraHits[0].GetActor()->GetComponentByClass(UOverwallTransparency::StaticClass()))
 	{
