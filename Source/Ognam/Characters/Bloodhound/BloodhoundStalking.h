@@ -23,7 +23,15 @@ public:
 	virtual void EndModifier() override;
 
 protected:
-	UPROPERTY(Transient, Replicated)
+	UFUNCTION(Client, Reliable)
+	void ClientInformStalk(const TArray<class AOgnamCharacter*>& Stalked);
+	void ClientInformStalk_Implementation(const TArray<class AOgnamCharacter*>& Stalked);
+
+	UFUNCTION(Client, Reliable)
+	void ClientStalkLost(class AOgnamCharacter* Character);
+	void ClientStalkLost_Implementation(class AOgnamCharacter* Character);
+
+	UPROPERTY(Transient)
 	TArray<class AOgnamCharacter*> StalkedCharacters;
 
 	class UMaterial* XRayMaterial;

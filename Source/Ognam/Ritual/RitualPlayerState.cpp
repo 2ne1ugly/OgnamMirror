@@ -3,7 +3,6 @@
 
 #include "RitualPlayerState.h"
 #include "RitualGameState.h"
-#include "Ognam/OgnamShooter.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Engine/World.h"
 #include "UnrealNetwork.h"

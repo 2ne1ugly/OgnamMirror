@@ -15,7 +15,7 @@ UBloodhoundStalking::UBloodhoundStalking()
 	XRayMaterial = Mat.Object;
 
 	AquiringRange = 3500.f;
-	TickingRange = 5000.f;
+	TickingRange = 4000.f;
 }
 
 bool UBloodhoundStalking::ShouldEnd()
@@ -58,6 +58,10 @@ void UBloodhoundStalking::BeginModifier()
 		}
 		StalkedCharacters.Push(*Itr);
 	}
+	if (StalkedCharacters.Num() > 0)
+	{
+		ClientInformStalk(StalkedCharacters);
+	}
 }
 
 void UBloodhoundStalking::TickModifier(float DeltaTime)
@@ -67,12 +71,14 @@ void UBloodhoundStalking::TickModifier(float DeltaTime)
 	{
 		return;
 	}
-	for (auto Itr = StalkedCharacters.CreateIterator(); Itr; ++Itr)
+
+	for (int i = StalkedCharacters.Num() - 1; i >= 0; i--)
 	{
-		if (!(*Itr)->IsValidLowLevel() ||
-			((*Itr)->GetActorLocation() - Target->GetActorLocation()).Size() < TickingRange)
+		if (!StalkedCharacters[i]->IsValidLowLevel() ||
+			(StalkedCharacters[i]->GetActorLocation() - Target->GetActorLocation()).Size() > TickingRange)
 		{
-			StalkedCharacters.Remove(*Itr);
+			ClientStalkLost(StalkedCharacters[i]);
+			StalkedCharacters.RemoveAt(i, 1, false);
 		}
 	}
 }
@@ -82,33 +88,31 @@ void UBloodhoundStalking::EndModifier()
 	if (Target->Controller && Target->Controller->IsLocalPlayerController())
 	{	
 		Target->Camera->PostProcessSettings.RemoveBlendable(XRayMaterial);
-		for (AOgnamCharacter* Character : StalkedCharacters)
-		{
-			Character->GetMesh()->SetRenderCustomDepth(false);
-		}
 	}
-
 	if (!Target->HasAuthority())
 	{
 		return;
 	}
+
 	if (StalkedCharacters.Num() > 0)
 	{
-		//NewObject<UBloodhoundHuntingHour>(Target);
+		for (AOgnamCharacter* Character : StalkedCharacters)
+		{
+			ClientStalkLost(Character);
+		}
+
 	}
 }
-//
-//void UBloodhoundStalking::ClientAddStalkedCharacter_Implementation(AOgnamCharacter* Character)
-//{
-//	StalkedCharacters.Add(Character);
-//	Character->GetMesh()->SetRenderCustomDepth(true);
-//}
-//
-//void UBloodhoundStalking::ClientRemoveStalkedCharacter_Implementation(AOgnamCharacter* Character)
-//{
-//	StalkedCharacters.Remove(Character);
-//	if (Character->IsValidLowLevel())
-//	{
-//		Character->GetMesh()->SetRenderCustomDepth(false);
-//	}
-//}
+
+void UBloodhoundStalking::ClientInformStalk_Implementation(const TArray<class AOgnamCharacter*>& Stalked)
+{
+	for (AOgnamCharacter* Character : Stalked)
+	{
+		Character->GetMesh()->SetRenderCustomDepth(true);
+	}
+}
+
+void UBloodhoundStalking::ClientStalkLost_Implementation(AOgnamCharacter* Character)
+{
+	Character->GetMesh()->SetRenderCustomDepth(false);
+}
