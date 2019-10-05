@@ -30,7 +30,6 @@ protected:
 	*/
 	float TickPeriod;
 
-	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle DamageTickTimer;
 
 	APawn* Instigator;

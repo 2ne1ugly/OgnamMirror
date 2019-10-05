@@ -17,5 +17,9 @@ UBloodhoundEtchedStalkerAction::UBloodhoundEtchedStalkerAction()
 
 void UBloodhoundEtchedStalkerAction::EndChannel()
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
 	NewObject<UBloodhoundStalking>(GetOwner())->RegisterComponent();
 }

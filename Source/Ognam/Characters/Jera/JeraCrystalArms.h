@@ -57,7 +57,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMesh* DamageBoxMesh;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 ShardCharge;
 
 	int32 MaxShardCharge;

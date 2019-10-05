@@ -41,13 +41,10 @@ protected:
 	void EndLifeSpan();
 	void EndTriggerLifeSpan();
 
-	UPROPERTY(VisibleAnywhere)
 	FTimerHandle LifeSpan;
-
-	UPROPERTY(VisibleAnywhere)
 	FTimerHandle TriggerLifeSpan;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TSet<AActor*> AffectedActors;
 
 	float BaseDamage;

@@ -79,10 +79,10 @@ protected:
 	FTimerHandle PeriSwingTimer;
 	FTimerHandle PostSwingTimer;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bSwinging;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bWantsToSwing;
 
 	TSet<AOgnamCharacter*> StrikedCharacters;

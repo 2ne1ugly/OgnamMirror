@@ -38,15 +38,15 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	FString Name;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	FName Team;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 NumKill;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 NumDeath;
 };

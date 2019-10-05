@@ -37,7 +37,7 @@ protected:
 	//UPROPERTY(VisibleAnywhere)
 	//Sprite propery to show through modifier list.
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	class AOgnamCharacter* Target;
 
 	EStatusEffect StatusEffect;

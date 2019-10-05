@@ -38,10 +38,10 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	UHereiraSprint* Ability;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bInterrupted;
 
 };

@@ -25,7 +25,6 @@ protected:
 	virtual void BeginModifier() override;
 	void TickDamage();
 
-	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle TickTimer;
 
 	//UPROPERTY(Replicated)

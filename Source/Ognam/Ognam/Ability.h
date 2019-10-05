@@ -32,7 +32,7 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	class AOgnamCharacter* Target;
 
 	UPROPERTY(VisibleAnywhere)

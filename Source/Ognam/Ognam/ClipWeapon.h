@@ -51,20 +51,19 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
-	FTimerHandle ReloadTimer;
-
 	UPROPERTY(VisibleAnywhere)
 	float ReloadTime;
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	int32 MaxAmmo;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 Ammo;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bReloading;
 
 	FDelegateHandle ReloadPressHandle;
+
+	FTimerHandle ReloadTimer;
 };

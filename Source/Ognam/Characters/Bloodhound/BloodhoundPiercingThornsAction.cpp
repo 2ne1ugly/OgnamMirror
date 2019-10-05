@@ -22,6 +22,10 @@ void UBloodhoundPiercingThornsAction::TickPreDelay(float DeltaTime)
 
 void UBloodhoundPiercingThornsAction::BeginChannel()
 {
+	if (!Target->HasAuthority())
+	{
+		return ;
+	}
 	FVector Location = Target->GetActorLocation();
 	FRotator Rotation = Target->GetActorForwardVector().Rotation();
 	GetWorld()->SpawnActor<ABloodhoundThorns>(Location, Rotation)->SetReplicates(true);

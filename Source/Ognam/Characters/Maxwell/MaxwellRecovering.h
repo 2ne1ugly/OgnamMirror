@@ -28,6 +28,5 @@ protected:
 	float HealthPenalty;
 	float TickPeriod;
 
-	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle HealTickTimer;
 };

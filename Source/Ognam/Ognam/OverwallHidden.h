@@ -29,6 +29,6 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TArray<USceneComponent*> TargetComponents;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	bool bOverwallHidden;
 };

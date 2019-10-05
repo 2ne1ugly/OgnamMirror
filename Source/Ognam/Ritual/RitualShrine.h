@@ -20,23 +20,6 @@ class OGNAM_API ARitualShrine : public AActor
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* CaptureField;
 
-	UPROPERTY()
-	int32 DefenderCount;
-	UPROPERTY()
-	int32 AttackerCount;
-
-	/* How much faster the capture goes by for each additional attacker */
-	UPROPERTY(EditAnywhere)
-	float SpeedMultiplier;
-
-	/* How long (in seconds) is needed to capture the point */
-	UPROPERTY(EditAnywhere)
-	float CaptureDuration;
-
-	/* The current progress of the capture */
-	UPROPERTY(Replicated)
-	float CaptureProgress;
-
 public:	
 	ARitualShrine();
 
@@ -59,4 +42,22 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetProgressPercent();
 
+protected:
+	UPROPERTY(Transient)
+	int32 DefenderCount;
+
+	UPROPERTY(Transient)
+	int32 AttackerCount;
+
+	/* How much faster the capture goes by for each additional attacker */
+	UPROPERTY(Transient, EditAnywhere)
+	float SpeedMultiplier;
+
+	/* How long (in seconds) is needed to capture the point */
+	UPROPERTY(EditAnywhere)
+	float CaptureDuration;
+
+	/* The current progress of the capture */
+	UPROPERTY(Transient, Replicated)
+	float CaptureProgress;
 };

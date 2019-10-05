@@ -51,10 +51,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float RoundsPerSecond;
 
-	UPROPERTY(VisibleAnywhere, Category = Ability)
 	FTimerHandle PostDelay;
 
-	UPROPERTY(EditAnywhere, Replicated)
+	UPROPERTY(Transient, EditAnywhere, Replicated)
 	bool bFiring;
 
 	bool bWantsToFire;

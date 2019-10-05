@@ -113,48 +113,48 @@ protected:
 	int32 RequiredScore;
 
 	//Counts from 1
-	UPROPERTY(Replicated)
+	UPROPERTY(Transient, Replicated)
 	int32 CurrentRound;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Transient, Replicated)
 	int32 GreenScore;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Transient, Replicated)
 	int32 BlueScore;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	FName CurrentOffenseTeam;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	FName CurrentDefenseTeam;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 NumGreenPlayers;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 NumBluePlayers;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 GreenAliveCount;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 BlueAliveCount;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	float RoundStartTime;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	float PhaseStartTime;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	float PhaseGivenTime;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bRoundEnding;
 
 	UPROPERTY(EditAnywhere)
 	float DilationAmount;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bPreRound;
 };

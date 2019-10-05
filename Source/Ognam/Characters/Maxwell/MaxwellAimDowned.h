@@ -34,6 +34,6 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	bool bInterrupted;
 };

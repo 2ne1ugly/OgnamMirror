@@ -25,12 +25,11 @@ public:
 	bool Use();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
 	FTimerHandle Duration;
 
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	bool bUsed;
 };

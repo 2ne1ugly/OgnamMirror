@@ -89,19 +89,12 @@ public:
 	TArray<class ARitualPlayerController*> PlayerControllers;
 
 	/* Timer for character selection */
-	UPROPERTY(EditAnywhere)
 	FTimerHandle PostRoundTimer;
 
 	/* Timer for slow motion / after round delay */
-	UPROPERTY(EditAnywhere)
 	FTimerHandle PreRoundTimer;
 
-	UPROPERTY(EditAnywhere)
 	bool bRoundEnded;
-
-	UPROPERTY(EditAnywhere)
 	float PostRoundTime;
-
-	UPROPERTY(EditAnywhere)
 	float CharacterSelectionTime;
 };

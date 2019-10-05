@@ -38,10 +38,10 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(Replicated)
+	UPROPERTY(Transient, Replicated)
 	int32	TeamACount;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Transient, Replicated)
 	int32	TeamBCount;
 
 };

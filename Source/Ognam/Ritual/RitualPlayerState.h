@@ -50,12 +50,12 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(Replicated)
+	UPROPERTY(Transient, Replicated)
 	int32 TeamIndex;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Transient, Replicated)
 	bool bIsAlive;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Transient, Replicated)
 	UClass* PawnClass;
 };

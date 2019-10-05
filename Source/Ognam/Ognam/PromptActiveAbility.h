@@ -41,7 +41,6 @@ protected:
 	*/
 	float Cooldown;
 
-	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle CooldownTimer;
 
 	EStatusEffect UnacceptedStatusEffects;

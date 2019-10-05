@@ -24,6 +24,6 @@ public:
 	void SetDirection(FVector Vector);
 protected:
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	FVector Direction;
 };

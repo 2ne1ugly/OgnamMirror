@@ -38,6 +38,5 @@ protected:
 	*/
 	float Cooldown;
 
-	UPROPERTY(VisibleAnywhere, Category = Ability, BlueprintReadOnly)
 	FTimerHandle ShadowShiftCooldown;
 };

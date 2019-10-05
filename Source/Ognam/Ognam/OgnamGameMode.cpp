@@ -2,14 +2,12 @@
 
 
 #include "OgnamGameMode.h"
-#include "OgnamShooter.h"
 #include "OgnamPlayerController.h"
 #include "OgnamPlayerState.h"
 #include "OgnamGameState.h"
 
 AOgnamGameMode::AOgnamGameMode()
 {
-	DefaultPawnClass = AOgnamShooter::StaticClass();
 	PlayerControllerClass = AOgnamPlayerController::StaticClass();
 	GameStateClass = AOgnamGameState::StaticClass();
 	PlayerStateClass = AOgnamPlayerState::StaticClass();

@@ -27,6 +27,6 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bUsed;
 };

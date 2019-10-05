@@ -36,6 +36,5 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	float Duration;
 
-	UPROPERTY(VisibleAnywhere)
 	FTimerHandle DurationTimer;
 };

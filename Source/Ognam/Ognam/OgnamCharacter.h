@@ -126,7 +126,7 @@ public:
 	/*
 	**	Exported Props
 	*/
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	float Health;
 
 	UPROPERTY(VisibleAnywhere)
@@ -138,34 +138,34 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	float BaseDefense;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	float Defense;
 
 	UPROPERTY(VisibleAnywhere)
 	float BaseSpeed;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	float Speed;
 
 	UPROPERTY(VisibleAnywhere)
 	float BaseAcceleration;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	float Acceleration;
 
 	UPROPERTY(VisibleAnywhere)
 	float BaseAirControl;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	float AirControl;
 
 	UPROPERTY(VisibleAnywhere)
 	float BaseGravity;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	float Gravity;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, VisibleAnywhere)
 	bool	bCanMove;
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
@@ -214,10 +214,10 @@ protected:
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bIsJumping;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bIsAlive;
 
 	FVector InputVector;

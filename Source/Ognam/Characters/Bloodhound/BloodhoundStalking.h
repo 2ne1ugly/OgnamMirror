@@ -17,10 +17,17 @@ class OGNAM_API UBloodhoundStalking : public UExpirableModifier
 public:
 	UBloodhoundStalking();
 
+	virtual bool ShouldEnd() override;
 	virtual void BeginModifier() override;
+	virtual void TickModifier(float DeltaTime) override;
 	virtual void EndModifier() override;
 
 protected:
+	UPROPERTY(Transient, Replicated)
 	TArray<class AOgnamCharacter*> StalkedCharacters;
-	UMaterial* XRayMaterial;
+
+	class UMaterial* XRayMaterial;
+
+	float AquiringRange;
+	float TickingRange;
 };

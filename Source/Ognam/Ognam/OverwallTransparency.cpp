@@ -76,9 +76,8 @@ void UOverwallTransparency::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	//Find local Ognam character
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	if (!PlayerController->IsLocalPlayerController())
+	if (!PlayerController || !PlayerController->IsLocalPlayerController())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Overwall ticks on dedicated server"));
 		return;
 	}
 
