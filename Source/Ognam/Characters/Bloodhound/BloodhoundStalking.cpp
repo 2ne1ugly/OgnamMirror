@@ -114,10 +114,12 @@ void UBloodhoundStalking::ClientInformStalk_Implementation(const TArray<class AO
 	for (AOgnamCharacter* Character : Stalked)
 	{
 		Character->GetMesh()->SetRenderCustomDepth(true);
+		Character->GetMesh()->SetBoundsScale(1.15f);
 	}
 }
 
 void UBloodhoundStalking::ClientStalkLost_Implementation(AOgnamCharacter* Character)
 {
 	Character->GetMesh()->SetRenderCustomDepth(false);
+	Character->GetMesh()->SetBoundsScale(1.f);
 }

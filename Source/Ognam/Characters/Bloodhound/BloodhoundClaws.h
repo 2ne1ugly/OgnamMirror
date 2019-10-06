@@ -20,6 +20,8 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
+	virtual void ServerBasicPressed_Implementation() override;
+
 	virtual void StartPeriSwing() override;
 
 	UFUNCTION(NetMulticast, Unreliable)

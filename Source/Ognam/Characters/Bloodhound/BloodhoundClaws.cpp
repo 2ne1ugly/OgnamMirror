@@ -8,6 +8,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Materials/Material.h"
 #include "BloodhoundMarked.h"
+#include "BloodhoundHuntingHour.h"
+#include "BloodhoundLeap.h"
 
 UBloodhoundClaws::UBloodhoundClaws()
 {
@@ -33,6 +35,19 @@ void UBloodhoundClaws::BeginPlay()
 	BoxTrigger->SetRelativeScale3D(FVector(1.f));
 	BoxTrigger->SetMaterial(0, DamageBoxMaterial);
 	BoxTrigger->SetVisibility(false);
+}
+
+void UBloodhoundClaws::ServerBasicPressed_Implementation()
+{
+	UBloodhoundHuntingHour* Hour = Target->GetModifier<UBloodhoundHuntingHour>();
+	if (!Hour)
+	{
+		Super::ServerBasicPressed_Implementation();
+	}
+	else
+	{
+		NewObject<UBloodhoundLeap>(Target)->RegisterComponent();
+	}
 }
 
 void UBloodhoundClaws::StartPeriSwing()
