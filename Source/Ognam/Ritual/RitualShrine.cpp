@@ -30,6 +30,7 @@ ARitualShrine::ARitualShrine()
 	CaptureField->SetupAttachment(RootComponent);
 	CaptureField->SetRelativeLocation(FVector::ZeroVector);
 	CaptureField->SetCollisionProfileName(TEXT("Trigger"));
+	CaptureField->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
 	CaptureField->bHiddenInGame = false;
 	CaptureField->OnComponentBeginOverlap.AddDynamic(this, &ARitualShrine::OnEnterField);
 	CaptureField->OnComponentEndOverlap.AddDynamic(this, &ARitualShrine::OnExitField);
