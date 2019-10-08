@@ -27,7 +27,6 @@ void UAutoClipWeapon::BasicPressed()
 {
 	if (bReloading ||
 		Ammo <= 0 ||
-		bWantsToFire ||
 		Target->HasStatusEffect(UnacceptedStatusEffects))
 	{
 		if (Ammo == 0)
@@ -41,10 +40,6 @@ void UAutoClipWeapon::BasicPressed()
 
 void UAutoClipWeapon::BasicReleased()
 {
-	if (!bWantsToFire)
-	{
-		return;
-	}
 	ServerBasicReleased();
 }
 

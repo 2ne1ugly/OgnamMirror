@@ -86,4 +86,6 @@ protected:
 	bool bWantsToSwing;
 
 	TSet<AOgnamCharacter*> StrikedCharacters;
+
+	EActionStage SwingStage;
 };

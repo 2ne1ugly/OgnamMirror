@@ -8,7 +8,7 @@
 
 AJera::AJera()
 {
-	RootComponent->SetRelativeScale3D(FVector(1.1f, 1.1f, 1.1f));
+	RootComponent->SetRelativeScale3D(FVector(1.1f));
 	MaxHealth = 300.f;
 }
 

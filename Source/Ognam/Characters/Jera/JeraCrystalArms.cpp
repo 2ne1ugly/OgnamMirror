@@ -73,7 +73,7 @@ void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UJeraCrystalArms::SubPressed()
 {
-	if (ShardCharge <= 0)
+	if (ShardCharge <= 0 || bSwinging)
 	{
 		return;
 	}
@@ -82,7 +82,7 @@ void UJeraCrystalArms::SubPressed()
 
 void UJeraCrystalArms::ServerSubPressed_Implementation()
 {
-	if (ShardCharge <= 0)
+	if (ShardCharge <= 0 || bSwinging)
 	{
 		return;
 	}
@@ -106,6 +106,7 @@ void UJeraCrystalArms::ChargeShard()
 
 void UJeraCrystalArms::FireShard()
 {
+	//Thinking of making this into an action.
 	if (!Target->HasAuthority())
 	{
 		return;

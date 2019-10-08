@@ -16,13 +16,14 @@
 #include "ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "MaxwellSniperTrail.h"
+#include "MaxwellSniperRifleRecoil.h"
 
 UMaxwellSniperRifle::UMaxwellSniperRifle()
 {
-	MaxAmmo = 5;
+	MaxAmmo = 8;
 	Ammo = MaxAmmo;
-	RoundsPerSecond = 3.f;
-	ReloadTime = 4.f;
+	RoundsPerSecond = 2.5f;
+	ReloadTime = 3.5f;
 
 	BaseDamage = 50.f;
 
@@ -88,6 +89,13 @@ void UMaxwellSniperRifle::FireBullet()
 	else
 		BulletTo = BulletHit.TraceEnd;
 	NetDrawTrajectory(From, BulletTo);
+
+	//Feedback recoil
+	APlayerController* Controller = Target->GetController<APlayerController>();
+	if (Controller)
+	{
+		Controller->ClientPlayCameraShake(UMaxwellSniperRifleRecoil::StaticClass());
+	}
 
 	float Damage = BaseDamage;
 	UMaxwellClaretStrikeCharged* ClaretStrikeCharged = Target->GetModifier<UMaxwellClaretStrikeCharged>();

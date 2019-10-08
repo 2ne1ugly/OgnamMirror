@@ -11,6 +11,7 @@ UMeleeWeapon::UMeleeWeapon()
 	PreSwing = .25f;
 	PeriSwing = .7f;
 	PostSwing = .15f;
+	SwingStage = EActionStage::PreAction;
 }
 
 void UMeleeWeapon::BeginPlay()
@@ -78,6 +79,7 @@ void UMeleeWeapon::ServerBasicReleased_Implementation()
 void UMeleeWeapon::StartPreSwing()
 {
 	GetWorld()->GetTimerManager().SetTimer(PreSwingTimer, this, &UMeleeWeapon::StartPeriSwing, PreSwing, false);
+	SwingStage = EActionStage::PreDelay;
 }
 
 void UMeleeWeapon::StartPeriSwing()
@@ -85,12 +87,14 @@ void UMeleeWeapon::StartPeriSwing()
 	Trigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	StrikedCharacters.Reset();
 	GetWorld()->GetTimerManager().SetTimer(PeriSwingTimer, this, &UMeleeWeapon::StartPostSwing, PeriSwing, false);
+	SwingStage = EActionStage::Channel;
 }
 
 void UMeleeWeapon::StartPostSwing()
 {
 	Trigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetWorld()->GetTimerManager().SetTimer(PostSwingTimer, this, &UMeleeWeapon::EndPostSwing, PostSwing, false);
+	SwingStage = EActionStage::PostDelay;
 }
 
 void UMeleeWeapon::EndPostSwing()
@@ -102,6 +106,7 @@ void UMeleeWeapon::EndPostSwing()
 	else
 	{
 		bSwinging = false;
+		EActionStage::PreAction;
 	}
 }
 
@@ -123,8 +128,12 @@ void UMeleeWeapon::CharacterStrike(AOgnamCharacter* OtherCharacter)
 
 void UMeleeWeapon::StatusEffectApplied(EStatusEffect StatusEffect)
 {
-	if ((StatusEffect & EStatusEffect::Unarmed) != EStatusEffect::None &&
-		Target->HasAuthority())
+	if (!Target->HasAuthority())
+	{
+		return;
+	}
+
+	if ((StatusEffect & EStatusEffect::Unarmed) != EStatusEffect::None)
 	{
 		bWantsToSwing = false;
 	}
@@ -132,5 +141,26 @@ void UMeleeWeapon::StatusEffectApplied(EStatusEffect StatusEffect)
 
 void UMeleeWeapon::ActionTaken(EActionNotifier ActionType)
 {
+	if (!Target->HasAuthority())
+	{
+		return;
+	}
+
+	//Cancel action when dead, still working.
+	if ((ActionType & EActionNotifier::Death) != EActionNotifier::None)
+	{
+		switch (SwingStage)
+		{
+		case EActionStage::PreAction:
+			//GetWorld()->GetTimerManager().ClearTimer()
+			break;
+		case EActionStage::Channel:
+			break;
+		case EActionStage::PostAction:
+			break;
+		default:
+			break;
+		}
+	}
 }
 
