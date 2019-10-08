@@ -2,6 +2,11 @@
 
 
 #include "OgnamPlayerController.h"
+#include "OnlineSubsystem.h"
+#include "Interfaces/OnlineFriendsInterface.h"
+#include "Interfaces/OnlineIdentityInterface.h"
+#include "OnlineSubsystemTypes.h"
+#include "GameFramework/PlayerState.h"
 #include "Runtime/UMG/Public/UMG.h"
 #include "Slate.h"
 #include "Blueprint/UserWidget.h"
@@ -10,6 +15,7 @@
 #include "OgnamCharacter.h"
 #include "Engine/World.h"
 #include "DamageText.h"
+#include "OgnamPlayerstate.h"
 #include "Sound/SoundCue.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
@@ -20,7 +26,9 @@ AOgnamPlayerController::AOgnamPlayerController()
 		OgnamHUDClass = HUDFinder.Class;
 	}
 	else
+	{
 		UE_LOG(LogTemp, Warning, TEXT("%s Not Loaded"), __FUNCTION__);
+	}
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> MenuHUDFinder(TEXT("/Game/UI/GameMenu"));
 	if (MenuHUDFinder.Succeeded())
@@ -29,28 +37,16 @@ AOgnamPlayerController::AOgnamPlayerController()
 	}
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundCue(TEXT("SoundCue'/Game/Sounds/General/hitsound_Cue.hitsound_Cue'"));
-
 	HitSound = HitSoundCue.Object;
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> KillSoundCue(TEXT("SoundCue'/Game/Sounds/General/Kill/ownage_Cue.ownage_Cue'"));
-
 	KillSound = KillSoundCue.Object;
+
+	LoadConfig();
 }
 
 void AOgnamPlayerController::BeginPlay()
 {
-	//LoadSensitivity();
-	LoadConfig();
-	if (OgnamHUDClass && IsLocalPlayerController())
-	{
-		OgnamHUD = CreateWidget<UUserWidget>(this, OgnamHUDClass);
-
-		//This part should be chosen properly
-		if (OgnamHUD)
-		{
-			OgnamHUD->AddToViewport();
-		}
-	}
 	if (MenuHUDClass && IsLocalPlayerController())
 	{
 		MenuHUD = CreateWidget<UUserWidget>(this, MenuHUDClass);
@@ -66,6 +62,20 @@ void AOgnamPlayerController::SetupInputComponent()
 
 void AOgnamPlayerController::OnPawnDeath()
 {
+}
+
+void AOgnamPlayerController::ClientGameStarted_Implementation()
+{
+	if (OgnamHUDClass && IsLocalPlayerController())
+	{
+		OgnamHUD = CreateWidget<UUserWidget>(this, OgnamHUDClass);
+
+		//This part should be chosen properly
+		if (OgnamHUD)
+		{
+			OgnamHUD->AddToViewport();
+		}
+	}
 }
 
 void AOgnamPlayerController::ClientRestart_Implementation(APawn* aPawn)
@@ -137,7 +147,36 @@ float AOgnamPlayerController::GetSensitivity() const
 
 void AOgnamPlayerController::SetSensitivity(float Sens)
 {
-	SaveConfig();
 	InputPitchScale = -Sens;
 	InputYawScale = Sens;
+	SaveConfig();
 }
+
+void AOgnamPlayerController::JoinGame(FString Address)
+{
+	ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+}
+
+void AOgnamPlayerController::CreateGame(FString MapName)
+{
+	UGameplayStatics::OpenLevel(GetWorld(), *MapName, true, FString("?listen?numplayers=4"));
+}
+
+void AOgnamPlayerController::WhoAmI()
+{
+	APlayerState* PlayerState = GetPlayerState<APlayerState>();
+
+	IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
+	UE_LOG(LogTemp, Warning, TEXT("Sub : %s"), *Sub->GetOnlineServiceName().ToString());
+	ULocalPlayer* Player = GetLocalPlayer();
+	UE_LOG(LogTemp, Warning, TEXT("Playerid : %s"), *Player->GetPreferredUniqueNetId().ToString());
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("My name is %s"), *PlayerState->GetPlayerName()));
+}
+
+void AOgnamPlayerController::SendMessage(FString& Message)
+{
+	AOgnamPlayerState* PlayerState = GetPlayerState<AOgnamPlayerState>();
+	PlayerState->ServerSendMessage(Message);
+	PlayerState->DisplayMessage(Message, PlayerState);
+}
+

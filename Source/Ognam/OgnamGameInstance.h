@@ -20,7 +20,7 @@ public:
 
 	//Creates and starts session
 	UFUNCTION(BlueprintCallable)
-	bool CreateSession(FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
+	bool CreateSession(FName SessionName, bool bIsLAN, int32 MaxNumPlayers, FString MapName);
 
 	//Finds Session
 	UFUNCTION(BlueprintCallable)
@@ -43,4 +43,5 @@ public:
 	FDelegateHandle StartSessionCompleteHandle;
 	FDelegateHandle FindSessionsCompleteHandle;
 	FDelegateHandle JoinSessionCompleteHandle;
+
 };

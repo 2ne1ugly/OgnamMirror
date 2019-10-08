@@ -317,6 +317,6 @@ void ARitualPlayerController::PreRoundEnd_Implementation()
 	{
 		Character->SetCanMove(true);
 		Character->EnableInput(this);
-		//Character->GetCharacterMovement()->movement;
 	}
 }
+

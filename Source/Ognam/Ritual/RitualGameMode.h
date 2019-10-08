@@ -40,16 +40,12 @@ public:
 	//We Handle this here bc we want to make sure that this is called only from server.
 	virtual void HandleMatchHasStarted() override;
 
+	virtual void Logout(class AController* Controller) override;
+
 	/*
 	**	Server Functions
 	*/
 	void KillPlayer(class ARitualPlayerController* PlayerController);
-	//void RespawnPlayer(class ARitualPlayerController* PlayerController);
-	//void RespawnAllPlayer();
-	//void StartFirstRound();
-	//void RestartRound();
-	//void EndRound();
-	//void StartNewRound();
 
 	/*
 	** Here we begin the "draft" phase of the round. 
