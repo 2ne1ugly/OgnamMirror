@@ -40,7 +40,7 @@ AHereiraMolotovEmber::AHereiraMolotovEmber()
 	Movement->InitialSpeed = 700.f;
 	Movement->ProjectileGravityScale = 1.5f;
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> Flame(TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Fire.P_Fire'"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> Flame(TEXT("ParticleSystem'/Game/StarterContent/Particles/Fire.Fire'"));
 	ParticleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Flame"));
 	ParticleSystem->SetTemplate(Flame.Object);
 	ParticleSystem->SetupAttachment(RootComponent);
