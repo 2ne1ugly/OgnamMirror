@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "RitualGameMode.h"
+#include "GameFramework/PlayerState.h"
 #include "RitualGameState.h"
 #include "RitualPlayerState.h"
 #include "RitualPlayerController.h"
@@ -55,9 +56,9 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 
 	FString PlayerCount = UGameplayStatics::ParseOption(Options, "numplayers");
 	UE_LOG(LogTemp, Warning, TEXT("%s\n"), *Options);
-	UE_LOG(LogTemp, Warning, TEXT("%s\n"), *PlayerCount);
 	MaxNumPlayers = FCString::Atoi(*PlayerCount);
 
+	UE_LOG(LogTemp, Warning, TEXT("PlayerCount - %s"), *PlayerCount);
 	if (MaxNumPlayers == 0)
 		MaxNumPlayers = 2;
 }
@@ -67,7 +68,7 @@ bool ARitualGameMode::ReadyToStartMatch_Implementation()
 	// if everyone's in and everyone is ready
 	// Num Players contains non initialized players.
 	// use Num to make it safe
-	if (PlayerControllers.Num() == MaxNumPlayers)
+	if (NumPlayers == MaxNumPlayers)
 	{
 		return true;
 	}
@@ -95,6 +96,7 @@ void ARitualGameMode::PreRoundBegin()
 		return;
 	}
 	RitualGameState->SetPreRoundStage(true);
+
 	for (ARitualPlayerController* PlayerController : PlayerControllers)
 	{
 		//RestartPlayer(PlayerController);
@@ -235,6 +237,7 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 			RitualPlayerState->SetTeam(RitualGameState->BlueName);
 			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumBluePlayers());
 		}
+		PlayerController->ClientGameStarted();
 		PlayerControllers.Push(PlayerController);
 	}
 }
@@ -251,10 +254,15 @@ void ARitualGameMode::PreLogin(const FString& Options, const FString& Address, c
 		ErrorMessage = TEXT("Match Full");
 	}
 	UE_LOG(LogTemp, Warning, TEXT("%s\n"), *Options);
-	if (IsRunningDedicatedServer())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("This is running Dedicated Server"));
-	}
+}
+
+void ARitualGameMode::Logout(AController* PlayerController)
+{
+	Super::Logout(PlayerController);
+	APlayerState* PlayerState = PlayerController->GetPlayerState<APlayerState>();
+	UE_LOG(LogTemp, Warning, TEXT("%s player left"), *PlayerState->GetPlayerName());
+	ARitualPlayerController* RitualController = Cast<ARitualPlayerController>(PlayerController);
+	PlayerControllers.Remove(RitualController);
 }
 
 AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)

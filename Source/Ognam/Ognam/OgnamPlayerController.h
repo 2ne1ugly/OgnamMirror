@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Config=OgnamGame)
+UCLASS()
 class OGNAM_API AOgnamPlayerController : public APlayerController
 {
 	GENERATED_BODY()
@@ -40,6 +40,22 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetSensitivity(float Sens);
+
+	UFUNCTION(BlueprintCallable)
+	void JoinGame(FString Address);
+
+	UFUNCTION(BlueprintCallable)
+	void CreateGame(FString MapName);
+
+	UFUNCTION(Client, Reliable)
+	void ClientGameStarted();
+	void ClientGameStarted_Implementation();
+
+	UFUNCTION(exec)
+	void WhoAmI();
+
+	UFUNCTION(exec)
+	void SendMessage(FString& Message);
 
 private:
 

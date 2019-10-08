@@ -3,6 +3,8 @@
 
 #include "OgnamPlayerState.h"
 #include "UnrealNetwork.h"
+#include "Engine.h"
+#include "Kismet/GameplayStatics.h"
 
 AOgnamPlayerState::AOgnamPlayerState()
 {
@@ -56,4 +58,23 @@ void AOgnamPlayerState::SetTeam(FName name)
 FName AOgnamPlayerState::GetTeam() const
 {
 	return Team;
+}
+
+void AOgnamPlayerState::NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender)
+{
+	if (GEngine->GetFirstLocalPlayerController(GetWorld()) &&
+		GEngine->GetFirstLocalPlayerController(GetWorld())->GetPlayerState<APlayerState>() != Sender)
+	{
+		DisplayMessage(Message, Sender);
+	}
+}
+
+void AOgnamPlayerState::ServerSendMessage_Implementation(const FString& Message)
+{
+	NetReceiveMessage(Message, this);
+}
+
+void AOgnamPlayerState::DisplayMessage(const FString& Message, APlayerState* Sender)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, FString::Printf(TEXT("%s: %s"), *Sender->GetPlayerName(), *Message));
 }

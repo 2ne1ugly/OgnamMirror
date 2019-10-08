@@ -16,7 +16,7 @@ UOgnamGameInstance::UOgnamGameInstance(const FObjectInitializer& ObjectInitializ
 	OnJoinSessionComplete.BindUObject(this, &UOgnamGameInstance::JoinSessionComplete);
 }
 
-bool UOgnamGameInstance::CreateSession(FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers)
+bool UOgnamGameInstance::CreateSession(FName SessionName, bool bIsLAN, int32 MaxNumPlayers, FString MapName)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Start Creating Session..."));
 
@@ -35,15 +35,9 @@ bool UOgnamGameInstance::CreateSession(FName SessionName, bool bIsLAN, bool bIsP
 			SessionSettings.bShouldAdvertise = true;
 			SessionSettings.bAllowJoinInProgress = true;
 			SessionSettings.bIsLANMatch = bIsLAN;
-			SessionSettings.bIsDedicated = IsRunningDedicatedServer();;
+			SessionSettings.bIsDedicated = false;
 			SessionSettings.bUsesStats = false;
-			SessionSettings.bAllowInvites = true;
-			SessionSettings.bUsesPresence = bIsPresence;//bIsPresence;
-			SessionSettings.bAllowJoinViaPresence = true;
-			SessionSettings.bAllowJoinViaPresenceFriendsOnly = false;
-			SessionSettings.bAntiCheatProtected = false;
-			SessionSettings.BuildUniqueId = 0;
-			SessionSettings.Set(SETTING_MAPNAME, FString("de_ognam"), EOnlineDataAdvertisementType::ViaOnlineService);
+			SessionSettings.Set(SETTING_MAPNAME, MapName, EOnlineDataAdvertisementType::ViaOnlineService);
 
 			CreateSessionCompleteHandle = Sessions->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionComplete);
 			return Sessions->CreateSession(*UserId, SessionName, SessionSettings);
@@ -72,13 +66,6 @@ void UOgnamGameInstance::FindSession(bool bIsLAN, bool bIsPresence)
 			SessionSearch = MakeShared<FOnlineSessionSearch>();
 			SessionSearch->MaxSearchResults = 1;
 			SessionSearch->bIsLanQuery = true;
-			SessionSearch->PingBucketSize = 0;
-			SessionSearch->TimeoutInSeconds = 3.f;
-
-			if (bIsPresence)
-			{
-				SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, bIsPresence, EOnlineComparisonOp::Equals);
-			}
 
 			FindSessionsCompleteHandle = Sessions->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsComplete);
 			Sessions->FindSessions(*UserId, SessionSearch.ToSharedRef());
@@ -116,19 +103,20 @@ void UOgnamGameInstance::StartSessionComplete(FName SessionName, bool bWasSucces
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Start %s Session result: %d"), *SessionName.ToString(), bWasSuccessful));
 
 	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
+	FString MapName;
 	if (OnlineSub)
 	{
 		IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
 		if (Sessions.IsValid())
 		{
 			Sessions->ClearOnStartSessionCompleteDelegate_Handle(StartSessionCompleteHandle);
+			Sessions->GetSessionSettings(SessionName)->Get(SETTING_MAPNAME, MapName);
 		}
 	}
 
 	if (bWasSuccessful)
 	{
-//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Opening Level...")));
-//		UGameplayStatics::OpenLevel(GetWorld(), "de_ognam", true);
+		UGameplayStatics::OpenLevel(GetWorld(), *MapName, true, FString("?listen"));
 	}
 }
 
@@ -144,13 +132,18 @@ void UOgnamGameInstance::FindSessionComplete(bool bWasSuccessful)
 		{
 			Sessions->ClearOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteHandle);
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Number Of Sessions: %d"), SessionSearch->SearchResults.Num()));
+			for (FOnlineSessionSearchResult Result : SessionSearch->SearchResults)
+			{
+				FString Name = Result.Session.SessionSettings.Settings.FindRef("SESSION_NAME").Data.ToString();
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session %s"), *Name));
+			}
 			if (bWasSuccessful && SessionSearch->SearchResults.Num() > 0)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Joining Session...")));
 				ULocalPlayer* Player = GetFirstGamePlayer();
 				FOnlineSessionSearchResult SearchResult = SessionSearch->SearchResults[0];
 				JoinSessionCompleteHandle = Sessions->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionComplete);
-				Sessions->JoinSession(*Player->GetPreferredUniqueNetId().GetUniqueNetId(), GameSessionName, SearchResult);
+				Sessions->JoinSession(*Player->GetPreferredUniqueNetId().GetUniqueNetId(), TEXT("ProvingGround"), SearchResult);
 			}
 		}
 	}
@@ -173,7 +166,8 @@ void UOgnamGameInstance::JoinSessionComplete(FName SessionName, EOnJoinSessionCo
 				PlayerController &&
 				Sessions->GetResolvedConnectString(SessionName, TravelURL))
 			{
-				PlayerController->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Connect Sring %s"), *TravelURL));
+				PlayerController->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute, true);
 			}
 			else
 			{
