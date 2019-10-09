@@ -20,17 +20,17 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
-	virtual void ServerBasicPressed_Implementation() override;
+	//virtual void ServerBasicPressed_Implementation() override;
 
-	virtual void StartPeriSwing() override;
+	//virtual void StartPeriSwing() override;
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void NetStartPeriSwing();
-	void NetStartPeriSwing_Implementation();
+	//UFUNCTION(NetMulticast, Unreliable)
+	//void NetStartPeriSwing();
+	//void NetStartPeriSwing_Implementation();
 
-	void EndPeriSwing();
+	//void EndPeriSwing();
 
-	virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter) override;
+	//virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter) override;
 
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* BoxTrigger;

@@ -9,6 +9,7 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Ognam/OgnamPlayerstate.h"
 #include "Kismet/GameplayStatics.h"
+#include "Ognam/OgnamMacro.h"
 
 // Sets default values
 AJeraCrystalShard::AJeraCrystalShard()
@@ -55,7 +56,8 @@ void AJeraCrystalShard::ProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
+
+		O_LOG(TEXT("No Instigator!"));
 		return;
 	}
 

@@ -13,6 +13,7 @@
 #include "ParticleDefinitions.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
+#include "Ognam/OgnamMacro.h"
 
 // Sets default values
 AHereiraExplosion::AHereiraExplosion()
@@ -73,7 +74,7 @@ void AHereiraExplosion::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 
 	if (Instigator == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
+		O_LOG(TEXT("No Instigator!"));
 		return;
 	}
 

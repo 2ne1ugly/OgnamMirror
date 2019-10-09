@@ -8,6 +8,8 @@
 #include "Components/PostProcessComponent.h"
 #include "ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
+#include "Ognam/OgnamMacro.h"
+
 UIsmaelFlashedModifier::UIsmaelFlashedModifier()
 {
 	Duration = 3.f;
@@ -19,7 +21,6 @@ UIsmaelFlashedModifier::UIsmaelFlashedModifier()
 void UIsmaelFlashedModifier::BeginModifier()
 {
 	Super::BeginModifier();
-	UE_LOG(LogTemp, Warning, TEXT("BeginModifier"));
 	if (Target->Controller && Target->Controller->IsLocalController())
 	{
 		Target->Camera->PostProcessSettings.AddBlendable(Material, 1.f);

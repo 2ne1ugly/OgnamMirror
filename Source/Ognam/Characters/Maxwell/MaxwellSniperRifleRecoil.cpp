@@ -17,7 +17,7 @@ UMaxwellSniperRifleRecoil::UMaxwellSniperRifleRecoil()
 	RotOscillation.Pitch.Frequency = PI;
 	RotOscillation.Pitch.InitialOffset = EInitialOscillatorOffset::EOO_OffsetZero;
 	OscillationDuration = Duration;
-	OscillationBlendInTime = .05f;
+	OscillationBlendInTime = .025f;
 	OscillationBlendOutTime = .0f;
 	FOVOscillation.Amplitude = 1.f;
 	FOVOscillation.Frequency = PI;

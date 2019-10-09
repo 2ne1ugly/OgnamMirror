@@ -17,20 +17,10 @@ class OGNAM_API UJeraCrystalArms : public UMeleeWeapon
 public:
 	UJeraCrystalArms();
 
-	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
-	virtual void StartPeriSwing() override;
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void NetStartPeriSwing();
-	void NetStartPeriSwing_Implementation();
-
-	void EndPeriSwing();
-
-
-	virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	//Client Call
 	virtual void SubPressed() override;
 
 	UFUNCTION(Server, Unreliable, WithValidation)
@@ -40,22 +30,11 @@ protected:
 
 	//Server Call
 	virtual void ChargeShard();
-
-	//Server Call
 	virtual void FireShard();
 
 	/*
 	**	Props
 	*/
-	UPROPERTY(VisibleAnywhere)
-	class UStaticMeshComponent* BoxTrigger;
-
-	UPROPERTY(VisibleAnywhere)
-	class UMaterial* DamageBoxMaterial;
-
-	UPROPERTY(VisibleAnywhere)
-	class UStaticMesh* DamageBoxMesh;
-
 	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	int32 ShardCharge;
 

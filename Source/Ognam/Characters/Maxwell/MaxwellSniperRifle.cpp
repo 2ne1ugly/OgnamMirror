@@ -76,7 +76,6 @@ void UMaxwellSniperRifle::FireBullet()
 	Direction = Direction.GetSafeNormal();
 
 	//shoot ray from camera to see where it should land.
-	//UE_LOG(LogTemp, Warning, TEXT("X %f, Y %f, Z %f"), Direction.X, Direction.Y, Direction.Z);
 	FHitResult BulletHit;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(Target);

@@ -10,6 +10,7 @@
 #include "Ognam/OgnamPlayerstate.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Ognam/OgnamMacro.h"
 
 AJeraCrystalSpear::AJeraCrystalSpear()
 {
@@ -55,7 +56,7 @@ void AJeraCrystalSpear::ProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
+		O_LOG(TEXT("No Instigator!"));
 		return;
 	}
 

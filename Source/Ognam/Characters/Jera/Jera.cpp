@@ -5,6 +5,7 @@
 #include "JeraCrystalArms.h"
 #include "JeraRadiantDive.h"
 #include "JeraSuppressiveImpact.h"
+#include "Ognam/OgnamMacro.h"
 
 AJera::AJera()
 {
@@ -19,6 +20,8 @@ void AJera::BeginPlay()
 	Weapon = NewObject<UJeraCrystalArms>(this, TEXT("Weapon"));
 	Mobility = NewObject<UJeraRadiantDive>(this, TEXT("Mobility"));
 	Unique = NewObject<UJeraSuppressiveImpact>(this, TEXT("Unique"));
+
+	O_LOG(TEXT("TEXT"));
 
 	Weapon->RegisterComponent();
 	Mobility->RegisterComponent();

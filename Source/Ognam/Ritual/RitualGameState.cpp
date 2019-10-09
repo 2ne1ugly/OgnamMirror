@@ -10,7 +10,7 @@
 #include "RitualShrine.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "Ognam/OgnamMacro.h"
 ARitualGameState::ARitualGameState()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -255,7 +255,7 @@ void ARitualGameState::UpdateProperties()
 		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
 		if (PlayerState == nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Player State"), __FUNCTION__);
+			O_LOG(TEXT("Not Ritual Player State"));
 			continue;
 		}
 		FName Team = RitualPlayerState->GetTeam();
@@ -273,7 +273,7 @@ void ARitualGameState::UpdateProperties()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s Unknown Team name"), __FUNCTION__);
+			O_LOG(TEXT("Unknown Team name"));
 		}
 	}
 	NumGreenPlayers = Green;

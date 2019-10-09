@@ -3,44 +3,27 @@
 
 #include "MeleeWeapon.h"
 #include "Ognam/OgnamCharacter.h"
-#include "Components/PrimitiveComponent.h"
-#include "UnrealNetwork.h"
+#include "WeaponActionModifier.h"
+#include "Ognam/OgnamMacro.h"
 
 UMeleeWeapon::UMeleeWeapon()
 {
-	PreSwing = .25f;
-	PeriSwing = .7f;
-	PostSwing = .15f;
-	SwingStage = EActionStage::PreAction;
+	//TCHAR Buff[100];
+	//memcpy(Buff, TEXT("Hello World"), 100);
+	////memcpy(Buff, FString(TEXT("%s(%d): ")).Append(TEXT("HMM")).GetCharArray()., )
 }
 
 void UMeleeWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!TriggerClass)
+	if (!SwingClass)
 	{
-		UE_LOG(LogTemp, Error, TEXT("No Trigger Zone"));
+		O_LOG_E(TEXT("No Swing Class"));
 		return;
 	}
-	Trigger = NewObject<UPrimitiveComponent>(Target, TriggerClass, TEXT("WeaponTrigger"));
-
-	Trigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Trigger->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	Trigger->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	Trigger->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	Trigger->OnComponentBeginOverlap.AddDynamic(this, &UMeleeWeapon::BeginOverlap);
-	Trigger->MoveIgnoreActors.Add(Target);
-
-	Trigger->RegisterComponent();
-}
-
-void UMeleeWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(UMeleeWeapon, bSwinging);
-	DOREPLIFETIME_CONDITION(UMeleeWeapon, bWantsToSwing, COND_OwnerOnly);
+	Swing = NewObject<UWeaponActionModifier>(GetOwner(), SwingClass, TEXT("Melee Swing"));
+	Swing->RegisterComponent();
 }
 
 void UMeleeWeapon::BasicPressed()
@@ -58,11 +41,10 @@ void UMeleeWeapon::ServerBasicPressed_Implementation()
 	{
 		return;
 	}
-	bWantsToSwing = true;
-	if (!bSwinging)
+	Swing->SetRepeat(true);
+	if (Swing->GetStage() == EActionStage::PreAction)
 	{
-		bSwinging = true;
-		StartPreSwing();
+		Swing->NetExecuteAciton();
 	}
 }
 
@@ -73,94 +55,5 @@ void UMeleeWeapon::BasicReleased()
 
 void UMeleeWeapon::ServerBasicReleased_Implementation()
 {
-	bWantsToSwing = false;
+	Swing->SetRepeat(false);
 }
-
-void UMeleeWeapon::StartPreSwing()
-{
-	GetWorld()->GetTimerManager().SetTimer(PreSwingTimer, this, &UMeleeWeapon::StartPeriSwing, PreSwing, false);
-	SwingStage = EActionStage::PreDelay;
-}
-
-void UMeleeWeapon::StartPeriSwing()
-{
-	Trigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	StrikedCharacters.Reset();
-	GetWorld()->GetTimerManager().SetTimer(PeriSwingTimer, this, &UMeleeWeapon::StartPostSwing, PeriSwing, false);
-	SwingStage = EActionStage::Channel;
-}
-
-void UMeleeWeapon::StartPostSwing()
-{
-	Trigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetWorld()->GetTimerManager().SetTimer(PostSwingTimer, this, &UMeleeWeapon::EndPostSwing, PostSwing, false);
-	SwingStage = EActionStage::PostDelay;
-}
-
-void UMeleeWeapon::EndPostSwing()
-{
-	if (bWantsToSwing)
-	{
-		StartPreSwing();
-	}
-	else
-	{
-		bSwinging = false;
-		EActionStage::PreAction;
-	}
-}
-
-void UMeleeWeapon::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(OtherActor);
-	if (Character && !StrikedCharacters.Contains(Character))
-	{
-		StrikedCharacters.Add(Character);
-		CharacterStrike(Character);
-	}
-}
-
-void UMeleeWeapon::CharacterStrike(AOgnamCharacter* OtherCharacter)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Character Striked!"));
-}
-
-void UMeleeWeapon::StatusEffectApplied(EStatusEffect StatusEffect)
-{
-	if (!Target->HasAuthority())
-	{
-		return;
-	}
-
-	if ((StatusEffect & EStatusEffect::Unarmed) != EStatusEffect::None)
-	{
-		bWantsToSwing = false;
-	}
-}
-
-void UMeleeWeapon::ActionTaken(EActionNotifier ActionType)
-{
-	if (!Target->HasAuthority())
-	{
-		return;
-	}
-
-	//Cancel action when dead, still working.
-	if ((ActionType & EActionNotifier::Death) != EActionNotifier::None)
-	{
-		switch (SwingStage)
-		{
-		case EActionStage::PreAction:
-			//GetWorld()->GetTimerManager().ClearTimer()
-			break;
-		case EActionStage::Channel:
-			break;
-		case EActionStage::PostAction:
-			break;
-		default:
-			break;
-		}
-	}
-}
-

@@ -9,6 +9,7 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Ognam/OgnamPlayerstate.h"
 #include "Kismet/GameplayStatics.h"
+#include "Ognam/OgnamMacro.h"
 
 AHazelFireball::AHazelFireball()
 {
@@ -52,7 +53,7 @@ void AHazelFireball::ProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
+		O_LOG(TEXT("No Instigator!"));
 		return;
 	}
 

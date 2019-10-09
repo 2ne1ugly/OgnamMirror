@@ -19,6 +19,7 @@
 #include "Interfaces/Dispellable.h"
 #include "OverwallHidden.h"
 #include "OverwallTransparency.h"
+#include "OgnamMacro.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -378,7 +379,7 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	}
 	if (!ActiveCamera)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No active camera!"));
+		O_LOG(TEXT("No active camera!"));
 		ActiveCamera = Camera;
 	}
 

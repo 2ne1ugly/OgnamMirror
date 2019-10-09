@@ -9,6 +9,7 @@
 #include "RitualPlayerState.h"
 #include "Ognam/OgnamCharacter.h"
 #include "UnrealNetwork.h"
+#include "Ognam/OgnamMacro.h"
 
 // Sets default values
 ARitualShrine::ARitualShrine()
@@ -58,7 +59,6 @@ void ARitualShrine::BeginPlay()
 void ARitualShrine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//UE_LOG(LogTemp, Warning, TEXT("Atk: %d, Def %d"), AttackerCount, DefenderCount);
 
 	if (AttackerCount > DefenderCount)
 	{
@@ -77,7 +77,7 @@ void ARitualShrine::Reset()
 	AttackerCount = 0;
 	DefenderCount = 0;
 	CaptureProgress = 0;
-	UE_LOG(LogTemp, Warning, TEXT("Shrine Reset"));
+	O_LOG(TEXT("Shrine Reset"));
 }
 
 void ARitualShrine::OnEnterField(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -118,7 +118,6 @@ void ARitualShrine::OnExitField(UPrimitiveComponent* OverlappedComp, AActor* Oth
 
 bool ARitualShrine::ShouldRoundEnd() const
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Prog %f, Dur %f"), CaptureProgress, CaptureDuration);
 	return (CaptureProgress >= CaptureDuration);
 }
 

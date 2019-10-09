@@ -8,6 +8,7 @@
 #include "Engine.h"
 #include "BloodhoundHuntingHour.h"
 #include "BloodhoundMarked.h"
+#include "Ognam/OgnamMacro.h"
 
 UBloodhoundStalking::UBloodhoundStalking()
 {
@@ -42,7 +43,7 @@ void UBloodhoundStalking::BeginModifier()
 	AOgnamPlayerState* PlayerState = Target->GetPlayerState<AOgnamPlayerState>();
 	if (!PlayerState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No ognam player state"));
+		O_LOG(TEXT("No ognam player state"));
 		return;
 	}
 	for (TActorIterator<AOgnamCharacter> Itr(GetWorld()); Itr; ++Itr)

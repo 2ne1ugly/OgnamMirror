@@ -21,6 +21,7 @@ public:
 
 	virtual bool ShouldEnd() override;
 	virtual void TickModifier(float DeltaTime) override;
+	EActionStage GetStage() const;
 
 protected:
 	virtual void BeginModifier() override;
@@ -42,8 +43,10 @@ protected:
 	virtual void BeginPostDelay();
 	virtual void TickPostDelay(float DeltaTime);
 	virtual void EndPostDelay();
-	void FinishPostDelay();
+	virtual void FinishPostDelay();
 
+	//ends action before finishing.
+	virtual void Interrupt();
 	/*
 	**	Props
 	*/

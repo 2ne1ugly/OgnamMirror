@@ -66,12 +66,10 @@ void AIsmaelLuxDetonator::BeginPlay()
 
 				float Dot = Character->Camera->GetForwardVector() | (-GetActorForwardVector());
 				float Ang = FMath::Acos(Dot);
-				UE_LOG(LogTemp, Warning, TEXT("%f"), Ang);
 				if (Ang < FMath::DegreesToRadians(45.f))
 				{
 					UIsmaelFlashedModifier* Mod = NewObject<UIsmaelFlashedModifier>(Character);
 					Mod->RegisterComponent();
-					UE_LOG(LogTemp, Warning, TEXT("FUCKING FLASHED YO"));
 				}
 			}
 		}
