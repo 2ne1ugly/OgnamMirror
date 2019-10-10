@@ -36,20 +36,13 @@ void UWeaponActionModifier::ExecuteAction()
 		return;
 	}
 	bInterrupted = false;
-
 	Target->GetWeapon()->ExecuteWeaponActionNotify();
 	ExecutePreDelay();
 }
 
 void UWeaponActionModifier::NetExecuteAciton_Implementation()
 {
-	if (IsRunning())
-	{
-		O_LOG(TEXT("Execute weapon action when already executed"));
-		return;
-	}
-	bInterrupted = false;
-	ExecutePreDelay();
+	ExecuteAction();
 }
 
 void UWeaponActionModifier::SetRepeat(bool Value)

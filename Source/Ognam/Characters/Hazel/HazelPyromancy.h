@@ -16,7 +16,4 @@ class OGNAM_API UHazelPyromancy : public UAutoWeapon
 
 public:
 	UHazelPyromancy();
-
-	//virtual void FireBullet() override;
-	//virtual void PostFireBullet() override;
 };

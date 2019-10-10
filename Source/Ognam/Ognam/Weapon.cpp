@@ -15,6 +15,7 @@ UWeapon::UWeapon()
 	SetIsReplicated(true);
 	BasicBlockingEffects |= EStatusEffect::Unarmed;
 	ReloadTime = 3.f;
+	bReloadOnNoAmmo = true;
 }
 
 bool UWeapon::IsSupportedForNetworking() const
@@ -24,7 +25,7 @@ bool UWeapon::IsSupportedForNetworking() const
 
 void UWeapon::ExecuteWeaponActionNotify()
 {
-	if (!bInfiniteAmmo)
+	if (!bInfiniteAmmo && GetOwner()->HasAuthority())
 	{
 		Ammo--;
 	}
@@ -73,13 +74,13 @@ void UWeapon::BeginPlay()
 
 	if (!WeaponActionClass)
 	{
-		O_LOG_E(TEXT("No Weapon action Class"));
+		O_LOG_F(TEXT("No Weapon action Class"));
 		return;
 	}
 	WeaponAction = NewObject<UWeaponActionModifier>(GetOwner(), WeaponActionClass, TEXT("Weapon Action"));
 	WeaponAction->RegisterComponent();
 
-	if (bInfiniteAmmo)
+	if (!bInfiniteAmmo)
 	{
 		ReloadPressHandle = Target->OnReloadPressed.AddUObject(this, &UWeapon::ReloadPressed);
 

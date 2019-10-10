@@ -13,7 +13,7 @@ void USemiAutoWeapon::BasicPressed()
 {
 	if (!CanBasic())
 	{
-		if (Ammo == 0)
+		if (!bInfiniteAmmo && Ammo == 0)
 		{
 			ReloadPressed();
 		}

@@ -12,7 +12,7 @@ void UAutoWeapon::BasicPressed()
 {
 	if (!CanBasic())
 	{
-		if (Ammo == 0)
+		if (!bInfiniteAmmo && Ammo == 0)
 		{
 			ReloadPressed();
 		}
@@ -33,7 +33,7 @@ void UAutoWeapon::ServerBasicPressed_Implementation()
 		return;
 	}
 	WeaponAction->SetRepeat(true);
-	if (WeaponAction->IsRunning())
+	if (!WeaponAction->IsRunning())
 	{
 		WeaponAction->NetExecuteAciton();
 	}

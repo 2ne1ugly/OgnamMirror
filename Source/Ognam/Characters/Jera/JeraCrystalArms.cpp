@@ -20,6 +20,7 @@ UJeraCrystalArms::UJeraCrystalArms()
 	MaxShardCharge = 2;
 	ShardCharge = MaxShardCharge;
 	ChargePeriod = 1.f;
+	bInfiniteAmmo = true;
 }
 
 void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
