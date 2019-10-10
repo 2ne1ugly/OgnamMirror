@@ -21,8 +21,6 @@ void AJera::BeginPlay()
 	Mobility = NewObject<UJeraRadiantDive>(this, TEXT("Mobility"));
 	Unique = NewObject<UJeraSuppressiveImpact>(this, TEXT("Unique"));
 
-	O_LOG(TEXT("TEXT"));
-
 	Weapon->RegisterComponent();
 	Mobility->RegisterComponent();
 	Unique->RegisterComponent();
