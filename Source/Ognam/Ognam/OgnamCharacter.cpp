@@ -544,8 +544,19 @@ float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 		if (Health <= 0)
 		{
 			Die();
+
+			AOgnamPlayerState* SelfPlayerState = GetPlayerState<AOgnamPlayerState>();
+			if (SelfPlayerState)
+			{
+				SelfPlayerState->NumDeath++;
+			}
 			if (PlayerController)
 			{
+				AOgnamPlayerState* KillerPlayerState = PlayerController->GetPlayerState<AOgnamPlayerState>();
+				if (KillerPlayerState)
+				{
+					KillerPlayerState->NumKill++;
+				}
 				PlayerController->ClientFeedBackKill();
 			}
 		}

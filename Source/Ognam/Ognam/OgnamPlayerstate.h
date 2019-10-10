@@ -33,6 +33,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FName GetTeam() const;
 
+	/* Chat functions */
 	UFUNCTION(Netmulticast, Unreliable)
 	void NetReceiveMessage(const FString& Message, class APlayerState* Sender);
 	void NetReceiveMessage_Implementation(const FString& Message, class APlayerState* Sender);
@@ -44,20 +45,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DisplayMessage(const FString& Message, class APlayerState* Sender);
 
-protected:
-
-	/*
-	**	Props
-	*/
-	UPROPERTY(Transient, VisibleAnywhere, Replicated)
-	FString Name;
-
 	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	FName Team;
 
-	UPROPERTY(Transient, VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
 	int32 NumKill;
 
-	UPROPERTY(Transient, VisibleAnywhere, Replicated)
+	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
 	int32 NumDeath;
 };

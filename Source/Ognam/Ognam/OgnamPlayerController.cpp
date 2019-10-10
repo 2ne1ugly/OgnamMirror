@@ -36,6 +36,12 @@ AOgnamPlayerController::AOgnamPlayerController()
 		MenuHUDClass = MenuHUDFinder.Class;
 	}
 
+	static ConstructorHelpers::FClassFinder<UUserWidget> GameInfoHUDFinder(TEXT("/Game/UI/GameInfo"));
+	if (GameInfoHUDFinder.Succeeded())
+	{
+		GameInfoHUDClass = GameInfoHUDFinder.Class;
+	}
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundCue(TEXT("SoundCue'/Game/Sounds/General/hitsound_Cue.hitsound_Cue'"));
 	HitSound = HitSoundCue.Object;
 
@@ -52,12 +58,18 @@ void AOgnamPlayerController::BeginPlay()
 		MenuHUD = CreateWidget<UUserWidget>(this, MenuHUDClass);
 		MenuHUD->bIsFocusable = true;
 	}
+	if (GameInfoHUDClass && IsLocalPlayerController())
+	{
+		GameInfoHUD = CreateWidget<UUserWidget>(this, GameInfoHUDClass);
+	}
 }
 
 void AOgnamPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAction(TEXT("GameMenu"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowMenu);
+	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowGameInfo);
+	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Released, this, &AOgnamPlayerController::HideGameInfo);
 }
 
 void AOgnamPlayerController::OnPawnDeath()
@@ -140,6 +152,16 @@ void AOgnamPlayerController::ShowMenu()
 	}
 }
 
+void AOgnamPlayerController::ShowGameInfo()
+{
+	GameInfoHUD->AddToViewport();
+}
+
+void AOgnamPlayerController::HideGameInfo()
+{
+	GameInfoHUD->RemoveFromViewport();
+}
+
 float AOgnamPlayerController::GetSensitivity() const
 {
 	return InputYawScale;
@@ -179,4 +201,3 @@ void AOgnamPlayerController::SendMessage(FString& Message)
 	PlayerState->ServerSendMessage(Message);
 	PlayerState->DisplayMessage(Message, PlayerState);
 }
-

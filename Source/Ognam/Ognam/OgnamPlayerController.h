@@ -57,6 +57,9 @@ public:
 	UFUNCTION(exec)
 	void SendMessage(FString& Message);
 
+	void ShowGameInfo();
+	void HideGameInfo();
+
 private:
 
 	/*
@@ -73,6 +76,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	class UUserWidget* MenuHUD;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> GameInfoHUDClass;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	class UUserWidget* GameInfoHUD;
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	class UUserWidget* CharacterHUD;
