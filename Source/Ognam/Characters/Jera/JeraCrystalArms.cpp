@@ -13,7 +13,7 @@
 
 UJeraCrystalArms::UJeraCrystalArms()
 {
-	SwingClass = UJeraCrystalArmsAction::StaticClass();
+	WeaponActionClass = UJeraCrystalArmsAction::StaticClass();
 
 	bBindSub = true;
 
@@ -31,7 +31,7 @@ void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UJeraCrystalArms::SubPressed()
 {
-	if (ShardCharge <= 0 || Swing->IsRunning())
+	if (ShardCharge <= 0 || WeaponAction->IsRunning())
 	{
 		return;
 	}
@@ -40,7 +40,7 @@ void UJeraCrystalArms::SubPressed()
 
 void UJeraCrystalArms::ServerSubPressed_Implementation()
 {
-	if (ShardCharge <= 0 || Swing->IsRunning())
+	if (ShardCharge <= 0 || WeaponAction->IsRunning())
 	{
 		return;
 	}

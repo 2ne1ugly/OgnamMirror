@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/SemiAutoClipWeapon.h"
+#include "Ognam/SemiAutoWeapon.h"
 #include "HereiraCrossbow.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UHereiraCrossbow : public USemiAutoClipWeapon
+class OGNAM_API UHereiraCrossbow : public USemiAutoWeapon
 {
 	GENERATED_BODY()
 
@@ -18,8 +18,6 @@ public:
 	UHereiraCrossbow();
 
 protected:
-	//Server call
-	virtual void FireBullet();
-
-	friend class AOgnamCharacter;
+	////Server call
+	//virtual void FireBullet();
 };

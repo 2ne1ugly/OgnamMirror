@@ -3,6 +3,8 @@
 #include "WeaponActionModifier.h"
 #include "UnrealNetwork.h"
 #include "Ognam/OgnamMacro.h"
+#include "Weapon.h"
+#include "OgnamCharacter.h"
 
 UWeaponActionModifier::UWeaponActionModifier()
 {
@@ -34,6 +36,8 @@ void UWeaponActionModifier::ExecuteAction()
 		return;
 	}
 	bInterrupted = false;
+
+	Target->GetWeapon()->ExecuteWeaponActionNotify();
 	ExecutePreDelay();
 }
 
@@ -62,7 +66,9 @@ void UWeaponActionModifier::FinishPostDelay()
 {
 	EndPostDelay();
 	Stage = EActionStage::PreAction;
-	if (bRepeat)
+
+	Target->GetWeapon()->FinishWeaponActionNotify();
+	if (bRepeat && Target->GetWeapon()->CanBasic())
 	{
 		ExecuteAction();
 	}

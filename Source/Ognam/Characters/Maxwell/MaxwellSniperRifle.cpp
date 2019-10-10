@@ -22,7 +22,7 @@ UMaxwellSniperRifle::UMaxwellSniperRifle()
 {
 	MaxAmmo = 8;
 	Ammo = MaxAmmo;
-	RoundsPerSecond = 2.5f;
+	//RoundsPerSecond = 2.5f;
 	ReloadTime = 3.5f;
 
 	BaseDamage = 50.f;

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/MeleeWeapon.h"
+#include "Ognam/AutoWeapon.h"
 #include "JeraCrystalArms.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UJeraCrystalArms : public UMeleeWeapon
+class OGNAM_API UJeraCrystalArms : public UAutoWeapon
 {
 	GENERATED_BODY()
 
