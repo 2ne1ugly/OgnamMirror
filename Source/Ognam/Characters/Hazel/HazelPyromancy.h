@@ -3,20 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/AutoClipWeapon.h"
+#include "Ognam/AutoWeapon.h"
 #include "HazelPyromancy.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UHazelPyromancy : public UAutoClipWeapon
+class OGNAM_API UHazelPyromancy : public UAutoWeapon
 {
 	GENERATED_BODY()
 
 public:
 	UHazelPyromancy();
-
-	virtual void FireBullet() override;
-	virtual void PostFireBullet() override;
 };

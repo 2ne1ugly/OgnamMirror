@@ -26,7 +26,7 @@ void UModifier::BeginPlay()
 	Target = Cast<AOgnamCharacter>(GetOwner());
 	if (!Target)
 	{
-		O_LOG_E(TEXT("Modifier applied to non-ognam character"));
+		O_LOG_F(TEXT("Modifier applied to non-ognam character"));
 		return;
 	}
 	if (StatusEffect != EStatusEffect::None)
@@ -42,7 +42,7 @@ void UModifier::EndPlay(EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 	if (!Target)
 	{
-		O_LOG_E(TEXT("Modifier applied to non-ognam character"));
+		O_LOG_F(TEXT("Modifier applied to non-ognam character"));
 		return;
 	}
 	if (EndPlayReason == EEndPlayReason::Destroyed)

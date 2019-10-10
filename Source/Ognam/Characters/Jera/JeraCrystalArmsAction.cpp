@@ -59,6 +59,11 @@ void UJeraCrystalArmsAction::EndChannel()
 void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
+
 	AOgnamCharacter* Character = Cast<AOgnamCharacter>(OtherActor);
 	if (Character && !StrikedCharacters.Contains(Character))
 	{

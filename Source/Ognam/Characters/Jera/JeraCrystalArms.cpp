@@ -13,13 +13,14 @@
 
 UJeraCrystalArms::UJeraCrystalArms()
 {
-	SwingClass = UJeraCrystalArmsAction::StaticClass();
+	WeaponActionClass = UJeraCrystalArmsAction::StaticClass();
 
 	bBindSub = true;
 
 	MaxShardCharge = 2;
 	ShardCharge = MaxShardCharge;
 	ChargePeriod = 1.f;
+	bInfiniteAmmo = true;
 }
 
 void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -31,7 +32,7 @@ void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UJeraCrystalArms::SubPressed()
 {
-	if (ShardCharge <= 0 || Swing->IsRunning())
+	if (ShardCharge <= 0 || WeaponAction->IsRunning())
 	{
 		return;
 	}
@@ -40,7 +41,7 @@ void UJeraCrystalArms::SubPressed()
 
 void UJeraCrystalArms::ServerSubPressed_Implementation()
 {
-	if (ShardCharge <= 0 || Swing->IsRunning())
+	if (ShardCharge <= 0 || WeaponAction->IsRunning())
 	{
 		return;
 	}

@@ -523,7 +523,7 @@ void AOgnamCharacter::Jump()
 
 void AOgnamCharacter::Landed(const FHitResult& FHit)
 {
-	//Instant decel when reached the ground
+	//Instant decel when reached the ground, consider method of having "Jump" cooldown
 	if (GetCharacterMovement()->Velocity.Size() > GetCharacterMovement()->GetMaxSpeed())
 	{
 		GetCharacterMovement()->Velocity = GetCharacterMovement()->Velocity.GetSafeNormal() * GetCharacterMovement()->GetMaxSpeed();
