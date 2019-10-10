@@ -8,6 +8,7 @@
 #include "Ognam/OgnamCharacter.h"
 #include "GameFramework/GameStateBase.h"
 #include "UnrealNetwork.h"
+#include "Ognam/OgnamMacro.h"
 
 UHereiraWillExplode::UHereiraWillExplode()
 {
@@ -22,7 +23,7 @@ void UHereiraWillExplode::EndModifier()
 	}
 	if (Instigator == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
+		O_LOG(TEXT("No Instigator!"));
 		return;
 	}
 

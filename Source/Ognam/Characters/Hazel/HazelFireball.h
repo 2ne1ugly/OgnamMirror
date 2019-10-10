@@ -13,7 +13,7 @@ class OGNAM_API AHazelFireball : public AActor
 
 protected:
 	UPROPERTY(EditAnywhere)
-	class UBoxComponent* Collision;
+	class USphereComponent* Collision;
 
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* Mesh;

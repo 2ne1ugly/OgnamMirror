@@ -6,6 +6,8 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "OgnamCharacter.h"
+#include "OgnamMacro.h"
+
 UOverwallHidden::UOverwallHidden()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -20,7 +22,7 @@ void UOverwallHidden::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	if (!PlayerController->IsLocalPlayerController())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Overwall ticks on dedicated server"));
+		O_LOG(TEXT("Overwall ticks on dedicated server"));
 		return;
 	}
 

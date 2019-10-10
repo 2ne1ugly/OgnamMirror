@@ -8,10 +8,10 @@
 #include "HereiraExplosiveArrow.h"
 UHereiraCrossbow::UHereiraCrossbow()
 {
-	MaxAmmo = 2;
+	MaxAmmo = 3;
 	Ammo = MaxAmmo;
-	RoundsPerSecond = 5.f;
-	ReloadTime = 1.5f;
+	RoundsPerSecond = 4.f;
+	ReloadTime = 3.0f;
 }
 
 void UHereiraCrossbow::FireBullet()

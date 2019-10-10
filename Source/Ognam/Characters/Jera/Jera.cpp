@@ -5,10 +5,11 @@
 #include "JeraCrystalArms.h"
 #include "JeraRadiantDive.h"
 #include "JeraSuppressiveImpact.h"
+#include "Ognam/OgnamMacro.h"
 
 AJera::AJera()
 {
-	RootComponent->SetRelativeScale3D(FVector(1.1f, 1.1f, 1.1f));
+	RootComponent->SetRelativeScale3D(FVector(1.1f));
 	MaxHealth = 300.f;
 }
 

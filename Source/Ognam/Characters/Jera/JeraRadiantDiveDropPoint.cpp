@@ -10,6 +10,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "Ognam/OgnamMacro.h"
 
 // Sets default values
 AJeraRadiantDiveDropPoint::AJeraRadiantDiveDropPoint()
@@ -26,13 +27,14 @@ void AJeraRadiantDiveDropPoint::BeginPlay()
 	Super::BeginPlay();
 	if (!Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No Instigator in %s"), __FUNCTION__);
+		O_LOG(TEXT("No Instigator"));
 		return;
 	}
 	AOgnamPlayerState* PlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
 	if (!PlayerState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No player state in %s"), __FUNCTION__);
+
+		O_LOG(TEXT("No player state"));
 		return;
 	}
 

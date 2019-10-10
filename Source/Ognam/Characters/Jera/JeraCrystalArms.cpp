@@ -9,59 +9,17 @@
 #include "UnrealNetwork.h"
 #include "TimerManager.h"
 #include "JeraCrystalShard.h"
+#include "JeraCrystalArmsAction.h"
 
 UJeraCrystalArms::UJeraCrystalArms()
 {
-	TriggerClass = UStaticMeshComponent::StaticClass();
-	PreSwing = .25f;
-	PeriSwing = .25f;
-	PostSwing = .45f;
-	static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Game/Material/DamageZone.DamageZone'"));
-	DamageBoxMaterial = Material.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
-	DamageBoxMesh = Mesh.Object;
+	SwingClass = UJeraCrystalArmsAction::StaticClass();
 
 	bBindSub = true;
 
 	MaxShardCharge = 2;
 	ShardCharge = MaxShardCharge;
 	ChargePeriod = 1.f;
-}
-
-void UJeraCrystalArms::BeginPlay()
-{
-	Super::BeginPlay();
-	BoxTrigger = Cast<UStaticMeshComponent>(Trigger);
-	BoxTrigger->bHiddenInGame = false;
-
-	BoxTrigger->AttachToComponent(Target->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false));
-	BoxTrigger->SetStaticMesh(DamageBoxMesh);
-	BoxTrigger->SetRelativeLocation(FVector(100.f, 0.f, 0.f));
-	BoxTrigger->SetRelativeScale3D(FVector(2.5f));
-	BoxTrigger->SetMaterial(0, DamageBoxMaterial);
-	BoxTrigger->SetVisibility(false);
-}
-
-void UJeraCrystalArms::StartPeriSwing()
-{
-	Super::StartPeriSwing();
-	NetStartPeriSwing();
-}
-
-void UJeraCrystalArms::NetStartPeriSwing_Implementation()
-{
-	BoxTrigger->SetVisibility(true);
-	GetWorld()->GetTimerManager().SetTimer(BoxVisualizeTimer, this, &UJeraCrystalArms::EndPeriSwing, PeriSwing, false);
-}
-
-void UJeraCrystalArms::EndPeriSwing()
-{
-	BoxTrigger->SetVisibility(false);
-}
-
-void UJeraCrystalArms::CharacterStrike(AOgnamCharacter* OtherCharacter)
-{
-	UGameplayStatics::ApplyDamage(OtherCharacter, 40.f, Target->GetController(), Target, nullptr);
 }
 
 void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -73,7 +31,7 @@ void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UJeraCrystalArms::SubPressed()
 {
-	if (ShardCharge <= 0)
+	if (ShardCharge <= 0 || Swing->IsRunning())
 	{
 		return;
 	}
@@ -82,7 +40,7 @@ void UJeraCrystalArms::SubPressed()
 
 void UJeraCrystalArms::ServerSubPressed_Implementation()
 {
-	if (ShardCharge <= 0)
+	if (ShardCharge <= 0 || Swing->IsRunning())
 	{
 		return;
 	}
@@ -106,6 +64,7 @@ void UJeraCrystalArms::ChargeShard()
 
 void UJeraCrystalArms::FireShard()
 {
+	//Thinking of making this into an action.
 	if (!Target->HasAuthority())
 	{
 		return;

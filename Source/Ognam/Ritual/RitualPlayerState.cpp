@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "UnrealNetwork.h"
 #include "Characters/Hereira/Hereira.h"
+#include "Ognam/OgnamMacro.h"
 
 ARitualPlayerState::ARitualPlayerState()
 {
@@ -60,7 +61,7 @@ FName ARitualPlayerState::GetSide() const
 	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();
 	if (GameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Game state not valid!"), __FUNCTION__);
+		O_LOG(TEXT("Game state not valid!"));
 		return FName();
 	}
 
@@ -72,6 +73,6 @@ FName ARitualPlayerState::GetSide() const
 	{
 		return GameState->DefenseName;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("%s Team name not valid!"), __FUNCTION__);
+	O_LOG(TEXT("Team name not valid!"));
 	return FName();
 }

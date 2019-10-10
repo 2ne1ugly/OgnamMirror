@@ -7,6 +7,7 @@
 #include "TimerManager.h"
 #include "ConstructorHelpers.h"
 #include "Components/ArrowComponent.h"
+#include "Ognam/OgnamMacro.h"
 
 // Sets default values
 ABloodhoundThorns::ABloodhoundThorns()
@@ -66,7 +67,7 @@ void ABloodhoundThorns::RemoveThorn()
 {
 	if (Thorns.IsEmpty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Thorns remove wasn't proper"));
+		O_LOG(TEXT("Thorns remove wasn't proper"));
 		return;
 	}
 

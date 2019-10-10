@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "HereiraCanFastReload.h"
 #include "Ognam/ImpactDamage.h"
+#include "Ognam/OgnamMacro.h"
 
 // Sets default values
 AHereiraArrow::AHereiraArrow()
@@ -66,7 +67,7 @@ void AHereiraArrow::ProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
+		O_LOG(TEXT("No Instigator!"));
 		return;
 	}
 

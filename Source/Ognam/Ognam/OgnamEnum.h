@@ -38,13 +38,13 @@ ENUM_CLASS_FLAGS(EStatusEffect)
 UENUM()
 enum class EActionNotifier : uint64
 {
-	None,
-	Jump,
-	//Movement,
-	SpecialMovement,
-	Focus,	//General ability that requires focus. Can cancel reload
-	Death
+	None = 0x0,
+	Jump = 0x1,
+	SpecialMovement = 0x2,
+	Focus = 0x4,	//General ability that requires focus. Can cancel reload
+	Death = 0x8,
 };
+ENUM_CLASS_FLAGS(EActionNotifier)
 
 /*
 **	Action Stage is used in Action modifier

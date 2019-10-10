@@ -3,6 +3,7 @@
 
 #include "Modifier.h"
 #include "OgnamCharacter.h"
+#include "Ognam/OgnamMacro.h"
 
 UModifier::UModifier()
 {
@@ -25,7 +26,7 @@ void UModifier::BeginPlay()
 	Target = Cast<AOgnamCharacter>(GetOwner());
 	if (!Target)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Modifier applied to non-ognam character"));
+		O_LOG_E(TEXT("Modifier applied to non-ognam character"));
 		return;
 	}
 	if (StatusEffect != EStatusEffect::None)
@@ -41,7 +42,7 @@ void UModifier::EndPlay(EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 	if (!Target)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Modifier applied to non-ognam character"));
+		O_LOG_E(TEXT("Modifier applied to non-ognam character"));
 		return;
 	}
 	if (EndPlayReason == EEndPlayReason::Destroyed)

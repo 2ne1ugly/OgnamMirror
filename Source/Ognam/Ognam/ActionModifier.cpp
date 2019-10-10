@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "OgnamCharacter.h"
+#include "Ognam/OgnamMacro.h"
 
 UActionModifier::UActionModifier()
 {
@@ -32,7 +33,6 @@ void UActionModifier::TickModifier(float DeltaTime)
 	switch (Stage)
 	{
 	case EActionStage::PreAction:
-		UE_LOG(LogTemp, Warning, TEXT("Ticks on pre action"));
 		break;
 	case EActionStage::PreDelay:
 		TickPreDelay(DeltaTime);
@@ -44,12 +44,17 @@ void UActionModifier::TickModifier(float DeltaTime)
 		TickPostDelay(DeltaTime);
 		break;
 	case EActionStage::PostAction:
-		UE_LOG(LogTemp, Warning, TEXT("Ticks on post action"));
+		O_LOG(TEXT("Ticks on post action"));
 		break;
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Unknown action stage"));
+		O_LOG(TEXT("Unknown action stage"));
 		break;
 	}
+}
+
+EActionStage UActionModifier::GetStage() const
+{
+	return Stage;
 }
 
 void UActionModifier::BeginModifier()
@@ -183,4 +188,29 @@ void UActionModifier::FinishPostDelay()
 {
 	EndPostDelay();
 	Stage = EActionStage::PostAction;
+}
+
+void UActionModifier::Interrupt()
+{
+	bInterrupted = true;
+	switch (Stage)
+	{
+	case EActionStage::PreAction:
+	case EActionStage::PostAction:
+		break;
+	case EActionStage::PreDelay:
+		GetWorld()->GetTimerManager().ClearTimer(PreDelayTimer);
+		EndPostDelay();
+		break;
+	case EActionStage::PostDelay:
+		GetWorld()->GetTimerManager().ClearTimer(PostDelayTimer);
+		EndPostDelay();
+		break;
+	case EActionStage::Channel:
+		GetWorld()->GetTimerManager().ClearTimer(ChannelTimer);
+		EndChannel();
+		break;
+	default:
+		break;
+	}
 }

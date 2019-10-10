@@ -17,6 +17,7 @@
 #include "DamageText.h"
 #include "OgnamPlayerstate.h"
 #include "Sound/SoundCue.h"
+#include "Ognam/OgnamMacro.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -27,7 +28,7 @@ AOgnamPlayerController::AOgnamPlayerController()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Loaded"), __FUNCTION__);
+		O_LOG(TEXT("Not Loaded"));
 	}
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> MenuHUDFinder(TEXT("/Game/UI/GameMenu"));
@@ -189,9 +190,9 @@ void AOgnamPlayerController::WhoAmI()
 	APlayerState* PlayerState = GetPlayerState<APlayerState>();
 
 	IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
-	UE_LOG(LogTemp, Warning, TEXT("Sub : %s"), *Sub->GetOnlineServiceName().ToString());
+	O_LOG(TEXT("Sub : %s"), *Sub->GetOnlineServiceName().ToString());
 	ULocalPlayer* Player = GetLocalPlayer();
-	UE_LOG(LogTemp, Warning, TEXT("Playerid : %s"), *Player->GetPreferredUniqueNetId().ToString());
+	O_LOG(TEXT("Playerid : %s"), *Player->GetPreferredUniqueNetId().ToString());
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("My name is %s"), *PlayerState->GetPlayerName()));
 }
 

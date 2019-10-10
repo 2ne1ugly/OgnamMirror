@@ -2,18 +2,19 @@
 
 
 #include "HazelFireball.h"
-#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "ConstructorHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Ognam/OgnamPlayerstate.h"
 #include "Kismet/GameplayStatics.h"
+#include "Ognam/OgnamMacro.h"
 
 AHazelFireball::AHazelFireball()
 {
-	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
-	Collision->SetBoxExtent(FVector(40.f, 5.f, 5.f));
+	Collision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
+	Collision->SetSphereRadius(17.f);
 	Collision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Collision->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	Collision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -21,13 +22,12 @@ AHazelFireball::AHazelFireball()
 	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Block);
 	RootComponent = Collision;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowObj(TEXT("StaticMesh'/Game/Meshes/Arrow/M_Arrow_Static.M_Arrow_Static'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowObj(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Collision);
 	Mesh->SetStaticMesh(ArrowObj.Object);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh->SetRelativeScale3D(FVector(0.66, 0.66, .66f));
-	Mesh->SetRelativeLocationAndRotation(FVector(-20.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
+	Mesh->SetRelativeScale3D(FVector(0.33f));
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->bInterpMovement = true;
@@ -53,7 +53,7 @@ void AHazelFireball::ProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s No Instigator!"), __FUNCTION__);
+		O_LOG(TEXT("No Instigator!"));
 		return;
 	}
 

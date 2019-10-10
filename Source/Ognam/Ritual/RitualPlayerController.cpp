@@ -13,7 +13,8 @@
 #include "UnrealNetwork.h"
 #include "Engine.h"
 #include "Camera/CameraActor.h"
-	
+#include "Ognam/OgnamMacro.h"
+
 ARitualPlayerController::ARitualPlayerController()
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> HUDFinder1(TEXT("/Game/UI/CharacterSelection"));
@@ -55,7 +56,7 @@ void ARitualPlayerController::OnPawnDeath()
 	ARitualPlayerState* RitualPlayerState = GetPlayerState<ARitualPlayerState>();
 	if (RitualPlayerState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Player State"), __FUNCTION__);
+		O_LOG(TEXT("Not Ritual Player State"));
 		return;
 	}
 	RitualPlayerState->SetIsAlive(false);
@@ -77,7 +78,7 @@ void ARitualPlayerController::Tick(float DeltaTime)
 		IInteractable* Interactable = Cast<IInteractable>(InteractedActor);
 		if (Interactable == nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s Not Interactable"), __FUNCTION__);
+			O_LOG(TEXT("Not Interactable"));
 			return;
 		}
 		// Interrupt Interaction when too far.
@@ -128,12 +129,12 @@ void ARitualPlayerController::ShowCharacterSelection()
 		{
 			CharacterSelectionHUD = CreateWidget<UUserWidget>(this, CharacterSelectionHUDClass);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Show characterselection"));
+		O_LOG(TEXT("Show characterselection"));
 	}
 	if (CharacterSelectionHUD)
 	{
 		CharacterSelectionHUD->AddToViewport();
-		UE_LOG(LogTemp, Warning, TEXT("Showing characterselection"));
+		O_LOG(TEXT("Showing characterselection"));
 	}
 	if (GetPawn())
 	{
