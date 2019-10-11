@@ -56,12 +56,14 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 	}
 
 	FString PlayerCount = UGameplayStatics::ParseOption(Options, "numplayers");
-	O_LOG(TEXT("%s\n"), *Options);
+	
+	O_LOG(TEXT("Option String : %s", *Options));
+	
 	MaxNumPlayers = FCString::Atoi(*PlayerCount);
 
 	O_LOG(TEXT("PlayerCount - %s"), *PlayerCount);
 	if (MaxNumPlayers == 0)
-		MaxNumPlayers = 2;
+		MaxNumPlayers = 3;
 }
 
 bool ARitualGameMode::ReadyToStartMatch_Implementation()
@@ -102,11 +104,12 @@ void ARitualGameMode::PreRoundBegin()
 	{
 		//RestartPlayer(PlayerController);
 		PlayerController->PreRoundBegin();
-		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
-		if (RitualPlayerState != nullptr)
-		{
-			RitualPlayerState->SetIsAlive(true);
-		}
+
+	}
+	for (APlayerState* PlayerState : RitualGameState->PlayerArray)
+	{
+		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
+		RitualPlayerState->SetIsAlive(true);
 	}
 	GetWorld()->GetTimerManager().SetTimer(PreRoundTimer, this, &ARitualGameMode::PreRoundEnd, CharacterSelectionTime, false);
 }
