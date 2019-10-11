@@ -31,6 +31,7 @@ public:
 	//Cancel reload
 	virtual void InterruptReloading();
 
+
 	/*
 	**	Getters, Setters
 	*/

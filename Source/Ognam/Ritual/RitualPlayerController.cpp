@@ -100,16 +100,6 @@ void ARitualPlayerController::Tick(float DeltaTime)
 	}
 }
 
-float ARitualPlayerController::GetInteractionProgress() const
-{
-	IInteractable* Interactable = Cast<IInteractable>(InteractedActor);
-	if (Interactable == nullptr)
-	{
-		return 0.0f;
-	}
-	return InteractionTime / Interactable->GetInteractDuration();
-}
-
 void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* CharacterClass)
 {
 	//Set pawn class
@@ -158,51 +148,6 @@ void ARitualPlayerController::HideCharacterSelection()
 	SetInputMode(FInputModeGameOnly());
 }
 
-AActor* ARitualPlayerController::GetInteractedActor() const
-{
-	return InteractedActor;
-}
-
-float ARitualPlayerController::GetDistanceBetweenInteracted() const
-{
-	if (!bIsInteracting || !InteractedActor || !GetPawn())
-	{
-		return 0.0f;
-	}
-	return FVector::Dist(GetPawn()->GetActorLocation(), InteractedActor->GetActorLocation());
-}
-
-bool ARitualPlayerController::IsInteracting() const
-{
-	return bIsInteracting;
-}
-
-bool ARitualPlayerController::CanInteract() const
-{
-	//See if targeted actor is interactable
-	AActor* Actor = GetTargetedActor();
-	IInteractable* Interactable = Cast<IInteractable>(Actor);
-	if (Interactable == nullptr)
-	{
-		return false;
-	}
-
-	//See if it's interactable range
-	float Distance = FVector::Dist(GetPawn()->GetActorLocation(),  Actor->GetActorLocation());
-	if (Interactable->GetInteractDistance() < Distance)
-	{
-		return false;
-	}
-
-	//See if it's fine interation
-	if (!Interactable->CanInteractWithController(this))
-	{
-		return false;
-	}
-
-	return true;
-}
-
 AActor* ARitualPlayerController::GetTargetedActor() const
 {
 	//See if pawn exists as character
@@ -236,6 +181,28 @@ void ARitualPlayerController::ToggleChangeCharacterUI()
 	else
 	{
 		HideCharacterSelection();
+	}
+}
+
+void ARitualPlayerController::PreRoundBegin_Implementation()
+{
+	ShowCharacterSelection();
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
+	if (Character)
+	{
+		Character->SetCanMove(false);
+		Character->DisableInput(this);
+	}
+}
+
+void ARitualPlayerController::PreRoundEnd_Implementation()
+{
+	HideCharacterSelection();
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
+	if (Character)
+	{
+		Character->SetCanMove(true);
+		Character->EnableInput(this);
 	}
 }
 
@@ -298,25 +265,57 @@ void ARitualPlayerController::InterruptInteract_Implementation()
 	InteractionTime = 0;
 }
 
-void ARitualPlayerController::PreRoundBegin_Implementation()
+AActor* ARitualPlayerController::GetInteractedActor() const
 {
-	ShowCharacterSelection();
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-	if (Character)
-	{
-		Character->SetCanMove(false);
-		Character->DisableInput(this);
-	}
+	return InteractedActor;
 }
 
-void ARitualPlayerController::PreRoundEnd_Implementation()
+float ARitualPlayerController::GetDistanceBetweenInteracted() const
 {
-	HideCharacterSelection();
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-	if (Character)
+	if (!bIsInteracting || !InteractedActor || !GetPawn())
 	{
-		Character->SetCanMove(true);
-		Character->EnableInput(this);
+		return 0.0f;
 	}
+	return FVector::Dist(GetPawn()->GetActorLocation(), InteractedActor->GetActorLocation());
 }
 
+bool ARitualPlayerController::IsInteracting() const
+{
+	return bIsInteracting;
+}
+
+bool ARitualPlayerController::CanInteract() const
+{
+	//See if targeted actor is interactable
+	AActor* Actor = GetTargetedActor();
+	IInteractable* Interactable = Cast<IInteractable>(Actor);
+	if (Interactable == nullptr)
+	{
+		return false;
+	}
+
+	//See if it's interactable range
+	float Distance = FVector::Dist(GetPawn()->GetActorLocation(), Actor->GetActorLocation());
+	if (Interactable->GetInteractDistance() < Distance)
+	{
+		return false;
+	}
+
+	//See if it's fine interation
+	if (!Interactable->CanInteractWithController(this))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+float ARitualPlayerController::GetInteractionProgress() const
+{
+	IInteractable* Interactable = Cast<IInteractable>(InteractedActor);
+	if (Interactable == nullptr)
+	{
+		return 0.0f;
+	}
+	return InteractionTime / Interactable->GetInteractDuration();
+}

@@ -261,7 +261,6 @@ void ARitualGameState::UpdateProperties()
 			continue;
 		}
 		FName Team = RitualPlayerState->GetTeam();
-		O_LOG(TEXT("RitualGameState : %s - %d"), *RitualPlayerState->GetPlayerName(), RitualPlayerState->IsAlive());
 		if (Team == GreenName)
 		{
 			Green++;

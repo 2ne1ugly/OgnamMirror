@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "Ognam/OgnamGameState.h"
 #include "RitualGameState.generated.h"
 
 /**
  *	for now, I'm calling the teams Green and Blue
  */
 UCLASS()
-class OGNAM_API ARitualGameState : public AGameState
+class OGNAM_API ARitualGameState : public AOgnamGameState
 {
 	GENERATED_BODY()
 

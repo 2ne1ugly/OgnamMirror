@@ -23,6 +23,7 @@ public:
 	*/
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void BeginPlay() override;
 
 
 	/*
@@ -34,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetTeamBCount() const;
 
+	UFUNCTION(BlueprintCallable)
+	FString GetServerIP() const;
+
 protected:
 	/*
 	**	Props
@@ -43,5 +47,8 @@ protected:
 
 	UPROPERTY(Transient, Replicated)
 	int32	TeamBCount;
+
+	UPROPERTY(Transient, Replicated)
+	FString ServerAddress;
 
 };

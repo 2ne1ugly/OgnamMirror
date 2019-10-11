@@ -57,13 +57,13 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 
 	FString PlayerCount = UGameplayStatics::ParseOption(Options, "numplayers");
 	
-	O_LOG(TEXT("Option String : %s", *Options));
+	O_LOG(TEXT("Option String : %s"), *Options);
 	
 	MaxNumPlayers = FCString::Atoi(*PlayerCount);
 
 	O_LOG(TEXT("PlayerCount - %s"), *PlayerCount);
 	if (MaxNumPlayers == 0)
-		MaxNumPlayers = 3;
+		MaxNumPlayers = 2;
 }
 
 bool ARitualGameMode::ReadyToStartMatch_Implementation()
@@ -71,7 +71,7 @@ bool ARitualGameMode::ReadyToStartMatch_Implementation()
 	// if everyone's in and everyone is ready
 	// Num Players contains non initialized players.
 	// use Num to make it safe
-	if (NumPlayers == MaxNumPlayers)
+	if (PlayerControllers.Num() == MaxNumPlayers)
 	{
 		return true;
 	}
@@ -102,14 +102,16 @@ void ARitualGameMode::PreRoundBegin()
 
 	for (ARitualPlayerController* PlayerController : PlayerControllers)
 	{
-		//RestartPlayer(PlayerController);
+		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
 		PlayerController->PreRoundBegin();
-
-	}
-	for (APlayerState* PlayerState : RitualGameState->PlayerArray)
-	{
-		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
-		RitualPlayerState->SetIsAlive(true);
+		if (!RitualPlayerState)
+		{
+			O_LOG(TEXT("No Playerstate bound to Player Controller"));
+		}
+		else
+		{
+			RitualPlayerState->SetIsAlive(true);
+		}
 	}
 	GetWorld()->GetTimerManager().SetTimer(PreRoundTimer, this, &ARitualGameMode::PreRoundEnd, CharacterSelectionTime, false);
 }

@@ -2,14 +2,28 @@
 
 
 #include "OgnamGameState.h"
+#include "OgnamMacro.h"
 #include "UnrealNetwork.h"
 #include "OgnamPlayerState.h"
 #include "OgnamCharacter.h"
+#include "Subsystem.h"
+#include "OnlineSubsystem.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
 
 AOgnamGameState::AOgnamGameState()
 {
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AOgnamGameState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	bool bCanBind;
+	TSharedRef<FInternetAddr> LocalIP = ISocketSubsystem::Get()->GetLocalHostAddr(*GLog, bCanBind);
+	ServerAddress = FString::Printf(TEXT("%s:%d"), *(LocalIP->ToString(false)), GetWorld()->URL.Port);
 }
 
 void AOgnamGameState::Tick(float DeltaTime)
@@ -46,4 +60,9 @@ int32 AOgnamGameState::GetTeamACount() const
 int32 AOgnamGameState::GetTeamBCount() const
 {
 	return TeamBCount;
+}
+
+FString AOgnamGameState::GetServerIP() const
+{
+	return ServerAddress;
 }
