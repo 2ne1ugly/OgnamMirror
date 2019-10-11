@@ -25,7 +25,6 @@ void AOgnamGameState::BeginPlay()
 
 void AOgnamGameState::NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage)
 {
-	check(DamageCauser && DamageReciever);
 	AOgnamPlayerState* InstigatorPlayerState = nullptr;
 	AOgnamPlayerState* RecieverPlayerState = nullptr;
 	//Try getting both player states.

@@ -540,7 +540,7 @@ float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 		AppliedDamage = 0.f;
 	}
 
-	if (HasAuthority())
+	if (HasAuthority() && bIsAlive)
 	{
 		Health -= AppliedDamage;
 
