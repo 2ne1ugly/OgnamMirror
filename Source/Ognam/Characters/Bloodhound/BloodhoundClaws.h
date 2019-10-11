@@ -17,29 +17,6 @@ class OGNAM_API UBloodhoundClaws : public UAutoWeapon
 public:
 	UBloodhoundClaws();
 
-	virtual void BeginPlay() override;
-
 protected:
-	//virtual void ServerBasicPressed_Implementation() override;
-
-	//virtual void StartPeriSwing() override;
-
-	//UFUNCTION(NetMulticast, Unreliable)
-	//void NetStartPeriSwing();
-	//void NetStartPeriSwing_Implementation();
-
-	//void EndPeriSwing();
-
-	//virtual void CharacterStrike(class AOgnamCharacter* OtherCharacter) override;
-
-	UPROPERTY(VisibleAnywhere)
-	class UStaticMeshComponent* BoxTrigger;
-
-	UPROPERTY(VisibleAnywhere)
-	class UMaterial* DamageBoxMaterial;
-
-	UPROPERTY(VisibleAnywhere)
-	class UStaticMesh* DamageBoxMesh;
-
-	FTimerHandle BoxVisualizeTimer;
+	virtual void ServerBasicPressed_Implementation() override;
 };

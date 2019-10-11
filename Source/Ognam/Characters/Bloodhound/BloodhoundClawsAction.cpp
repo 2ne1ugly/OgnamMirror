@@ -1,14 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "JeraCrystalArmsAction.h"
+
+#include "BloodhoundClawsAction.h"
 #include "ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
-#include "Materials/Material.h"
+#include "ConstructorHelpers.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Materials/Material.h"
+#include "BloodhoundMarked.h"
 #include "Ognam/OgnamPlayerstate.h"
 
-UJeraCrystalArmsAction::UJeraCrystalArmsAction()
+UBloodhoundClawsAction::UBloodhoundClawsAction()
 {
 	PreDelayDuration = .25f;
 	ChannelDuration = .25f;
@@ -20,17 +23,16 @@ UJeraCrystalArmsAction::UJeraCrystalArmsAction()
 	DamageBoxMesh = Mesh.Object;
 }
 
-void UJeraCrystalArmsAction::BeginPlay()
+void UBloodhoundClawsAction::BeginPlay()
 {
 	Super::BeginPlay();
-
 	BoxTrigger = NewObject<UStaticMeshComponent>(GetOwner());
 	BoxTrigger->bHiddenInGame = false;
 
 	BoxTrigger->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false));
 	BoxTrigger->SetStaticMesh(DamageBoxMesh);
 	BoxTrigger->SetRelativeLocation(FVector(100.f, 0.f, 0.f));
-	BoxTrigger->SetRelativeScale3D(FVector(2.5f));
+	BoxTrigger->SetRelativeScale3D(FVector(1.f));
 	BoxTrigger->SetMaterial(0, DamageBoxMaterial);
 	BoxTrigger->SetVisibility(false);
 
@@ -38,27 +40,26 @@ void UJeraCrystalArmsAction::BeginPlay()
 	BoxTrigger->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	BoxTrigger->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BoxTrigger->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	BoxTrigger->OnComponentBeginOverlap.AddDynamic(this, &UJeraCrystalArmsAction::BeginOverlap);
+	BoxTrigger->OnComponentBeginOverlap.AddDynamic(this, &UBloodhoundClawsAction::BeginOverlap);
 	BoxTrigger->MoveIgnoreActors.Add(GetOwner());
 
 	BoxTrigger->RegisterComponent();
 }
 
-void UJeraCrystalArmsAction::BeginChannel()
+void UBloodhoundClawsAction::BeginChannel()
 {
 	StrikedCharacters.Empty();
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxTrigger->SetVisibility(true);
 }
 
-void UJeraCrystalArmsAction::EndChannel()
+void UBloodhoundClawsAction::EndChannel()
 {
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BoxTrigger->SetVisibility(false);
 }
 
-void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UBloodhoundClawsAction::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!GetOwner()->HasAuthority())
 	{
@@ -76,7 +77,7 @@ void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 	AController* Controller = GetOwner()->GetInstigatorController();
 	if (!Controller)
 	{
-		return;
+		return ;
 	}
 	AOgnamPlayerState* PlayerState = Controller->GetPlayerState<AOgnamPlayerState>();
 	if (!PlayerState)
@@ -99,10 +100,15 @@ void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 	if (PlayerState->GetTeam() != OtherPlayerState->GetTeam())
 	{
 		UGameplayStatics::ApplyDamage(Character, 40.f, Target->GetController(), Target, nullptr);
+		UBloodhoundMarked* Marked = Character->GetModifier<UBloodhoundMarked>();
+		if (Marked)
+		{
+			Marked->Consume();
+		}
 	}
 }
 
-void UJeraCrystalArmsAction::StatusEffectApplied(EStatusEffect Effect)
+void UBloodhoundClawsAction::StatusEffectApplied(EStatusEffect Effect)
 {
 	if (Stage == EActionStage::PreDelay)
 	{
@@ -110,7 +116,7 @@ void UJeraCrystalArmsAction::StatusEffectApplied(EStatusEffect Effect)
 	}
 }
 
-void UJeraCrystalArmsAction::ActionTaken(EActionNotifier ActionType)
+void UBloodhoundClawsAction::ActionTaken(EActionNotifier ActionType)
 {
 	if (Stage == EActionStage::PreDelay)
 	{

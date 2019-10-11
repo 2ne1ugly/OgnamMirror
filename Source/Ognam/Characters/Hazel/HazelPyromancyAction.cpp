@@ -40,6 +40,11 @@ void UHazelPyromancyAction::BeginChannel()
 	GetWorld()->SpawnActor<AHazelFireball>(From, Direction.Rotation(), Params)->SetReplicates(true);
 }
 
+void UHazelPyromancyAction::TickPostDelay(float DeltaTime)
+{
+	Target->Speed *= 0.8f;
+}
+
 void UHazelPyromancyAction::ExecutePostDelay()
 {
 	Super::ExecutePostDelay();

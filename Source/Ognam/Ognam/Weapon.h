@@ -28,6 +28,9 @@ public:
 	//Defines if can attack.
 	virtual bool CanBasic();
 
+	//Cancel reload
+	virtual void InterruptReloading();
+
 	/*
 	**	Getters, Setters
 	*/

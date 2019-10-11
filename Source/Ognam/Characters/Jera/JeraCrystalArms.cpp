@@ -1,11 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "JeraCrystalArms.h"
-#include "Components/StaticMeshComponent.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "Materials/Material.h"
-#include "ConstructorHelpers.h"
 #include "UnrealNetwork.h"
 #include "TimerManager.h"
 #include "JeraCrystalShard.h"
@@ -14,13 +11,13 @@
 UJeraCrystalArms::UJeraCrystalArms()
 {
 	WeaponActionClass = UJeraCrystalArmsAction::StaticClass();
+	bInfiniteAmmo = true;
 
 	bBindSub = true;
 
 	MaxShardCharge = 2;
 	ShardCharge = MaxShardCharge;
 	ChargePeriod = 1.f;
-	bInfiniteAmmo = true;
 }
 
 void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

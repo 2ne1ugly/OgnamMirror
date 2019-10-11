@@ -174,3 +174,15 @@ bool UWeapon::CanBasic()
 		!bReloading &&
 		(bInfiniteAmmo || Ammo > 0);
 }
+
+void UWeapon::InterruptReloading()
+{
+	if (!bReloading)
+	{
+		O_LOG(TEXT("Target is not reloading"));
+		return;
+	}
+
+	bReloading = false;
+	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
+}

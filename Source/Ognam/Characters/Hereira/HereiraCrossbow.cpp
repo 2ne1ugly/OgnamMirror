@@ -10,3 +10,19 @@ UHereiraCrossbow::UHereiraCrossbow()
 	ReloadTime = 3.0f;
 	WeaponActionClass = UHereiraCrossbowAction::StaticClass();
 }
+
+void UHereiraCrossbow::StatusEffectApplied(EStatusEffect StatusEffect)
+{
+}
+
+void UHereiraCrossbow::ActionTaken(EActionNotifier ActionType)
+{
+	// Reloading cancelling system.
+	if (bReloading)
+	{
+		if ((ActionType & EActionNotifier::Focus) != EActionNotifier::None)
+		{
+			InterruptReloading();
+		}
+	}
+}

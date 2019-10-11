@@ -3,6 +3,7 @@
 
 #include "BloodhoundHuntingHour.h"
 #include "Ognam/OgnamCharacter.h"
+#include "BloodhoundLeap.h"
 
 UBloodhoundHuntingHour::UBloodhoundHuntingHour()
 {
@@ -12,4 +13,15 @@ UBloodhoundHuntingHour::UBloodhoundHuntingHour()
 void UBloodhoundHuntingHour::TickModifier(float DeltaTime)
 {
 	Target->Speed += Target->BaseSpeed;
+}
+
+bool UBloodhoundHuntingHour::ShouldEnd()
+{
+	return Super::ShouldEnd() || bConsumed;
+}
+
+void UBloodhoundHuntingHour::Consume()
+{
+	bConsumed = true;
+	NewObject<UBloodhoundLeap>(Target)->RegisterComponent();
 }

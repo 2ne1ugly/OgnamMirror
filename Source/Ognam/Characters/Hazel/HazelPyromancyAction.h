@@ -20,7 +20,11 @@ public:
 
 protected:
 	virtual void BeginChannel() override;
+	virtual void TickPostDelay(float DeltaTime) override;
+
 	virtual void ExecutePostDelay() override;
+
+
 
 	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
 	virtual void ActionTaken(EActionNotifier ActionType) override;
