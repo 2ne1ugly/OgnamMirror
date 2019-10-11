@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameState.h"
 #include "Ognam/OgnamGameState.h"
 #include "RitualGameState.generated.h"
 

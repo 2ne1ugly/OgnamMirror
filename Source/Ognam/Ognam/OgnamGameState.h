@@ -21,34 +21,18 @@ public:
 	/*
 	**	Binded Functions
 	*/
-	virtual void Tick(float DeltaTime) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
-
+	virtual void NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage);
+	virtual void NotifyKillEvent(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController);
 
 	/*
 	**	Getters, Setters
 	*/
 	UFUNCTION(BlueprintCallable)
-	int32 GetTeamACount() const;
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetTeamBCount() const;
-
-	UFUNCTION(BlueprintCallable)
 	FString GetServerIP() const;
 
 protected:
-	/*
-	**	Props
-	*/
-	UPROPERTY(Transient, Replicated)
-	int32	TeamACount;
-
-	UPROPERTY(Transient, Replicated)
-	int32	TeamBCount;
-
-	UPROPERTY(Transient, Replicated)
+	UPROPERTY(Transient)
 	FString ServerAddress;
-
+	
 };

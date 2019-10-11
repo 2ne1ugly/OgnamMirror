@@ -17,12 +17,14 @@ class OGNAM_API AOgnamPlayerState : public APlayerState
 public:
 	AOgnamPlayerState();
 
-	/*
-	**	Binded Functions
-	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void CopyProperties(class APlayerState* PlayerState) override;
 	virtual void OverrideWith(class APlayerState* PlayerState) override;
+
+	virtual void NotifyDamageDealt(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage);
+	virtual void NotifyDamageRecieved(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage);
+	virtual void NotifyKill(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController);
+	virtual void NotifyDeath(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController);
 
 	/*
 	**	Getters, Setters

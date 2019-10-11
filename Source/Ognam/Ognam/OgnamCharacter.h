@@ -101,8 +101,8 @@ public:
 	**	Exported functions
 	*/
 	UFUNCTION(NetMulticast, Reliable)
-	void Die();
-	virtual void Die_Implementation();
+	void NetDie();
+	virtual void NetDie_Implementation();
 
 	void GetAimHitResult(FHitResult& HitResult, float near, float far);
 

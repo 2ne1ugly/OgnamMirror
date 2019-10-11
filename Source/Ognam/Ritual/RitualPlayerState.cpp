@@ -26,6 +26,12 @@ void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ARitualPlayerState, TeamIndex);
 }
 
+void ARitualPlayerState::NotifyDeath(AActor* Causer, AActor* Reciever, AController* DeathInstigator, AController* RecieverController)
+{
+	Super::NotifyDeath(Causer, Reciever, DeathInstigator, RecieverController);
+	bIsAlive = false;
+}
+
 void ARitualPlayerState::SetTeamIndex(int32 index)
 {
 	TeamIndex = index;
@@ -59,7 +65,7 @@ void ARitualPlayerState::SetPawnClass(UClass* Pawn)
 FName ARitualPlayerState::GetSide() const
 {
 	ARitualGameState* GameState = GetWorld()->GetGameState<ARitualGameState>();
-	if (GameState == nullptr)
+	if (!GameState)
 	{
 		O_LOG(TEXT("Game state not valid!"));
 		return FName();

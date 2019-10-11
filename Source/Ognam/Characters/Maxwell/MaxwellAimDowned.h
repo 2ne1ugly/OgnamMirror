@@ -28,7 +28,7 @@ protected:
 	virtual void BeginModifier() override;
 	virtual void EndModifier() override;
 
-	virtual void StatusEffectApplied(EStatusEffect StatusEffect) override;
+	virtual void StatusEffectApplied(EStatusEffect Effect) override;
 	virtual void ActionTaken(EActionNotifier ActionType) override;
 
 	/*

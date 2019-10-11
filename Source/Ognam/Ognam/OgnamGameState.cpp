@@ -3,7 +3,6 @@
 
 #include "OgnamGameState.h"
 #include "OgnamMacro.h"
-#include "UnrealNetwork.h"
 #include "OgnamPlayerState.h"
 #include "OgnamCharacter.h"
 #include "Subsystem.h"
@@ -13,8 +12,6 @@
 
 AOgnamGameState::AOgnamGameState()
 {
-	PrimaryActorTick.bStartWithTickEnabled = true;
-	PrimaryActorTick.bCanEverTick = true;
 }
 
 void AOgnamGameState::BeginPlay()
@@ -26,40 +23,56 @@ void AOgnamGameState::BeginPlay()
 	ServerAddress = FString::Printf(TEXT("%s:%d"), *(LocalIP->ToString(false)), GetWorld()->URL.Port);
 }
 
-void AOgnamGameState::Tick(float DeltaTime)
+void AOgnamGameState::NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage)
 {
-	Super::Tick(DeltaTime);
-	// Count number of players on both teams(maybe find a better way)
-	int32 ACount = 0;
-	int32 BCount = 0;
-	for (APlayerState* PlayerState : PlayerArray)
+	check(DamageCauser && DamageReciever);
+	AOgnamPlayerState* InstigatorPlayerState = nullptr;
+	AOgnamPlayerState* RecieverPlayerState = nullptr;
+	//Try getting both player states.
+	if (DamageInstigator)
 	{
-		AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(PlayerState->GetPawn());
-		if (OgnamCharacter != nullptr && OgnamCharacter->IsAlive())
-		{
-			ACount++;
-		}
+		InstigatorPlayerState = DamageInstigator->GetPlayerState<AOgnamPlayerState>();
 	}
-	TeamBCount = BCount;
-	TeamACount = ACount;
+	if (RecieverController)
+	{
+		RecieverPlayerState = RecieverController->GetPlayerState<AOgnamPlayerState>();
+	}
+
+	//Send events to both states.
+	if (InstigatorPlayerState)
+	{
+		InstigatorPlayerState->NotifyDamageDealt(DamageCauser, DamageReciever, DamageInstigator, RecieverController, Damage);
+	}
+	if (RecieverPlayerState)
+	{
+		RecieverPlayerState->NotifyDamageRecieved(DamageCauser, DamageReciever, DamageInstigator, RecieverController, Damage);
+	}
 }
 
-void AOgnamGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void AOgnamGameState::NotifyKillEvent(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController)
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	check(Causer && Reciever);
+	AOgnamPlayerState* InstigatorPlayerState = nullptr;
+	AOgnamPlayerState* RecieverPlayerState = nullptr;
+	//Try getting both player states.
+	if (KillInstigator)
+	{
+		InstigatorPlayerState = KillInstigator->GetPlayerState<AOgnamPlayerState>();
+	}
+	if (RecieverController)
+	{
+		RecieverPlayerState = RecieverController->GetPlayerState<AOgnamPlayerState>();
+	}
 
-	DOREPLIFETIME(AOgnamGameState, TeamACount);
-	DOREPLIFETIME(AOgnamGameState, TeamBCount);
-}
-
-int32 AOgnamGameState::GetTeamACount() const
-{
-	return TeamACount;
-}
-
-int32 AOgnamGameState::GetTeamBCount() const
-{
-	return TeamBCount;
+	//Send events to both states.
+	if (InstigatorPlayerState)
+	{
+		InstigatorPlayerState->NotifyKill(Causer, Reciever, KillInstigator, RecieverController);
+	}
+	if (RecieverPlayerState)
+	{
+		RecieverPlayerState->NotifyDeath(Causer, Reciever, KillInstigator, RecieverController);
+	}
 }
 
 FString AOgnamGameState::GetServerIP() const

@@ -73,8 +73,20 @@ void AOgnamPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Released, this, &AOgnamPlayerController::HideGameInfo);
 }
 
-void AOgnamPlayerController::OnPawnDeath()
+void AOgnamPlayerController::ClientFeedbackDamageDealt_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage)
 {
+	if (Causer == Reciever)
+	{
+		return;
+	}
+	ADamageText* Text = GetWorld()->SpawnActor<ADamageText>(Location, FRotator::ZeroRotator);
+	Text->SetDamage(Damage);
+	ClientPlaySound(HitSound, 1.f, 1.f);
+}
+
+void AOgnamPlayerController::ClientFeedbackDamageRecieved_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage)
+{
+	//Nothing for now.
 }
 
 void AOgnamPlayerController::ClientGameStarted_Implementation()
@@ -117,16 +129,13 @@ void AOgnamPlayerController::ClientRestart_Implementation(APawn* aPawn)
 
 }
 
-void AOgnamPlayerController::ClientFeedBackDamageDealt_Implementation(FVector Location, float Damage)
-{
-	ADamageText* Text = GetWorld()->SpawnActor<ADamageText>(Location, FRotator::ZeroRotator);
-	Text->SetDamage(Damage);
-	ClientPlaySound(HitSound, 1.f, 1.f);
-}
-
-void AOgnamPlayerController::ClientFeedBackKill_Implementation()
+void AOgnamPlayerController::ClientFeedbackKill_Implementation(AActor* Causer, AActor* Reciever)
 {
 	ClientPlaySound(KillSound, 10.f, 1.f);
+}
+
+void AOgnamPlayerController::ClientFeedbackDeath_Implementation(AActor* Causer, AActor* Reciever)
+{
 }
 
 void AOgnamPlayerController::ShowMenu()
@@ -187,18 +196,16 @@ void AOgnamPlayerController::CreateGame(FString MapName)
 
 void AOgnamPlayerController::WhoAmI()
 {
-	APlayerState* PlayerState = GetPlayerState<APlayerState>();
-
 	IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
 	O_LOG(TEXT("Sub : %s"), *Sub->GetOnlineServiceName().ToString());
-	ULocalPlayer* Player = GetLocalPlayer();
-	O_LOG(TEXT("Playerid : %s"), *Player->GetPreferredUniqueNetId().ToString());
+	ULocalPlayer* LocalPlayer = GetLocalPlayer();
+	O_LOG(TEXT("Playerid : %s"), *LocalPlayer->GetPreferredUniqueNetId().ToString());
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("My name is %s"), *PlayerState->GetPlayerName()));
 }
 
 void AOgnamPlayerController::SendMessage(FString& Message)
 {
-	AOgnamPlayerState* PlayerState = GetPlayerState<AOgnamPlayerState>();
-	PlayerState->ServerSendMessage(Message);
-	PlayerState->DisplayMessage(Message, PlayerState);
+	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
+	OgnamPlayerState->ServerSendMessage(Message);
+	OgnamPlayerState->DisplayMessage(Message, OgnamPlayerState);
 }

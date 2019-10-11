@@ -51,17 +51,6 @@ void ARitualPlayerController::BeginPlay()
 	}
 }
 
-void ARitualPlayerController::OnPawnDeath()
-{
-	ARitualPlayerState* RitualPlayerState = GetPlayerState<ARitualPlayerState>();
-	if (RitualPlayerState == nullptr)
-	{
-		O_LOG(TEXT("Not Ritual Player State"));
-		return;
-	}
-	RitualPlayerState->SetIsAlive(false);
-}
-
 void ARitualPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -105,10 +94,6 @@ void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* Chara
 	//Set pawn class
 	ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
 	RitualPlayerState->SetPawnClass(CharacterClass);
-
-	//respawn character
-	//ARitualGameMode* GameMode = Cast<ARitualGameMode>(GetWorld()->GetGameState()->AuthorityGameMode);
-	//GameMode->RestartPlayer(this);
 }
 
 void ARitualPlayerController::ShowCharacterSelection()

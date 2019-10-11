@@ -20,6 +20,7 @@
 #include "OverwallHidden.h"
 #include "OverwallTransparency.h"
 #include "OgnamMacro.h"
+#include "OgnamGameState.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -539,39 +540,27 @@ float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 		AppliedDamage = 0.f;
 	}
 
-	if (HasAuthority() && bIsAlive)
+	if (HasAuthority())
 	{
-		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(EventInstigator);
 		Health -= AppliedDamage;
-		if (PlayerController && GetController() != PlayerController)
+
+		AOgnamGameState* GameState = GetWorld()->GetGameState<AOgnamGameState>();
+		if (!GameState)
 		{
-			PlayerController->ClientFeedBackDamageDealt(GetActorLocation(), AppliedDamage);
+			O_LOG(TEXT("Not Ognam GameState"));
+			return AppliedDamage;
 		}
+		GameState->NotifyDamageEvent(DamageCauser, this, EventInstigator, GetController(), Damage);	//for now, we don't pass location info.
 		if (Health <= 0)
 		{
-			Die();
-
-			AOgnamPlayerState* SelfPlayerState = GetPlayerState<AOgnamPlayerState>();
-			if (SelfPlayerState)
-			{
-				SelfPlayerState->NumDeath++;
-			}
-			if (PlayerController)
-			{
-				AOgnamPlayerState* KillerPlayerState = PlayerController->GetPlayerState<AOgnamPlayerState>();
-				if (KillerPlayerState)
-				{
-					KillerPlayerState->NumKill++;
-				}
-				PlayerController->ClientFeedBackKill();
-			}
+			NetDie();
+			GameState->NotifyKillEvent(DamageCauser, this, EventInstigator, GetController());
 		}
-
 	}
 	return AppliedDamage;
 }
 
-void AOgnamCharacter::Die_Implementation()
+void AOgnamCharacter::NetDie_Implementation()
 {
 	GetMesh()->SetCollisionProfileName(TEXT("RagDoll"));
 	GetMesh()->SetSimulatePhysics(true);
@@ -579,15 +568,13 @@ void AOgnamCharacter::Die_Implementation()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	bIsAlive = false;
+	TakeAction(EActionNotifier::Death);
 
 	//For local player
 	AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(GetController());
-	if (PlayerController == nullptr)
+	if (!PlayerController)
 	{
 		return;
 	}
 	DisableInput(PlayerController);
-	PlayerController->OnPawnDeath();
-	TakeAction(EActionNotifier::Death);
-	//PlayerController->UnPossess();
 }

@@ -195,11 +195,13 @@ void ARitualGameMode::EndRound()
 
 void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
 {
+	//This function doesn't go through kill event signal.
 	//Kill pawn
 	AOgnamCharacter* Character = Cast<AOgnamCharacter>(PlayerController->GetPawn());
 	if (Character != nullptr)
 	{
-		Character->Die();
+		Character->NetDie();
+		ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	}
 	else
 	{
