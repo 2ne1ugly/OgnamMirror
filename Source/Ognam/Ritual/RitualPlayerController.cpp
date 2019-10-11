@@ -306,7 +306,6 @@ void ARitualPlayerController::PreRoundBegin_Implementation()
 	{
 		Character->SetCanMove(false);
 		Character->DisableInput(this);
-		//Character->disa;
 	}
 }
 

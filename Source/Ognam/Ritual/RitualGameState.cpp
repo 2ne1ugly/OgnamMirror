@@ -11,6 +11,8 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamMacro.h"
+#include "Ognam/OgnamMacro.h"
+
 ARitualGameState::ARitualGameState()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -259,6 +261,7 @@ void ARitualGameState::UpdateProperties()
 			continue;
 		}
 		FName Team = RitualPlayerState->GetTeam();
+		O_LOG(TEXT("RitualGameState : %s - %d"), *RitualPlayerState->GetPlayerName(), RitualPlayerState->IsAlive());
 		if (Team == GreenName)
 		{
 			Green++;

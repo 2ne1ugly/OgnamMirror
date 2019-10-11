@@ -37,7 +37,7 @@ AOgnamPlayerController::AOgnamPlayerController()
 		MenuHUDClass = MenuHUDFinder.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> GameInfoHUDFinder(TEXT("/Game/UI/GameInfo"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> GameInfoHUDFinder(TEXT("/Game/UI/GameInfo/GameInfo"));
 	if (GameInfoHUDFinder.Succeeded())
 	{
 		GameInfoHUDClass = GameInfoHUDFinder.Class;
