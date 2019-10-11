@@ -20,17 +20,25 @@ public:
 	AOgnamPlayerController();
 
 	virtual void BeginPlay() override;
-	virtual void OnPawnDeath();
+	//virtual void OnPawnDeath();
 	virtual void ClientRestart_Implementation(APawn* NewPawn) override;
 	virtual void SetupInputComponent() override;
 
 	UFUNCTION(Client, Unreliable)
-	void ClientFeedBackDamageDealt(FVector Location, float Damage);
-	void ClientFeedBackDamageDealt_Implementation(FVector Location, float Damage);
+	void ClientFeedbackDamageDealt(AActor* Causer, AActor* Reciever, FVector Location, float Damage);
+	void ClientFeedbackDamageDealt_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage);
 
 	UFUNCTION(Client, Unreliable)
-	void ClientFeedBackKill();
-	void ClientFeedBackKill_Implementation();
+	void ClientFeedbackDamageRecieved(AActor* Causer, AActor* Reciever, FVector Location, float Damage);
+	void ClientFeedbackDamageRecieved_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientFeedbackKill(AActor* Causer, AActor* Reciever);
+	void ClientFeedbackKill_Implementation(AActor* Causer, AActor* Reciever);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientFeedbackDeath(AActor* Causer, AActor* Reciever);
+	void ClientFeedbackDeath_Implementation(AActor* Causer, AActor* Reciever);
 
 	UFUNCTION(exec)
 	void ShowMenu();

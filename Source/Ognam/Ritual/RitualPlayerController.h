@@ -22,7 +22,7 @@ public:
 	*/
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
-	virtual void OnPawnDeath() override;
+	//virtual void OnPawnDeath() override;
 	virtual void Tick(float DeltaTime) override;
 	/*
 	**	Getters, Setters

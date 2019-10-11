@@ -47,7 +47,7 @@ void UMaxwellAimDowned::EndModifier()
 	Target->GetMesh()->SetOwnerNoSee(false);
 }
 
-void UMaxwellAimDowned::StatusEffectApplied(EStatusEffect StatusEffect)
+void UMaxwellAimDowned::StatusEffectApplied(EStatusEffect Effect)
 {
 }
 

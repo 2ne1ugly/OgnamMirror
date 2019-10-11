@@ -18,30 +18,6 @@ class OGNAM_API AOgnamGameState : public AGameState
 public:
 	AOgnamGameState();
 
-	/*
-	**	Binded Functions
-	*/
-	virtual void Tick(float DeltaTime) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-
-	/*
-	**	Getters, Setters
-	*/
-	UFUNCTION(BlueprintCallable)
-	int32 GetTeamACount() const;
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetTeamBCount() const;
-
-protected:
-	/*
-	**	Props
-	*/
-	UPROPERTY(Transient, Replicated)
-	int32	TeamACount;
-
-	UPROPERTY(Transient, Replicated)
-	int32	TeamBCount;
-
+	virtual void NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage);
+	virtual void NotifyKillEvent(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController);
 };

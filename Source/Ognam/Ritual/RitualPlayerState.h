@@ -17,10 +17,8 @@ class OGNAM_API ARitualPlayerState : public AOgnamPlayerState
 public:
 	ARitualPlayerState();
 
-	/*
-	**	Binded Function
-	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void NotifyDeath(AActor* Causer, AActor* Reciever, AController* Instigator, AController* RecieverController) override;
 
 	/*
 	**	Getters, Setters

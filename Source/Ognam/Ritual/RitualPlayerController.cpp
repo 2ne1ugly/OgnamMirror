@@ -51,17 +51,6 @@ void ARitualPlayerController::BeginPlay()
 	}
 }
 
-void ARitualPlayerController::OnPawnDeath()
-{
-	ARitualPlayerState* RitualPlayerState = GetPlayerState<ARitualPlayerState>();
-	if (RitualPlayerState == nullptr)
-	{
-		O_LOG(TEXT("Not Ritual Player State"));
-		return;
-	}
-	RitualPlayerState->SetIsAlive(false);
-}
-
 void ARitualPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -115,10 +104,6 @@ void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* Chara
 	//Set pawn class
 	ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
 	RitualPlayerState->SetPawnClass(CharacterClass);
-
-	//respawn character
-	//ARitualGameMode* GameMode = Cast<ARitualGameMode>(GetWorld()->GetGameState()->AuthorityGameMode);
-	//GameMode->RestartPlayer(this);
 }
 
 void ARitualPlayerController::ShowCharacterSelection()
@@ -301,11 +286,11 @@ void ARitualPlayerController::InterruptInteract_Implementation()
 void ARitualPlayerController::PreRoundBegin_Implementation()
 {
 	ShowCharacterSelection();
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-	if (Character)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetCharacter());
+	if (OgnamCharacter)
 	{
-		Character->SetCanMove(false);
-		Character->DisableInput(this);
+		OgnamCharacter->SetCanMove(false);
+		OgnamCharacter->DisableInput(this);
 		//Character->disa;
 	}
 }
@@ -313,11 +298,11 @@ void ARitualPlayerController::PreRoundBegin_Implementation()
 void ARitualPlayerController::PreRoundEnd_Implementation()
 {
 	HideCharacterSelection();
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-	if (Character)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetCharacter());
+	if (OgnamCharacter)
 	{
-		Character->SetCanMove(true);
-		Character->EnableInput(this);
+		OgnamCharacter->SetCanMove(true);
+		OgnamCharacter->EnableInput(this);
 	}
 }
 

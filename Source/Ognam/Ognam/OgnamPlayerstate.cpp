@@ -5,6 +5,9 @@
 #include "UnrealNetwork.h"
 #include "Engine.h"
 #include "Kismet/GameplayStatics.h"
+#include "OgnamPlayerController.h"
+#include "Ognam/OgnamMacro.h"
+#include "Ognam/OgnamCharacter.h"
 
 AOgnamPlayerState::AOgnamPlayerState()
 {
@@ -43,6 +46,60 @@ void AOgnamPlayerState::OverrideWith(APlayerState* PlayerState)
 		if (OgnamPlayerState)
 		{
 		}
+	}
+}
+
+void AOgnamPlayerState::NotifyDamageDealt(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage)
+{
+	AOgnamPlayerController* OgnamController = Cast<AOgnamPlayerController>(DamageInstigator);
+	if (!OgnamController)
+	{
+		O_LOG(TEXT("Not Ognam controller"));
+		return;
+	}
+	OgnamController->ClientFeedbackDamageDealt(DamageCauser, DamageReciever, DamageReciever->GetActorLocation(), Damage);
+}
+
+void AOgnamPlayerState::NotifyDamageRecieved(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage)
+{
+	AOgnamPlayerController* OgnamController = Cast<AOgnamPlayerController>(RecieverController);
+	if (!OgnamController)
+	{
+		O_LOG(TEXT("Not Ognam controller"));
+		return;
+	}
+	OgnamController->ClientFeedbackDamageRecieved(DamageReciever, DamageReciever, DamageReciever->GetActorLocation(), Damage);
+}
+
+void AOgnamPlayerState::NotifyKill(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController)
+{
+	//Increase kill only when killed ognam character
+	if (Cast<AOgnamCharacter>(Reciever))
+	{
+		NumKill++;
+		AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(KillInstigator);
+		if (!PlayerController)
+		{
+			O_LOG(TEXT("Not Ognam controller"));
+		}
+		else
+		{
+			PlayerController->ClientFeedbackKill(Causer, Reciever);
+		}
+	}
+}
+
+void AOgnamPlayerState::NotifyDeath(AActor* Causer, AActor* Reciever, AController* DeathInstigator, AController* RecieverController)
+{
+	NumDeath++;
+	AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(RecieverController);
+	if (!PlayerController)
+	{
+		O_LOG(TEXT("Not Ognam controller"));
+	}
+	else
+	{
+		PlayerController->ClientFeedbackDeath(Causer, Reciever);
 	}
 }
 
