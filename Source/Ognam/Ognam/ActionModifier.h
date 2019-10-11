@@ -39,7 +39,7 @@ protected:
 	virtual void EndChannel();
 	void FinishChannel();
 
-	void ExecutePostDelay();
+	virtual void ExecutePostDelay();
 	virtual void BeginPostDelay();
 	virtual void TickPostDelay(float DeltaTime);
 	virtual void EndPostDelay();

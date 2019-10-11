@@ -11,6 +11,7 @@
 #include "Engine.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
+#include "Ognam/OgnamMacro.h"
 
 ARitualGameMode::ARitualGameMode()
 {
@@ -35,7 +36,7 @@ void ARitualGameMode::Tick(float DeltaTime)
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not a Ritual Gamestate"), __FUNCTION__);
+		O_LOG(TEXT("Not a Ritual Gamestate"));
 		return;
 	}
 	RitualGameState->UpdateProperties();
@@ -55,7 +56,9 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 	}
 
 	FString PlayerCount = UGameplayStatics::ParseOption(Options, "numplayers");
+	
 	O_LOG(TEXT("Option String : %s", *Options));
+	
 	MaxNumPlayers = FCString::Atoi(*PlayerCount);
 
 	O_LOG(TEXT("PlayerCount - %s"), *PlayerCount);
@@ -80,7 +83,7 @@ void ARitualGameMode::HandleMatchHasStarted()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (!RitualGameState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not a Ritual Gamestate"), __FUNCTION__);
+		O_LOG(TEXT("Not a Ritual Gamestate"));
 		return;
 	}
 	RitualGameState->SetPreRoundStage(true);
@@ -92,7 +95,7 @@ void ARitualGameMode::PreRoundBegin()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (!RitualGameState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
 	RitualGameState->SetPreRoundStage(true);
@@ -126,7 +129,7 @@ void ARitualGameMode::BeginRound()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
 	RitualGameState->SetPreRoundStage(false);
@@ -139,7 +142,7 @@ void ARitualGameMode::PostRoundBegin()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
 	RitualGameState->SetRoundEnding(true);
@@ -152,7 +155,7 @@ void ARitualGameMode::PostRoundEnd()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
 	RitualGameState->NetEndSlowMotion();
@@ -164,7 +167,7 @@ void ARitualGameMode::EndRound()
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (GameState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Ritual Gamestate"), __FUNCTION__);
+		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
 
@@ -198,7 +201,7 @@ void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Player Controller"), __FUNCTION__);
+		O_LOG(TEXT("Not Player Controller"));
 	}
 
 	//Set states
@@ -209,7 +212,7 @@ void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Not Player Controller"), __FUNCTION__);
+		O_LOG(TEXT("Not Player Controller"));
 	}
 }
 
@@ -224,7 +227,7 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 	//Assign Team
 	if (RitualPlayerState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s Some one is not a Ritual Player State!"), __FUNCTION__);
+		O_LOG(TEXT("Some one is not a Ritual Player State!"));
 	}
 	else
 	{
@@ -254,14 +257,14 @@ void ARitualGameMode::PreLogin(const FString& Options, const FString& Address, c
 	{
 		ErrorMessage = TEXT("Match Full");
 	}
-	UE_LOG(LogTemp, Warning, TEXT("%s\n"), *Options);
+	O_LOG(TEXT("%s\n"), *Options);
 }
 
 void ARitualGameMode::Logout(AController* PlayerController)
 {
 	Super::Logout(PlayerController);
 	APlayerState* PlayerState = PlayerController->GetPlayerState<APlayerState>();
-	UE_LOG(LogTemp, Warning, TEXT("%s player left"), *PlayerState->GetPlayerName());
+	O_LOG(TEXT("%s player left"), *PlayerState->GetPlayerName());
 	ARitualPlayerController* RitualController = Cast<ARitualPlayerController>(PlayerController);
 	PlayerControllers.Remove(RitualController);
 }
@@ -274,7 +277,7 @@ AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, con
 	ARitualPlayerState* PlayerState = Player->GetPlayerState<ARitualPlayerState>();
 	if (PlayerState == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s GameState or ARitualPlayerController invalid"), __FUNCTION__);
+		O_LOG(TEXT("GameState or ARitualPlayerController invalid"), __FUNCTION__);
 		return nullptr;
 	}
 
@@ -293,7 +296,7 @@ AActor* ARitualGameMode::FindPlayerStart_Implementation(AController* Player, con
 			CurrentIndex++;
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("%s Not enough Spawn points"), __FUNCTION__);
+	O_LOG(TEXT("Not enough Spawn points"));
 	return Super::FindPlayerStart_Implementation(Player, IncomingName);
 }
 
@@ -305,7 +308,7 @@ void ARitualGameMode::RestartPlayerAtPlayerStart(AController* NewPlayer, AActor*
 	}
 	if (!StartSpot)
 	{
-		UE_LOG(LogGameMode, Warning, TEXT("%s Player start not found"), __FUNCTION__);
+		O_LOG(TEXT("Player start not found"));
 		return;
 	}
 

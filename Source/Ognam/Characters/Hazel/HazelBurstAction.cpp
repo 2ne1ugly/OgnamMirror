@@ -9,12 +9,13 @@
 
 UHazelBurstAction::UHazelBurstAction()
 {
-	PreDelayDuration = 0.f;
+	PreDelayDuration = 0.25f;
 	PostDelayDuration = 0.f;
 
 	ChannelDuration = 1.f;
 	TotalCount = 15;
 	Count = TotalCount;
+	PreDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
 	ChannelStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
 }
 

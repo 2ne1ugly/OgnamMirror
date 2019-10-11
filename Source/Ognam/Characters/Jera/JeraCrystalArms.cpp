@@ -1,11 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "JeraCrystalArms.h"
-#include "Components/StaticMeshComponent.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "Materials/Material.h"
-#include "ConstructorHelpers.h"
 #include "UnrealNetwork.h"
 #include "TimerManager.h"
 #include "JeraCrystalShard.h"
@@ -13,7 +10,8 @@
 
 UJeraCrystalArms::UJeraCrystalArms()
 {
-	SwingClass = UJeraCrystalArmsAction::StaticClass();
+	WeaponActionClass = UJeraCrystalArmsAction::StaticClass();
+	bInfiniteAmmo = true;
 
 	bBindSub = true;
 
@@ -31,7 +29,7 @@ void UJeraCrystalArms::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UJeraCrystalArms::SubPressed()
 {
-	if (ShardCharge <= 0 || Swing->IsRunning())
+	if (ShardCharge <= 0 || WeaponAction->IsRunning())
 	{
 		return;
 	}
@@ -40,7 +38,7 @@ void UJeraCrystalArms::SubPressed()
 
 void UJeraCrystalArms::ServerSubPressed_Implementation()
 {
-	if (ShardCharge <= 0 || Swing->IsRunning())
+	if (ShardCharge <= 0 || WeaponAction->IsRunning())
 	{
 		return;
 	}

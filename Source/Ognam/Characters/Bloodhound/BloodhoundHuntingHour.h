@@ -18,5 +18,9 @@ public:
 	UBloodhoundHuntingHour();
 
 	virtual void TickModifier(float DeltaTime) override;
+	virtual bool ShouldEnd() override;
+	void Consume();
 protected:
+
+	bool bConsumed;
 };

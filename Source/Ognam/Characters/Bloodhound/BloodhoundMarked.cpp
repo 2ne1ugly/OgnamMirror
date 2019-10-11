@@ -3,6 +3,7 @@
 #include "BloodhoundMarked.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Pawn.h"
+
 UBloodhoundMarked::UBloodhoundMarked()
 {
 	Duration = 5.f;

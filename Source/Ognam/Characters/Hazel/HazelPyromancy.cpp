@@ -2,49 +2,11 @@
 
 
 #include "HazelPyromancy.h"
-#include "Ognam/OgnamCharacter.h"
-#include "Engine/World.h"
-#include "HazelFireball.h"
-#include "HazelBlazed.h"
-#include "TimerManager.h"
+#include "HazelPyromancyAction.h"
 
 UHazelPyromancy::UHazelPyromancy()
 {
+	WeaponActionClass = UHazelPyromancyAction::StaticClass();
 	bInfiniteAmmo = true;
-	RoundsPerSecond = 4;
 }
 
-void UHazelPyromancy::FireBullet()
-{
-	if (!Target->HasAuthority())
-	{
-		return;
-	}
-	FHitResult Aim;
-	Target->GetAimHitResult(Aim, 0.f, 10000.f);
-
-	FVector From = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
-	FVector To;
-	if (Aim.bBlockingHit)
-		To = Aim.ImpactPoint;
-	else
-		To = Aim.TraceEnd;
-
-	FVector Direction = To - From;
-	FActorSpawnParameters Params;
-	Params.bNoFail = true;
-	Params.Instigator = Target;
-	GetWorld()->SpawnActor<AHazelFireball>(From, Direction.Rotation(), Params)->SetReplicates(true);
-}
-
-void UHazelPyromancy::PostFireBullet()
-{
-	if (Target->GetModifier<UHazelBlazed>())
-	{
-		Target->GetWorldTimerManager().SetTimer(PostDelay, this, &UHazelPyromancy::RepeatFireBullet, 1.f / (RoundsPerSecond * 2.f), false);
-	}
-	else
-	{
-		Super::PostFireBullet();
-	}
-}
