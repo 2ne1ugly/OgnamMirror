@@ -156,7 +156,7 @@ void ARitualGameState::StartNewRound()
 	//Start Phase 1
 	PhaseStartTime = GetWorld()->GetTimeSeconds();
 
-	PhaseGivenTime = 120;
+	PhaseGivenTime = 5;
 
 	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
 	{
@@ -263,12 +263,14 @@ void ARitualGameState::UpdateProperties()
 		FName Team = RitualPlayerState->GetTeam();
 		if (Team == GreenName)
 		{
+			RitualPlayerState->SetTeamIndex(Green);
 			Green++;
 			if (RitualPlayerState->IsAlive())
 				GreenAlive++;
 		}
 		else if (Team == BlueName)
 		{
+			RitualPlayerState->SetTeamIndex(Blue);
 			Blue++;
 			if (RitualPlayerState->IsAlive())
 				BlueAlive++;
