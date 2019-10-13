@@ -156,7 +156,7 @@ void ARitualGameState::StartNewRound()
 	//Start Phase 1
 	PhaseStartTime = GetWorld()->GetTimeSeconds();
 
-	PhaseGivenTime = 5;
+	PhaseGivenTime = 120;
 
 	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
 	{

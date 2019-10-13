@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "ConstructorHelpers.h"
 #include "HereiraMolotovEmber.h"
+#include "UnrealNetwork.h"
 
 AHereiraMolotov::AHereiraMolotov()
 {
@@ -32,11 +33,24 @@ AHereiraMolotov::AHereiraMolotov()
 	Movement->bInterpMovement = true;
 	Movement->bSweepCollision = true;
 	Movement->bShouldBounce = false;
-	Movement->InitialSpeed = 2000.f;
+	Movement->Velocity = GetActorForwardVector() * 2000.f;
 	Movement->ProjectileGravityScale = 1.5f;
 	Movement->OnProjectileStop.AddDynamic(this, &AHereiraMolotov::ProjectileStop);
 
 	InitialLifeSpan = 10.f;
+}
+
+void AHereiraMolotov::SetInitialVelocity(FVector Velocity)
+{
+	Movement->Velocity += Velocity;
+	CharacterVelocity = Velocity;
+}
+
+void AHereiraMolotov::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AHereiraMolotov, CharacterVelocity, COND_InitialOnly);
 }
 
 void AHereiraMolotov::ProjectileStop(const FHitResult& ImpactResult)
@@ -59,6 +73,11 @@ void AHereiraMolotov::ProjectileStop(const FHitResult& ImpactResult)
 		}
 	}
 	Destroy();
+}
+
+void AHereiraMolotov::OnRep_CharacterVelocity()
+{
+	Movement->Velocity += CharacterVelocity;
 }
 
 void AHereiraMolotov::BeginPlay()
