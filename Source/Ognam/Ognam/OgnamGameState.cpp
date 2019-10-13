@@ -50,9 +50,9 @@ void AOgnamGameState::NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReci
 
 void AOgnamGameState::NotifyKillEvent(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController)
 {
-	check(Causer && Reciever);
 	AOgnamPlayerState* InstigatorPlayerState = nullptr;
 	AOgnamPlayerState* RecieverPlayerState = nullptr;
+
 	//Try getting both player states.
 	if (KillInstigator)
 	{
