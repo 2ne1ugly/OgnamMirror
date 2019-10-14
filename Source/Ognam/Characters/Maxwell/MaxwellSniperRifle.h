@@ -22,7 +22,7 @@ protected:
 	//Client call
 	virtual void SubPressed() override;
 
-	UFUNCTION(Server, Unreliable, WithValidation)
+	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerToggleAimDown();
 	bool ServerToggleAimDown_Validate() { return true; };
 	void ServerToggleAimDown_Implementation();

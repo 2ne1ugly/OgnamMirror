@@ -23,7 +23,7 @@ protected:
 	//Client Call
 	virtual void SubPressed() override;
 
-	UFUNCTION(Server, Unreliable, WithValidation)
+	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerSubPressed();
 	virtual bool ServerSubPressed_Validate() { return true; }
 	virtual void ServerSubPressed_Implementation();

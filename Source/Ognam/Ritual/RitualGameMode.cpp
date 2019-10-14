@@ -86,7 +86,6 @@ void ARitualGameMode::HandleMatchHasStarted()
 		O_LOG(TEXT("Not a Ritual Gamestate"));
 		return;
 	}
-	RitualGameState->SetPreRoundStage(true);
 	PreRoundBegin();
 }
 
@@ -99,7 +98,7 @@ void ARitualGameMode::PreRoundBegin()
 		return;
 	}
 	RitualGameState->SetPreRoundStage(true);
-
+	RitualGameState->UpdateProperties();
 	for (ARitualPlayerController* PlayerController : PlayerControllers)
 	{
 		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();

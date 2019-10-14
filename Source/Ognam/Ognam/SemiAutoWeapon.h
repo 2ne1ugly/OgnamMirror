@@ -21,7 +21,7 @@ public:
 protected:
 	virtual void BasicPressed() override;
 
-	UFUNCTION(Server, WithValidation, Unreliable)
+	UFUNCTION(Server, WithValidation, Reliable)
 	void ServerBasicPressed();
 	bool ServerBasicPressed_Validate() { return true; }
 	virtual void ServerBasicPressed_Implementation();

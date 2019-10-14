@@ -24,5 +24,6 @@ void UHereiraThrowMolotov::ActivateAbility()
 	SpawnParam.bNoFail = true;
 	SpawnParam.Instigator = Target;
 	AHereiraMolotov* Molotov = GetWorld()->SpawnActor<AHereiraMolotov>(Target->GetActorLocation(), MolotovDirection.Rotation(), SpawnParam);
+	Molotov->SetInitialVelocity(Target->GetVelocity());
 	Molotov->SetReplicates(true);
 }

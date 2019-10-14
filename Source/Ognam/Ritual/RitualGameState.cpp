@@ -263,12 +263,14 @@ void ARitualGameState::UpdateProperties()
 		FName Team = RitualPlayerState->GetTeam();
 		if (Team == GreenName)
 		{
+			RitualPlayerState->SetTeamIndex(Green);
 			Green++;
 			if (RitualPlayerState->IsAlive())
 				GreenAlive++;
 		}
 		else if (Team == BlueName)
 		{
+			RitualPlayerState->SetTeamIndex(Blue);
 			Blue++;
 			if (RitualPlayerState->IsAlive())
 				BlueAlive++;

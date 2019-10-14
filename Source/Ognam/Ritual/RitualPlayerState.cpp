@@ -8,6 +8,7 @@
 #include "UnrealNetwork.h"
 #include "Characters/Hereira/Hereira.h"
 #include "Ognam/OgnamMacro.h"
+#include "RitualSpectator.h"
 
 ARitualPlayerState::ARitualPlayerState()
 {
@@ -30,6 +31,9 @@ void ARitualPlayerState::NotifyDeath(AActor* Causer, AActor* Reciever, AControll
 {
 	Super::NotifyDeath(Causer, Reciever, DeathInstigator, RecieverController);
 	bIsAlive = false;
+	ARitualSpectator* Spectator = GetWorld()->SpawnActor<ARitualSpectator>(Reciever->GetActorLocation(), Reciever->GetActorRotation());
+	Spectator->SetReplicates(true);
+	RecieverController->Possess(Spectator);
 }
 
 void ARitualPlayerState::SetTeamIndex(int32 index)

@@ -21,12 +21,12 @@ protected:
 	virtual void BasicPressed() override;
 	virtual void BasicReleased() override;
 
-	UFUNCTION(Server, WithValidation, Unreliable)
+	UFUNCTION(Server, WithValidation, Reliable)
 	void ServerBasicPressed();
 	bool ServerBasicPressed_Validate() { return true; }
 	virtual void ServerBasicPressed_Implementation();
 
-	UFUNCTION(Server, WithValidation, Unreliable)
+	UFUNCTION(Server, WithValidation, Reliable)
 	void ServerBasicReleased();
 	bool ServerBasicReleased_Validate() { return true; }
 	virtual void ServerBasicReleased_Implementation();

@@ -23,10 +23,22 @@ class OGNAM_API AHereiraMolotov : public AActor
 public:	
 	AHereiraMolotov();
 
+	void SetInitialVelocity(FVector Velocity);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	UFUNCTION()
 	void ProjectileStop(const FHitResult& ImpactResult);
 
+	UFUNCTION()
+	void OnRep_CharacterVelocity();
+
 	virtual void BeginPlay() override;
+
+	/*
+	**	Props
+	*/
+	UPROPERTY(ReplicatedUsing=OnRep_CharacterVelocity)
+	FVector CharacterVelocity;
 
 };
