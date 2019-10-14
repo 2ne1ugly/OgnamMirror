@@ -50,6 +50,7 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ARitualGameState, PhaseGivenTime);
 	DOREPLIFETIME(ARitualGameState, bRoundEnding);
 	DOREPLIFETIME(ARitualGameState, bPreRound);
+	DOREPLIFETIME(ARitualGameState, bIsShrineBeingCaptured);
 }
 
 FName ARitualGameState::GetCurrentOffenseTeam() const
@@ -115,6 +116,11 @@ float ARitualGameState::GetPhaseGivenTime() const
 bool ARitualGameState::IsPreRound() const
 {
 	return bPreRound;
+}
+
+bool ARitualGameState::IsShrineBeingCaptured() const
+{
+	return bIsShrineBeingCaptured;
 }
 
 void ARitualGameState::SetPreRoundStage(bool bIsPreRound)
@@ -278,6 +284,15 @@ void ARitualGameState::UpdateProperties()
 		else
 		{
 			O_LOG(TEXT("Unknown Team name"));
+		}
+	}
+	bIsShrineBeingCaptured = false; // reset flag
+	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
+	{
+		if (Itr->IsBeingCaptured())
+		{
+			bIsShrineBeingCaptured = true;
+			break;
 		}
 	}
 	NumGreenPlayers = Green;

@@ -127,7 +127,13 @@ void ARitualPlayerController::HideCharacterSelection()
 	}
 	if (GetPawn())
 	{
-		GetPawn()->EnableInput(this);
+		AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
+		// This is a placeholder to prevent cheating
+		// We need a spectator to actually prevent real life cheating involving code changes
+		if (Character && Character->IsAlive())
+		{
+			GetPawn()->EnableInput(this);
+		}
 	}
 	bShowMouseCursor = false;
 	SetInputMode(FInputModeGameOnly());

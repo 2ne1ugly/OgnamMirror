@@ -24,6 +24,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage);
 	virtual void NotifyKillEvent(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/*
 	**	Getters, Setters
@@ -32,7 +33,7 @@ public:
 	FString GetServerIP() const;
 
 protected:
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, Replicated)
 	FString ServerAddress;
-	
+
 };

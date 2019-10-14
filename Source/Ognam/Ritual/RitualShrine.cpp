@@ -40,6 +40,8 @@ ARitualShrine::ARitualShrine()
 
 	CaptureDuration = 20.f;
 	SpeedMultiplier = .15f;
+
+	ShrineName = FText::FromString("Default");
 }
 
 void ARitualShrine::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -54,7 +56,6 @@ void ARitualShrine::BeginPlay()
 	Super::BeginPlay();
 	CaptureProgress = 0.f;
 }
-
 
 void ARitualShrine::Tick(float DeltaTime)
 {
@@ -121,7 +122,12 @@ bool ARitualShrine::ShouldRoundEnd() const
 	return (CaptureProgress >= CaptureDuration);
 }
 
-float ARitualShrine::GetProgressPercent()
+bool ARitualShrine::IsBeingCaptured() const
+{
+	return GetProgressPercent() > 0 || AttackerCount > DefenderCount;
+}
+
+float ARitualShrine::GetProgressPercent() const
 {
 	return CaptureProgress / CaptureDuration;
 }

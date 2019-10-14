@@ -40,7 +40,10 @@ public:
 	bool ShouldRoundEnd() const;
 
 	UFUNCTION(BlueprintCallable)
-	float GetProgressPercent();
+	float GetProgressPercent() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool IsBeingCaptured() const;
 
 protected:
 	UPROPERTY(Transient)
@@ -48,6 +51,9 @@ protected:
 
 	UPROPERTY(Transient)
 	int32 AttackerCount;
+
+	UPROPERTY(EditAnywhere)
+	FText ShrineName;
 
 	/* How much faster the capture goes by for each additional attacker */
 	UPROPERTY(Transient, EditAnywhere)
