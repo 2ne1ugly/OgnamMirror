@@ -9,6 +9,7 @@
 #include "OnlineSubsystem.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
+#include "UnrealNetwork.h"
 
 AOgnamGameState::AOgnamGameState()
 {
@@ -19,8 +20,18 @@ void AOgnamGameState::BeginPlay()
 	Super::BeginPlay();
 
 	bool bCanBind;
-	TSharedRef<FInternetAddr> LocalIP = ISocketSubsystem::Get()->GetLocalHostAddr(*GLog, bCanBind);
-	ServerAddress = FString::Printf(TEXT("%s:%d"), *(LocalIP->ToString(false)), GetWorld()->URL.Port);
+	if (HasAuthority())
+	{
+		TSharedRef<FInternetAddr> LocalIP = ISocketSubsystem::Get()->GetLocalHostAddr(*GLog, bCanBind);
+		ServerAddress = FString::Printf(TEXT("%s:%d"), *(LocalIP->ToString(false)), GetWorld()->URL.Port);
+	}
+}
+
+void AOgnamGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AOgnamGameState, ServerAddress);
 }
 
 void AOgnamGameState::NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage)
@@ -50,7 +61,6 @@ void AOgnamGameState::NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReci
 
 void AOgnamGameState::NotifyKillEvent(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController)
 {
-	check(Causer && Reciever);
 	AOgnamPlayerState* InstigatorPlayerState = nullptr;
 	AOgnamPlayerState* RecieverPlayerState = nullptr;
 	//Try getting both player states.

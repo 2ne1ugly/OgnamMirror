@@ -554,6 +554,11 @@ float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 		if (Health <= 0)
 		{
 			NetDie();
+			APlayerController* PlayerController = Cast<APlayerController>(GetController());
+			if (PlayerController)
+			{
+				DisableInput(PlayerController);
+			}
 			GameState->NotifyKillEvent(DamageCauser, this, EventInstigator, GetController());
 		}
 	}
@@ -571,7 +576,7 @@ void AOgnamCharacter::NetDie_Implementation()
 	TakeAction(EActionNotifier::Death);
 
 	//For local player
-	AOgnamPlayerController* PlayerController = Cast<AOgnamPlayerController>(GetController());
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (!PlayerController)
 	{
 		return;

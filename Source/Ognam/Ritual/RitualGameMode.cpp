@@ -63,7 +63,7 @@ void ARitualGameMode::InitGame(const FString& MapName, const FString& Options, F
 
 	O_LOG(TEXT("PlayerCount - %s"), *PlayerCount);
 	if (MaxNumPlayers == 0)
-		MaxNumPlayers = 2;
+		MaxNumPlayers = 3;
 }
 
 bool ARitualGameMode::ReadyToStartMatch_Implementation()
