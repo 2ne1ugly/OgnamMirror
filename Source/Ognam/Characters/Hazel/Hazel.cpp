@@ -10,6 +10,7 @@
 
 AHazel::AHazel()
 {
+	CharacterName = FText::FromString("Hazel");
 }
 
 void AHazel::BeginPlay()

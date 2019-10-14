@@ -8,6 +8,7 @@
 
 AMaxwell::AMaxwell()
 {
+	CharacterName = FText::FromString("Maxwell");
 }
 
 void AMaxwell::BeginPlay()

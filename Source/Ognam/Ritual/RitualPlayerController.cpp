@@ -93,7 +93,7 @@ void ARitualPlayerController::ServerChangeCharacter_Implementation(UClass* Chara
 {
 	//Set pawn class
 	ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
-	RitualPlayerState->SetPawnClass(CharacterClass);
+	RitualPlayerState->SetSelectedPawnClass(CharacterClass);
 }
 
 void ARitualPlayerController::ShowCharacterSelection()
@@ -104,12 +104,10 @@ void ARitualPlayerController::ShowCharacterSelection()
 		{
 			CharacterSelectionHUD = CreateWidget<UUserWidget>(this, CharacterSelectionHUDClass);
 		}
-		O_LOG(TEXT("Show characterselection"));
 	}
 	if (CharacterSelectionHUD)
 	{
 		CharacterSelectionHUD->AddToViewport();
-		O_LOG(TEXT("Showing characterselection"));
 	}
 	if (GetPawn())
 	{

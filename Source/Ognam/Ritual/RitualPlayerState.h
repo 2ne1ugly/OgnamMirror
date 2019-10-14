@@ -30,15 +30,6 @@ public:
 	int32 GetTeamIndex() const;
 
 	UFUNCTION(BlueprintCallable)
-	void SetIsAlive(bool Value);
-
-	UFUNCTION(BlueprintCallable)
-	UClass* GetPawnClass();
-
-	UFUNCTION(BlueprintCallable)
-	void SetPawnClass(UClass* Pawn);
-
-	UFUNCTION(BlueprintCallable)
 	FName GetSide() const;
 
 protected:
@@ -48,6 +39,4 @@ protected:
 	UPROPERTY(Transient, Replicated)
 	int32 TeamIndex;
 
-	UPROPERTY(Transient, Replicated)
-	UClass* PawnClass;
 };

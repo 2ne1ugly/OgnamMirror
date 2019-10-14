@@ -107,6 +107,8 @@ void AOgnamPlayerController::ClientRestart_Implementation(APawn* aPawn)
 {
 	Super::ClientRestart_Implementation(aPawn);
 
+	AOgnamPlayerState* State = GetPlayerState<AOgnamPlayerState>();
+
 	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(aPawn);
 
 	if (OgnamCharacter == nullptr)

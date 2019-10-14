@@ -81,6 +81,8 @@ AOgnamCharacter::AOgnamCharacter()
 	bReplicates = true;
 	bIsAlive = true;
 	bCanMove = true;
+
+	CharacterName = FText::FromString("Ognam Character");
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -211,6 +213,7 @@ void AOgnamCharacter::PossessedBy(AController * aController)
 	}
 
 	GetMesh()->SetMaterial(0, Material);
+	OgnamPlayerState->SetPawnClass(GetClass());
 }
 
 void AOgnamCharacter::MobilityPressed()

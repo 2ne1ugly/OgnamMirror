@@ -353,5 +353,5 @@ void ARitualGameMode::RestartPlayerAtPlayerStart(AController* NewPlayer, AActor*
 UClass* ARitualGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
 	ARitualPlayerState* PlayerState = InController->GetPlayerState<ARitualPlayerState>();
-	return PlayerState->GetPawnClass();
+	return PlayerState->GetSelectedPawnClass();
 }

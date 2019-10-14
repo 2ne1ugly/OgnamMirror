@@ -38,6 +38,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
 
+	UFUNCTION(BlueprintCallable)
+	void SetIsAlive(bool Value);
+
+	UFUNCTION(BlueprintCallable)
+	UClass* GetPawnClass() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetPawnClass(UClass* Pawn);
+
+	UFUNCTION(BlueprintCallable)
+	void SetSelectedPawnClass(class UClass* Pawn);
+
+	UFUNCTION(BlueprintCallable)
+	UClass* GetSelectedPawnClass() const;
+
 	/* Chat functions */
 	UFUNCTION(Netmulticast, Unreliable)
 	void NetReceiveMessage(const FString& Message, class APlayerState* Sender);
@@ -61,4 +76,10 @@ public:
 
 	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
 	bool bIsAlive;
+
+	UPROPERTY(Transient, Replicated)
+	UClass* PawnClass;
+
+	UPROPERTY(Transient, Replicated)
+	UClass* SelectedPawnClass;
 };

@@ -6,7 +6,6 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Engine/World.h"
 #include "UnrealNetwork.h"
-#include "Characters/Hereira/Hereira.h"
 #include "Ognam/OgnamMacro.h"
 #include "RitualSpectator.h"
 
@@ -14,7 +13,6 @@ ARitualPlayerState::ARitualPlayerState()
 {
 	Team = TEXT("Undefined");
 	bIsAlive = false;
-	PawnClass = AHereira::StaticClass();
 }
 
 void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -43,21 +41,6 @@ void ARitualPlayerState::SetTeamIndex(int32 index)
 int32 ARitualPlayerState::GetTeamIndex() const
 {
 	return TeamIndex;
-}
-
-void ARitualPlayerState::SetIsAlive(bool Value)
-{
-	bIsAlive = Value;
-}
-
-UClass* ARitualPlayerState::GetPawnClass()
-{
-	return PawnClass;
-}
-
-void ARitualPlayerState::SetPawnClass(UClass* Pawn)
-{
-	PawnClass = Pawn;
 }
 
 FName ARitualPlayerState::GetSide() const

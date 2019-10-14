@@ -19,12 +19,13 @@ AHereira::AHereira()
 	//ShotAudio->SetupAttachment(RootComponent);
 	//ShotAudio->SetRelativeLocation(FVector::ZeroVector);
 	//ShotAudio->bAutoActivate = 0;
+	CharacterName = FText::FromString(TEXT("Hereira"));
 }
 
 void AHereira::BeginPlay()
 {
 	Super::BeginPlay();
-	Weapon = NewObject<UHereiraCrossbow>(this, TEXT("Sprint"));
+	Weapon = NewObject<UHereiraCrossbow>(this, TEXT("Weapon"));
 	Mobility = NewObject<UHereiraSprint>(this, TEXT("Mobility"));
 	Unique = NewObject<UHereiraThrowMolotov>(this, TEXT("Unique"));
 

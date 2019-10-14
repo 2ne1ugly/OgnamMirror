@@ -15,6 +15,8 @@ ABloodhound::ABloodhound()
 	GetCapsuleComponent()->SetCapsuleRadius(23.8f);
 	GetMesh()->SetRelativeScale3D(FVector(.7f));
 	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -63.f));
+
+	CharacterName = FText::FromString("Bloodhound");
 }
 
 void ABloodhound::BeginPlay()

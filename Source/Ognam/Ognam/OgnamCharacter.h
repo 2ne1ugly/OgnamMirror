@@ -168,6 +168,9 @@ public:
 	UPROPERTY(Transient, VisibleAnywhere)
 	bool	bCanMove;
 
+	UPROPERTY(Transient, VisibleAnywhere, BlueprintReadOnly)
+	FText CharacterName;
+
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;
 
@@ -223,8 +226,6 @@ protected:
 	FVector InputVector;
 	float	InputAmount;
 	int		NumInputs;
-
-	
 
 	UPROPERTY(VisibleAnywhere)
 	class UWeapon* Weapon;

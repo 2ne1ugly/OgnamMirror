@@ -8,6 +8,7 @@
 #include "OgnamPlayerController.h"
 #include "Ognam/OgnamMacro.h"
 #include "Ognam/OgnamCharacter.h"
+#include "Characters/Hereira/Hereira.h"
 
 AOgnamPlayerState::AOgnamPlayerState()
 {
@@ -15,6 +16,7 @@ AOgnamPlayerState::AOgnamPlayerState()
 	NumDeath = 0;
 	Team = TEXT("No Team");
 	bIsAlive = true;
+	SelectedPawnClass = AHereira::StaticClass();
 }
 
 void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -115,9 +117,19 @@ FName AOgnamPlayerState::GetTeam() const
 	return Team;
 }
 
+void AOgnamPlayerState::SetIsAlive(bool Value)
+{
+	bIsAlive = Value;
+}
+
 bool AOgnamPlayerState::IsAlive() const
 {
 	return bIsAlive;
+}
+
+UClass* AOgnamPlayerState::GetSelectedPawnClass() const
+{
+	return SelectedPawnClass;
 }
 
 void AOgnamPlayerState::NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender)
@@ -137,4 +149,19 @@ void AOgnamPlayerState::ServerSendMessage_Implementation(const FString& Message)
 void AOgnamPlayerState::DisplayMessage(const FString& Message, APlayerState* Sender)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, FString::Printf(TEXT("%s: %s"), *Sender->GetPlayerName(), *Message));
+}
+
+UClass* AOgnamPlayerState::GetPawnClass() const
+{
+	return PawnClass;
+}
+
+void AOgnamPlayerState::SetPawnClass(UClass* Pawn)
+{
+	PawnClass = Pawn;
+}
+
+void AOgnamPlayerState::SetSelectedPawnClass(UClass* Pawn)
+{
+	SelectedPawnClass = Pawn;
 }
