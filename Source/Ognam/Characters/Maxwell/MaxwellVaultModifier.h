@@ -3,20 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/ExpirableModifier.h"
-#include "MaxwellShadowForm.generated.h"
+#include "Ognam/Modifier.h"
+#include "MaxwellVaultModifier.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UMaxwellShadowForm : public UExpirableModifier
+class OGNAM_API UMaxwellVaultModifier : public UModifier
 {
 	GENERATED_BODY()
 
 public:
-	UMaxwellShadowForm();
+	UMaxwellVaultModifier();
+
+	virtual bool ShouldEnd() override;
 
 	virtual void TickModifier(float DeltaTime) override;
-	virtual void BeginModifier() override;
 };

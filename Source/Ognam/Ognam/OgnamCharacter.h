@@ -166,7 +166,7 @@ public:
 	float Gravity;
 
 	UPROPERTY(Transient, VisibleAnywhere)
-	bool	bCanMove;
+	bool bCanMove;
 
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> CharacterSpecificHUDClass;

@@ -24,7 +24,7 @@ AHereira::AHereira()
 void AHereira::BeginPlay()
 {
 	Super::BeginPlay();
-	Weapon = NewObject<UHereiraCrossbow>(this, TEXT("Sprint"));
+	Weapon = NewObject<UHereiraCrossbow>(this, TEXT("Weapon"));
 	Mobility = NewObject<UHereiraSprint>(this, TEXT("Mobility"));
 	Unique = NewObject<UHereiraThrowMolotov>(this, TEXT("Unique"));
 
