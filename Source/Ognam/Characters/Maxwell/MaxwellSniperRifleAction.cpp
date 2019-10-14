@@ -18,7 +18,7 @@
 
 UMaxwellSniperRifleAction::UMaxwellSniperRifleAction()
 {
-	BaseDamage = 50.f;
+	BaseDamage = 90.f;
 
 	ConstructorHelpers::FObjectFinder<USoundCue> SniperShotCue(TEXT("SoundCue'/Game/Sounds/Maxwell/maxwell_shot_cue2.maxwell_shot_cue2'"));
 	ShotSoundCue = SniperShotCue.Object;
@@ -26,7 +26,7 @@ UMaxwellSniperRifleAction::UMaxwellSniperRifleAction()
 	ConstructorHelpers::FObjectFinder<UParticleSystem> SniperShotParticle(TEXT("ParticleSystem'/Game/ParagonMurdock/FX/Particles/Abilities/Primary/FX/P_Murdock_Bullet_Trail_Smoke_Spline.P_Murdock_Bullet_Trail_Smoke_Spline'"));
 	ParticleSystem = SniperShotParticle.Object;
 
-	float RoundsPerSecond = 4.f;
+	float RoundsPerSecond = 2.f;
 
 	PreDelayDuration = 0.f;
 	ChannelDuration = 0.f;
@@ -98,15 +98,6 @@ void UMaxwellSniperRifleAction::BeginChannel()
 	{
 		Controller->ClientPlayCameraShake(UMaxwellSniperRifleRecoil::StaticClass());
 	}
-
-	float Damage = BaseDamage;
-	UMaxwellClaretStrikeCharged* ClaretStrikeCharged = Target->GetModifier<UMaxwellClaretStrikeCharged>();
-	if (ClaretStrikeCharged && ClaretStrikeCharged->Use())
-	{
-		NewObject<UMaxwellRecovering>(Target)->RegisterComponent();
-		Damage = 80.f;
-	}
-
 	//Get Target's player state
 	ACharacter* OtherCharacter = Cast<ACharacter>(BulletHit.Actor);
 	if (!OtherCharacter)
@@ -122,6 +113,15 @@ void UMaxwellSniperRifleAction::BeginChannel()
 
 	if (OtherPlayerState->GetTeam() != PlayerState->GetTeam())
 	{
+		float Distance = (BulletTo - From).Size();
+		float Multiplier = FMath::GetMappedRangeValueClamped(FVector2D(2000, 8000), FVector2D(1.f, .67f), Distance);
+		float Damage = BaseDamage * Multiplier;
+
+		if (BulletHit.BoneName == TEXT("Head"))
+		{
+			Damage *= 2;
+		}
+
 		UGameplayStatics::ApplyPointDamage(OtherCharacter, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
 	}
 }

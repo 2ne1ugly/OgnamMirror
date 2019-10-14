@@ -11,7 +11,7 @@ UJeraSuppressiveImpactAction::UJeraSuppressiveImpactAction()
 	PreDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Unarmed | EStatusEffect::Silenced;
 	PostDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Unarmed | EStatusEffect::Silenced;
 
-	PreDelayDuration = .5f;
+	PreDelayDuration = .3f;
 	ChannelDuration = .0f;
 	PostDelayDuration = .2f;
 }

@@ -8,20 +8,12 @@
 
 UMaxwellShadowForm::UMaxwellShadowForm()
 {
-	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced | EStatusEffect::Rooted | EStatusEffect::Unbreakable;
+	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced | EStatusEffect::Unbreakable;
 	Duration = .4f;
-}
-
-void UMaxwellShadowForm::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(UMaxwellShadowForm, Direction);
 }
 
 void UMaxwellShadowForm::TickModifier(float DeltaTime)
 {
-	Target->AddMovementInput(Direction, 1.f, true);
 	Target->Acceleration += Target->BaseAcceleration * 1;
 	Target->Speed += Target->BaseSpeed * 1;
 }
@@ -31,10 +23,4 @@ void UMaxwellShadowForm::BeginModifier()
 	Super::BeginModifier();
 	Target->GetCharacterMovement()->Velocity.Z = 0.f;
 	Target->GetCharacterMovement()->MovementMode = MOVE_Falling;
-	//Target->GetCharacterMovement()->Velo
-}
-
-void UMaxwellShadowForm::SetDirection(FVector Vector)
-{
-	Direction = Vector;
 }

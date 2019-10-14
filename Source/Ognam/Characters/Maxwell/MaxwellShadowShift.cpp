@@ -30,9 +30,7 @@ void UMaxwellShadowShift::ServerCastShadowShift_Implementation(FVector Direction
 		return;
 	}
 	Target->TakeAction(EActionNotifier::SpecialMovement);
-	UMaxwellShadowForm* ShadowForm = NewObject<UMaxwellShadowForm>(Target);
-	ShadowForm->SetDirection(Direction);
-	ShadowForm->RegisterComponent();
+	NewObject<UMaxwellShadowForm>(Target)->RegisterComponent();
 	Target->GetWorldTimerManager().SetTimer(ShadowShiftCooldown, Cooldown, false);
 	ClientFeedbackShadowShift();
 }
