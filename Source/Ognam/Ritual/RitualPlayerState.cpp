@@ -23,7 +23,6 @@ void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	DOREPLIFETIME(ARitualPlayerState, Team);
 	DOREPLIFETIME(ARitualPlayerState, PawnClass);
-	DOREPLIFETIME(ARitualPlayerState, bIsAlive);
 	DOREPLIFETIME(ARitualPlayerState, TeamIndex);
 }
 
@@ -49,11 +48,6 @@ int32 ARitualPlayerState::GetTeamIndex() const
 void ARitualPlayerState::SetIsAlive(bool Value)
 {
 	bIsAlive = Value;
-}
-
-bool ARitualPlayerState::IsAlive() const
-{
-	return bIsAlive;
 }
 
 UClass* ARitualPlayerState::GetPawnClass()

@@ -33,9 +33,6 @@ public:
 	void SetIsAlive(bool Value);
 
 	UFUNCTION(BlueprintCallable)
-	bool IsAlive() const;
-
-	UFUNCTION(BlueprintCallable)
 	UClass* GetPawnClass();
 
 	UFUNCTION(BlueprintCallable)
@@ -50,9 +47,6 @@ protected:
 	*/
 	UPROPERTY(Transient, Replicated)
 	int32 TeamIndex;
-
-	UPROPERTY(Transient, Replicated)
-	bool bIsAlive;
 
 	UPROPERTY(Transient, Replicated)
 	UClass* PawnClass;

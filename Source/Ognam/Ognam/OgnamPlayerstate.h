@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FName GetTeam() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsAlive() const;
+
 	/* Chat functions */
 	UFUNCTION(Netmulticast, Unreliable)
 	void NetReceiveMessage(const FString& Message, class APlayerState* Sender);
@@ -55,4 +58,7 @@ public:
 
 	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
 	int32 NumDeath;
+
+	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
+	bool bIsAlive;
 };

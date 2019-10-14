@@ -76,6 +76,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetPreRoundStage(bool bIsPreRound);
 
+	UFUNCTION(BlueprintCallable)
+	bool IsShrineBeingCaptured() const;
+
 	UFUNCTION(Netmulticast, Unreliable)
 	void NetStartSlowMotion();
 	void NetStartSlowMotion_Implementation();
@@ -157,4 +160,7 @@ protected:
 
 	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bPreRound;
+
+	UPROPERTY(Transient, VisibleAnywhere, Replicated)
+	bool bIsShrineBeingCaptured;
 };

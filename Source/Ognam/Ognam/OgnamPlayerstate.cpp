@@ -14,6 +14,7 @@ AOgnamPlayerState::AOgnamPlayerState()
 	NumKill = 0;
 	NumDeath = 0;
 	Team = TEXT("No Team");
+	bIsAlive = true;
 }
 
 void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -23,6 +24,7 @@ void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(AOgnamPlayerState, NumKill);
 	DOREPLIFETIME(AOgnamPlayerState, NumDeath);
 	DOREPLIFETIME(AOgnamPlayerState, Team);
+	DOREPLIFETIME(AOgnamPlayerState, bIsAlive);
 }
 
 void AOgnamPlayerState::CopyProperties(APlayerState* PlayerState)
@@ -111,6 +113,11 @@ void AOgnamPlayerState::SetTeam(FName name)
 FName AOgnamPlayerState::GetTeam() const
 {
 	return Team;
+}
+
+bool AOgnamPlayerState::IsAlive() const
+{
+	return bIsAlive;
 }
 
 void AOgnamPlayerState::NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender)
