@@ -52,7 +52,7 @@ protected:
 	UPROPERTY(Transient)
 	int32 AttackerCount;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FText ShrineName;
 
 	/* How much faster the capture goes by for each additional attacker */
