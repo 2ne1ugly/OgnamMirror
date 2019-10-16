@@ -17,6 +17,4 @@ class OGNAM_API UBloodhoundClaws : public UAutoWeapon
 public:
 	UBloodhoundClaws();
 
-protected:
-	virtual void ServerBasicPressed_Implementation() override;
 };

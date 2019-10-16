@@ -35,6 +35,7 @@ public:
 	*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult & Hit) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
@@ -201,6 +202,8 @@ public:
 	FActionDelegate OnReloadPressed;
 	FActionDelegate OnReloadReleased;
 
+	FTimerHandle DamageTimer;
+
 protected:
 	/*
 	**	Internal functions
@@ -241,4 +244,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	class UAbility* Special;
+
+	class UMaterial* DamageRecievedMaterial;
+	class UMaterialInstanceDynamic* DamageInstance;
 };

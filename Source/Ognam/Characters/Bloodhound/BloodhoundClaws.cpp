@@ -12,16 +12,3 @@ UBloodhoundClaws::UBloodhoundClaws()
 	bInfiniteAmmo = true;
 }
 
-void UBloodhoundClaws::ServerBasicPressed_Implementation()
-{
-	UBloodhoundHuntingHour* Hour = Target->GetModifier<UBloodhoundHuntingHour>();
-	if (!Hour)
-	{
-		Super::ServerBasicPressed_Implementation();
-	}
-	else if (CanBasic())
-	{
-		Hour->Consume();
-	}
-}
-

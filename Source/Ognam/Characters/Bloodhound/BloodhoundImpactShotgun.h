@@ -4,18 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Ognam/PromptActiveAbility.h"
-#include "BloodhoundHuntingHour.generated.h"
+#include "BloodhoundImpactShotgun.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OGNAM_API UBloodhoundHuntingHour : public UPromptActiveAbility
+class OGNAM_API UBloodhoundImpactShotgun : public UPromptActiveAbility
 {
 	GENERATED_BODY()
 
 public:
-	UBloodhoundHuntingHour();
+	UBloodhoundImpactShotgun();
 
+protected:
 	virtual void ActivateAbility() override;
 };

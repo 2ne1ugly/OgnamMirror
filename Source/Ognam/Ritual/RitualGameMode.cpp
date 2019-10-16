@@ -189,6 +189,10 @@ void ARitualGameMode::EndRound()
 	{
 		KillPlayer(RitualPlayerController);
 	}
+	for (TActorIterator<AOgnamCharacter> Itr(GetWorld()); Itr; ++Itr)
+	{
+		Itr->Destroy();
+	}
 	PreRoundBegin();
 }
 

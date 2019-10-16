@@ -20,7 +20,7 @@ public:
 	AOgnamPlayerController();
 
 	virtual void BeginPlay() override;
-	//virtual void OnPawnDeath();
+	virtual void Tick(float DeltaTime) override;
 	virtual void ClientRestart_Implementation(APawn* NewPawn) override;
 	virtual void SetupInputComponent() override;
 
