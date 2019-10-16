@@ -25,7 +25,6 @@
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
 {
-	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bCanEverTick = true;
 
 	//Create Spring arm and Camera
@@ -83,6 +82,9 @@ AOgnamCharacter::AOgnamCharacter()
 	bCanMove = true;
 
 	CharacterName = FText::FromString("Ognam Character");
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> RecievedMaterial(TEXT("Material'/Game/PostProcess/DamageRecieved.DamageRecieved'"));
+	DamageRecievedMaterial = RecievedMaterial.Object;
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -139,6 +141,19 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	{
 		UpdateCameraBlockingPlane();
 	}
+
+	//TODO: make this modular
+	float Amount = GetWorldTimerManager().IsTimerActive(DamageTimer) ? GetWorldTimerManager().GetTimerRemaining(DamageTimer) / 3.f : 0.f;
+
+	DamageInstance->SetScalarParameterValue(TEXT("Amount"), Amount);
+}
+
+void AOgnamCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	DamageInstance = UMaterialInstanceDynamic::Create(DamageRecievedMaterial, this);
+	Camera->PostProcessSettings.AddBlendable(DamageInstance, 1.f);
 }
 
 // Called to bind functionality to input

@@ -18,6 +18,7 @@
 #include "OgnamPlayerstate.h"
 #include "Sound/SoundCue.h"
 #include "Ognam/OgnamMacro.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -54,6 +55,8 @@ AOgnamPlayerController::AOgnamPlayerController()
 
 void AOgnamPlayerController::BeginPlay()
 {
+	Super::BeginPlay();
+
 	if (MenuHUDClass && IsLocalPlayerController())
 	{
 		MenuHUD = CreateWidget<UUserWidget>(this, MenuHUDClass);
@@ -63,6 +66,11 @@ void AOgnamPlayerController::BeginPlay()
 	{
 		GameInfoHUD = CreateWidget<UUserWidget>(this, GameInfoHUDClass);
 	}
+}
+
+void AOgnamPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 void AOgnamPlayerController::SetupInputComponent()
@@ -86,7 +94,11 @@ void AOgnamPlayerController::ClientFeedbackDamageDealt_Implementation(AActor* Ca
 
 void AOgnamPlayerController::ClientFeedbackDamageRecieved_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage)
 {
-	//Nothing for now.
+	AOgnamCharacter* Character = Cast<AOgnamCharacter>(Reciever);
+	if (Character)
+	{
+		GetWorld()->GetTimerManager().SetTimer(Character->DamageTimer, 3.f, false);
+	}
 }
 
 void AOgnamPlayerController::ClientGameStarted_Implementation()
@@ -142,6 +154,12 @@ void AOgnamPlayerController::ClientFeedbackDeath_Implementation(AActor* Causer, 
 
 void AOgnamPlayerController::ShowMenu()
 {
+	if (!MenuHUD)
+	{
+		O_LOG_E(TEXT("No Menu"));
+		return;
+	}
+
 	if (MenuHUD->IsInViewport())
 	{
 		MenuHUD->RemoveFromViewport();
@@ -166,11 +184,23 @@ void AOgnamPlayerController::ShowMenu()
 
 void AOgnamPlayerController::ShowGameInfo()
 {
+	if (!GameInfoHUD)
+	{
+		O_LOG_E(TEXT("No Game Info"));
+		return;
+	}
+
 	GameInfoHUD->AddToViewport();
 }
 
 void AOgnamPlayerController::HideGameInfo()
 {
+	if (!GameInfoHUD)
+	{
+		O_LOG_E(TEXT("No Game Info"));
+		return;
+	}
+
 	GameInfoHUD->RemoveFromViewport();
 }
 
