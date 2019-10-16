@@ -5,14 +5,23 @@
 #include "OgnamMacro.h"
 #include "OgnamPlayerState.h"
 #include "OgnamCharacter.h"
+#include "KillFeed.h"
 #include "Subsystem.h"
 #include "OnlineSubsystem.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 #include "UnrealNetwork.h"
+#include "TimerManager.h"
 
 AOgnamGameState::AOgnamGameState()
 {
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AOgnamGameState::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	RemoveFromKillFeed();
 }
 
 void AOgnamGameState::BeginPlay()
@@ -32,6 +41,7 @@ void AOgnamGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AOgnamGameState, ServerAddress);
+	//DOREPLIFETIME(AOgnamGameState, KillFeed);
 }
 
 void AOgnamGameState::NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage)
@@ -74,6 +84,11 @@ void AOgnamGameState::NotifyKillEvent(AActor* Causer, AActor* Reciever, AControl
 		RecieverPlayerState = RecieverController->GetPlayerState<AOgnamPlayerState>();
 	}
 
+	if (InstigatorPlayerState && RecieverPlayerState)
+	{
+		AddPlayerKilled(InstigatorPlayerState, RecieverPlayerState);
+	}
+
 	//Send events to both states.
 	if (InstigatorPlayerState)
 	{
@@ -88,4 +103,28 @@ void AOgnamGameState::NotifyKillEvent(AActor* Causer, AActor* Reciever, AControl
 FString AOgnamGameState::GetServerIP() const
 {
 	return ServerAddress;
+}
+
+void AOgnamGameState::AddPlayerKilled_Implementation(AOgnamPlayerState* Killer, AOgnamPlayerState* Receiver)
+{
+	AKillFeed* Feed = NewObject<AKillFeed>(this);
+
+	Feed->Killer = Killer;
+	Feed->Receiver = Receiver;
+	GetWorld()->GetTimerManager().SetTimer(Feed->LifetimeHandle, Feed->LifetimeDuration, false);
+	KillFeed.Add(Feed);
+	O_LOG(TEXT("%s killed %s"), *Killer->GetPlayerName(), *Receiver->GetPlayerName());
+}
+
+void AOgnamGameState::RemoveFromKillFeed()
+{
+	for (int32 i = KillFeed.Num() - 1; i >= 0; i--)
+	{
+		if (!GetWorld()->GetTimerManager().IsTimerActive(KillFeed[i]->LifetimeHandle))
+		{
+			AKillFeed* Feed = KillFeed[i];
+			O_LOG(TEXT("%s killed %s -- removed"), *Feed->Killer->GetPlayerName(), *Feed->Receiver->GetPlayerName());
+			KillFeed.RemoveAt(i);
+		}
+	}
 }

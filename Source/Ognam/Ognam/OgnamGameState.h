@@ -6,6 +6,8 @@
 #include "GameFramework/GameState.h"
 #include "OgnamGameState.generated.h"
 
+
+
 /**
  *	This state should never be used.
  *	Not even meant for inheritance
@@ -22,6 +24,7 @@ public:
 	**	Binded Functions
 	*/
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void NotifyDamageEvent(AActor* DamageCauser, AActor* DamageReciever, AController* DamageInstigator, AController* RecieverController, float Damage);
 	virtual void NotifyKillEvent(AActor* Causer, AActor* Reciever, AController* KillInstigator, AController* RecieverController);
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -32,8 +35,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString GetServerIP() const;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void AddPlayerKilled(class AOgnamPlayerState* Killer, class AOgnamPlayerState* Receiver);
+	void AddPlayerKilled_Implementation(class AOgnamPlayerState* Killer, class AOgnamPlayerState* Receiver);
+
+	UFUNCTION()
+	void RemoveFromKillFeed();
+
 protected:
 	UPROPERTY(Transient, Replicated)
 	FString ServerAddress;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<class AKillFeed*> KillFeed;
 
 };
