@@ -2,8 +2,6 @@
 
 
 #include "MaxwellSniperRifleAction.h"
-#include "MaxwellClaretStrikeCharged.h"
-#include "MaxwellRecovering.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
 #include "ConstructorHelpers.h"
@@ -98,6 +96,7 @@ void UMaxwellSniperRifleAction::BeginChannel()
 	{
 		Controller->ClientPlayCameraShake(UMaxwellSniperRifleRecoil::StaticClass());
 	}
+
 	//Get Target's player state
 	ACharacter* OtherCharacter = Cast<ACharacter>(BulletHit.Actor);
 	if (!OtherCharacter)

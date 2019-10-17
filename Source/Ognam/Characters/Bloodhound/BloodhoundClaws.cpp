@@ -3,7 +3,6 @@
 
 #include "BloodhoundClaws.h"
 #include "BloodhoundClawsAction.h"
-#include "BloodhoundHuntingHour.h"
 #include "Ognam/OgnamCharacter.h"
 
 UBloodhoundClaws::UBloodhoundClaws()

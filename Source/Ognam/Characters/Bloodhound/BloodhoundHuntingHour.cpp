@@ -2,8 +2,6 @@
 
 
 #include "BloodhoundHuntingHour.h"
-#include "Ognam/OgnamCharacter.h"
-#include "BloodhoundLeap.h"
 #include "BloodhoundHuntingHourAction.h"
 
 UBloodhoundHuntingHour::UBloodhoundHuntingHour()
