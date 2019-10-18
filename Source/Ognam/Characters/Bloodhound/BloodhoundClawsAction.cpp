@@ -8,7 +8,6 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/Material.h"
-#include "BloodhoundMarked.h"
 #include "Ognam/OgnamPlayerstate.h"
 
 UBloodhoundClawsAction::UBloodhoundClawsAction()
@@ -100,11 +99,6 @@ void UBloodhoundClawsAction::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 	if (PlayerState->GetTeam() != OtherPlayerState->GetTeam())
 	{
 		UGameplayStatics::ApplyDamage(Character, 40.f, Target->GetController(), Target, nullptr);
-		UBloodhoundMarked* Marked = Character->GetModifier<UBloodhoundMarked>();
-		if (Marked)
-		{
-			Marked->Consume();
-		}
 	}
 }
 

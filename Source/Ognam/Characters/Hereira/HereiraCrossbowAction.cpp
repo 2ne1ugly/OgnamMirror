@@ -3,9 +3,7 @@
 #include "HereiraCrossbowAction.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "HereiraExplosiveShotReady.h"
 #include "HereiraArrow.h"
-#include "HereiraExplosiveArrow.h"
 #include "Engine/World.h"
 
 UHereiraCrossbowAction::UHereiraCrossbowAction()
@@ -33,17 +31,7 @@ void UHereiraCrossbowAction::BeginChannel()
 	SpawnParameters.bNoFail = true;
 	SpawnParameters.Instigator = Target;
 
-	UHereiraExplosiveShotReady* ExplosiveReady = Target->GetModifier<UHereiraExplosiveShotReady>();
 	FVector Location = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
 
-	AHereiraArrow* Arrow;
-	if (ExplosiveReady && ExplosiveReady->Use())
-	{
-		Arrow = GetWorld()->SpawnActor<AHereiraExplosiveArrow>(Location, Rotator, SpawnParameters);
-	}
-	else
-	{
-		Arrow = GetWorld()->SpawnActor<AHereiraArrow>(Location, Rotator, SpawnParameters);
-	}
-	Arrow->SetReplicates(true);
+	GetWorld()->SpawnActor<AHereiraArrow>(Location, Rotator, SpawnParameters)->SetReplicates(true);
 }
