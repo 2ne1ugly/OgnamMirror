@@ -20,7 +20,6 @@ void ARitualPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ARitualPlayerState, Team);
-	DOREPLIFETIME(ARitualPlayerState, PawnClass);
 	DOREPLIFETIME(ARitualPlayerState, TeamIndex);
 }
 

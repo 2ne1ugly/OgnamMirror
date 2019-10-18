@@ -59,11 +59,16 @@ EActionStage UActionModifier::GetStage() const
 
 void UActionModifier::BeginModifier()
 {
+	ServerTimeDelay = GetWorld()->GetGameState()->GetServerWorldTimeSeconds() - ServerTimeStamp;
 	ExecutePreDelay();
 }
 
 void UActionModifier::EndModifier()
 {
+	if (Stage != EActionStage::PostAction)
+	{
+		Interrupt();
+	}
 }
 
 void UActionModifier::ExecutePreDelay()
@@ -79,13 +84,23 @@ void UActionModifier::ExecutePreDelay()
 		Target->TakeAction(PreDelayAction);
 	}
 	BeginPreDelay();
-	if (PreDelayDuration == 0)
+
+	//Compensate server lag;
+	float Delay = PreDelayDuration - ServerTimeDelay;
+	ServerTimeDelay = 0;
+	if (Delay < 0)
+	{
+		ServerTimeDelay = -Delay;
+		Delay = 0;
+	}
+
+	if (Delay == 0)
 	{
 		FinishPreDelay();
 	}
 	else
 	{
-		GetWorld()->GetTimerManager().SetTimer(PreDelayTimer, this, &UActionModifier::FinishPreDelay, PreDelayDuration, false);
+		GetWorld()->GetTimerManager().SetTimer(PreDelayTimer, this, &UActionModifier::FinishPreDelay, Delay, false);
 	}
 }
 
@@ -120,19 +135,28 @@ void UActionModifier::ExecuteChannel()
 		Target->TakeAction(ChannelAction);
 	}
 	BeginChannel();
-	if (ChannelDuration == 0)
+
+	//Compensate server lag;
+	float Delay = ChannelDuration - ServerTimeDelay;
+	ServerTimeDelay = 0;
+	if (Delay < 0)
+	{
+		ServerTimeDelay = -Delay;
+		Delay = 0;
+	}
+
+	if (Delay == 0)
 	{
 		FinishChannel();
 	}
 	else
 	{
-		GetWorld()->GetTimerManager().SetTimer(ChannelTimer, this, &UActionModifier::FinishChannel, ChannelDuration, false);
+		GetWorld()->GetTimerManager().SetTimer(ChannelTimer, this, &UActionModifier::FinishChannel, Delay, false);
 	}
 }
 
 void UActionModifier::BeginChannel()
 {
-
 }
 
 void UActionModifier::TickChannel(float DeltaTime)
@@ -162,13 +186,23 @@ void UActionModifier::ExecutePostDelay()
 		Target->TakeAction(PostDelayAction);
 	}
 	BeginPostDelay();
-	if (PostDelayDuration == 0)
+
+	//Compensate server lag;
+	float Delay = PostDelayDuration - ServerTimeDelay;
+	ServerTimeDelay = 0;
+	if (Delay < 0)
+	{
+		ServerTimeDelay = -Delay;
+		Delay = 0;
+	}
+
+	if (Delay == 0)
 	{
 		FinishPostDelay();
 	}
 	else
 	{
-		GetWorld()->GetTimerManager().SetTimer(PostDelayTimer, this, &UActionModifier::FinishPostDelay, PostDelayDuration, false);
+		GetWorld()->GetTimerManager().SetTimer(PostDelayTimer, this, &UActionModifier::FinishPostDelay, Delay, false);
 	}
 }
 

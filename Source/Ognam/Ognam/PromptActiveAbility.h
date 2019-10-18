@@ -34,8 +34,8 @@ protected:
 	virtual void ActivateAbility();
 
 	UFUNCTION(Client, Unreliable)
-	void ClientFeedbackUsed();
-	void ClientFeedbackUsed_Implementation();
+	void ClientFeedbackUsed(float TimeStamp);
+	void ClientFeedbackUsed_Implementation(float TimeStamp);
 	/*
 	**	Props
 	*/

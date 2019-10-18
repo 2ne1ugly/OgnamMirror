@@ -8,7 +8,7 @@
 
 UJeraDescending::UJeraDescending()
 {
-	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced;
+	StatusEffect |= EStatusEffect::Unarmed;// | EStatusEffect::Silenced;
 }
 
 bool UJeraDescending::ShouldEnd()
@@ -19,7 +19,7 @@ bool UJeraDescending::ShouldEnd()
 void UJeraDescending::TickModifier(float DeltaTime)
 {
 	Target->AirControl += Target->BaseAirControl * 3;
-	Target->Gravity += Target->BaseGravity;
+	Target->Gravity += Target->BaseGravity / 2;
 }
 
 void UJeraDescending::EndModifier()

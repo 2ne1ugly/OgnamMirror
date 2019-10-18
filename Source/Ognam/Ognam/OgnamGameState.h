@@ -42,11 +42,12 @@ public:
 	UFUNCTION()
 	void RemoveFromKillFeed();
 
+	virtual float GetServerWorldTimeSeconds() const override;
+
 protected:
 	UPROPERTY(Transient, Replicated)
 	FString ServerAddress;
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<class AKillFeed*> KillFeed;
-
 };

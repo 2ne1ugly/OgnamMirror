@@ -12,6 +12,7 @@
 #include "SocketSubsystem.h"
 #include "UnrealNetwork.h"
 #include "TimerManager.h"
+#include "OgnamPlayerController.h"
 
 AOgnamGameState::AOgnamGameState()
 {
@@ -126,5 +127,18 @@ void AOgnamGameState::RemoveFromKillFeed()
 			O_LOG(TEXT("%s killed %s -- removed"), *Feed->Killer->GetPlayerName(), *Feed->Receiver->GetPlayerName());
 			KillFeed.RemoveAt(i);
 		}
+	}
+}
+
+float AOgnamGameState::GetServerWorldTimeSeconds() const
+{
+	AOgnamPlayerController* Controller = Cast<AOgnamPlayerController>(GetGameInstance()->GetFirstLocalPlayerController(GetWorld()));
+	if (HasAuthority() || !Controller)
+	{
+		return GetWorld()->GetTimeSeconds();
+	}
+	else
+	{
+		return GetWorld()->GetTimeSeconds() + Controller->ServerTimeDelta;
 	}
 }

@@ -21,6 +21,7 @@
 #include "OverwallTransparency.h"
 #include "OgnamMacro.h"
 #include "OgnamGameState.h"
+#include "Engine/ActorChannel.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -229,6 +230,27 @@ void AOgnamCharacter::PossessedBy(AController * aController)
 
 	GetMesh()->SetMaterial(0, Material);
 	OgnamPlayerState->SetPawnClass(GetClass());
+}
+
+bool AOgnamCharacter::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool WroteSomething = false;
+
+	for (UActorComponent* ActorComp : ReplicatedComponents)
+	{
+		if (ActorComp && ActorComp->GetIsReplicated())
+		{
+			bool bNetInitial = RepFlags->bNetInitial;
+			RepFlags->bNetInitial = Channel->ReplicationMap.Find(ActorComp) == nullptr;
+
+			WroteSomething |= ActorComp->ReplicateSubobjects(Channel, Bunch, RepFlags); // Lets the component add subobjects before replicating its own properties.
+			WroteSomething |= Channel->ReplicateSubobject(ActorComp, *Bunch, *RepFlags); // (this makes those subobjects 'supported', and from here on those objects may have reference replicated)
+
+			RepFlags->bNetInitial = bNetInitial;
+		}
+	}
+
+	return WroteSomething;
 }
 
 void AOgnamCharacter::MobilityPressed()
