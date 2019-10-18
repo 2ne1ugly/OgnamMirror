@@ -247,4 +247,10 @@ protected:
 
 	class UMaterial* DamageRecievedMaterial;
 	class UMaterialInstanceDynamic* DamageInstance;
+
+	UPROPERTY(VisibleAnywhere)
+	class UTextBlock* NameTag;
+
+	UPROPERTY(VisibleAnywhere)
+	class UOgnamWidgetComponent* NameTagComponent;
 };

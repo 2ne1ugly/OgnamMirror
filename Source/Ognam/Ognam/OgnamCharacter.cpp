@@ -21,6 +21,13 @@
 #include "OverwallTransparency.h"
 #include "OgnamMacro.h"
 #include "OgnamGameState.h"
+#include "Components/TextBlock.h"
+#include "Components/WidgetComponent.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "OgnamWidgetComponent.h"
+#include "OgnamUserWidget.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -85,6 +92,14 @@ AOgnamCharacter::AOgnamCharacter()
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> RecievedMaterial(TEXT("Material'/Game/PostProcess/DamageRecieved.DamageRecieved'"));
 	DamageRecievedMaterial = RecievedMaterial.Object;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> NameTagWidgetClass(TEXT("/Game/UI/NameTag"));
+	NameTagComponent = CreateDefaultSubobject<UOgnamWidgetComponent>(TEXT("Name Tag"));
+	NameTagComponent->SetupAttachment(RootComponent);
+	NameTagComponent->SetWidgetSpace(EWidgetSpace::World);
+	NameTagComponent->SetRelativeLocation(FVector(0, 0, 90));
+	NameTagComponent->SetOwnerNoSee(true);
+	NameTagComponent->SetWidgetClass(NameTagWidgetClass.Class);
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -146,6 +161,12 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	float Amount = GetWorldTimerManager().IsTimerActive(DamageTimer) ? GetWorldTimerManager().GetTimerRemaining(DamageTimer) / 3.f : 0.f;
 
 	DamageInstance->SetScalarParameterValue(TEXT("Amount"), Amount);
+
+	FVector CamLoc = UGameplayStatics::GetPlayerCameraManager(this, 0)->GetCameraLocation();
+	FVector CompLoc = NameTagComponent->GetComponentLocation();
+
+	FRotator Rot = UKismetMathLibrary::FindLookAtRotation(CompLoc, CamLoc);
+	NameTagComponent->SetWorldRotation(FRotator(Rot.Pitch, Rot.Yaw, 0.f));
 }
 
 void AOgnamCharacter::BeginPlay()
@@ -154,6 +175,7 @@ void AOgnamCharacter::BeginPlay()
 
 	DamageInstance = UMaterialInstanceDynamic::Create(DamageRecievedMaterial, this);
 	Camera->PostProcessSettings.AddBlendable(DamageInstance, 1.f);
+	NameTagComponent->InitWidget();
 }
 
 // Called to bind functionality to input
@@ -229,6 +251,8 @@ void AOgnamCharacter::PossessedBy(AController * aController)
 
 	GetMesh()->SetMaterial(0, Material);
 	OgnamPlayerState->SetPawnClass(GetClass());
+
+	NameTagComponent->SetOwningState(OgnamPlayerState);
 }
 
 void AOgnamCharacter::MobilityPressed()
