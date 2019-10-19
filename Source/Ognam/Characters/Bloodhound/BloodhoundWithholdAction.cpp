@@ -6,6 +6,7 @@
 #include "Bloodhound.h"
 #include "Components/StaticMeshComponent.h"
 #include "Ognam/OgnamMacro.h"
+#include "Ognam/OgnamPlayerstate.h"
 
 UBloodhoundWithholdAction::UBloodhoundWithholdAction()
 {
@@ -49,6 +50,36 @@ void UBloodhoundWithholdAction::BeginChannel()
 		Metals[i]->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 		Metals[i]->AddRadialImpulse(Bloodhound->GetActorLocation(), 500.f, 1200.f, ERadialImpulseFalloff::RIF_Linear);
 	}
+
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
+	//Damaging
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(GetOwner());
+	TArray<FOverlapResult> Overlaps;
+	TSet<AOgnamCharacter*> Characters;
+	GetWorld()->OverlapMultiByObjectType(Overlaps, GetOwner()->GetActorLocation(), FQuat(), ECollisionChannel::ECC_Pawn, FCollisionShape::MakeSphere(320.f), Params);
+	for (FOverlapResult& Overlap : Overlaps)
+	{
+		O_LOG(TEXT("Overlap!"));
+		AOgnamCharacter* Character = Cast<AOgnamCharacter>(Overlap.GetActor());
+		if (!Character)
+		{
+			continue;
+		}
+
+		//Add team check.
+		bool bIsIn;
+		Characters.Add(Character, &bIsIn);
+		AOgnamPlayerState* OtherPlayerState = Character->GetPlayerState<AOgnamPlayerState>();
+		AOgnamPlayerState* PlayerState = Target->GetPlayerState<AOgnamPlayerState>();
+		if (!bIsIn && OtherPlayerState && PlayerState && OtherPlayerState->GetTeam() != PlayerState->GetTeam())
+		{
+			UGameplayStatics::ApplyDamage(Character, 30.f, Target->GetController(), Target, nullptr);
+		}
+	}
 }
 
 void UBloodhoundWithholdAction::TickChannel(float DeltaTime)
@@ -84,7 +115,6 @@ void UBloodhoundWithholdAction::TickPostDelay(float DeltaTime)
 
 void UBloodhoundWithholdAction::EndPostDelay()
 {
-	O_LOG(TEXT("EndPostDelay"));
 	Target->GetMesh()->SetVisibility(true);
 	for (int i = 0; i < 3; i++)
 	{

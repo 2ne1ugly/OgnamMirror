@@ -9,7 +9,7 @@
 UJeraRadiantDive::UJeraRadiantDive()
 {
 	AbilityType = EAbilityType::Mobility;
-	Cooldown = .5f;
+	Cooldown = 6.f;
 	UnacceptedStatusEffects |= EStatusEffect::Rooted;
 }
 
