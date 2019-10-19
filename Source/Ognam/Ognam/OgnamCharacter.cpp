@@ -28,6 +28,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "OgnamWidgetComponent.h"
 #include "OgnamUserWidget.h"
+#include "Engine/ActorChannel.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -253,6 +254,27 @@ void AOgnamCharacter::PossessedBy(AController * aController)
 	OgnamPlayerState->SetPawnClass(GetClass());
 
 	NameTagComponent->SetOwningState(OgnamPlayerState);
+}
+
+bool AOgnamCharacter::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool WroteSomething = false;
+
+	for (UActorComponent* ActorComp : ReplicatedComponents)
+	{
+		if (ActorComp && ActorComp->GetIsReplicated())
+		{
+			bool bNetInitial = RepFlags->bNetInitial;
+			RepFlags->bNetInitial = Channel->ReplicationMap.Find(ActorComp) == nullptr;
+
+			WroteSomething |= ActorComp->ReplicateSubobjects(Channel, Bunch, RepFlags); // Lets the component add subobjects before replicating its own properties.
+			WroteSomething |= Channel->ReplicateSubobject(ActorComp, *Bunch, *RepFlags); // (this makes those subobjects 'supported', and from here on those objects may have reference replicated)
+
+			RepFlags->bNetInitial = bNetInitial;
+		}
+	}
+
+	return WroteSomething;
 }
 
 void AOgnamCharacter::MobilityPressed()

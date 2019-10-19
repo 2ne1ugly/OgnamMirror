@@ -23,6 +23,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void ClientRestart_Implementation(APawn* NewPawn) override;
 	virtual void SetupInputComponent() override;
+	virtual void ReceivedPlayer() override;
 
 	UFUNCTION(Client, Unreliable)
 	void ClientFeedbackDamageDealt(AActor* Causer, AActor* Reciever, FVector Location, float Damage);
@@ -67,6 +68,17 @@ public:
 
 	void ShowGameInfo();
 	void HideGameInfo();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerRequestServerTime(float requestWorldTime);
+	bool ServerRequestServerTime_Validate(float requestWorldTime) { return true; }
+	void ServerRequestServerTime_Implementation(float requestWorldTime);
+
+	UFUNCTION(Client, Reliable)
+	void ClientReportServerTime(float requestWorldTime, float serverTime);
+	void ClientReportServerTime_Implementation(float requestWorldTime, float serverTime);
+
+	float ServerTimeDelta;
 
 private:
 

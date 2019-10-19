@@ -3,6 +3,7 @@
 #include "ExpirableModifier.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "GameFramework/GameStateBase.h"
 
 UExpirableModifier::UExpirableModifier()
 {
@@ -20,7 +21,8 @@ void UExpirableModifier::TickModifier(float DeltaTime)
 
 void UExpirableModifier::BeginModifier()
 {
-	GetWorld()->GetTimerManager().SetTimer(DurationTimer, Duration, false);
+	float CurrentSeconds = GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
+	GetWorld()->GetTimerManager().SetTimer(DurationTimer, CurrentSeconds - ServerTimeStamp + Duration, false);
 }
 
 void UExpirableModifier::EndModifier()

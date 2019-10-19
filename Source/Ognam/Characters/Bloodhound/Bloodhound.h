@@ -14,6 +14,14 @@ class OGNAM_API ABloodhound : public AOgnamCharacter
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* Metals[3];
+
+public:
+	static const FVector MetalPositions[3];
+	static const FVector MetalScales[3];
+
 public:
 	ABloodhound();
 

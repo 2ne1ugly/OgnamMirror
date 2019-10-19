@@ -19,6 +19,7 @@
 #include "Sound/SoundCue.h"
 #include "Ognam/OgnamMacro.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Ognam/OgnamGameState.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -79,6 +80,17 @@ void AOgnamPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("GameMenu"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowMenu);
 	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowGameInfo);
 	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Released, this, &AOgnamPlayerController::HideGameInfo);
+}
+
+void AOgnamPlayerController::ReceivedPlayer()
+{
+	Super::ReceivedPlayer();
+
+	//Sync server timer
+	if (IsLocalController())
+	{
+		ServerRequestServerTime(GetWorld()->GetTimeSeconds());
+	}
 }
 
 void AOgnamPlayerController::ClientFeedbackDamageDealt_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage)
@@ -240,4 +252,18 @@ void AOgnamPlayerController::SendMessage(FString& Message)
 	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
 	OgnamPlayerState->ServerSendMessage(Message);
 	OgnamPlayerState->DisplayMessage(Message, OgnamPlayerState);
+}
+
+void AOgnamPlayerController::ServerRequestServerTime_Implementation(float requestWorldTime)
+{
+	float ServerTime = GetWorld()->GetTimeSeconds();
+	ClientReportServerTime(requestWorldTime, ServerTime);
+}
+
+void AOgnamPlayerController::ClientReportServerTime_Implementation(float requestWorldTime, float serverTime)
+{
+	O_LOG(TEXT("Sync"));
+	float roundTripTime = GetWorld()->GetTimeSeconds() - requestWorldTime;
+	float adjustedTime = serverTime + (roundTripTime * 0.5f);
+	ServerTimeDelta = adjustedTime - GetWorld()->GetTimeSeconds();
 }

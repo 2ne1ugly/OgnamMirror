@@ -17,13 +17,22 @@ UBloodhoundSteamLeapAction::UBloodhoundSteamLeapAction()
 	//Make walking mechanics
 }
 
-void UBloodhoundSteamLeapAction::EndChannel()
+void UBloodhoundSteamLeapAction::TickChannel(float DeltaTime)
 {
-	float UpRatio = 1.f;
+	//TODO: change this into root motion.
+	Target->AddMovementInput(GetOwner()->GetActorForwardVector(), 1.f);
+	Target->Acceleration += Target->BaseAcceleration * 1.5f;
+	Target->Speed += Target->BaseSpeed * .5f;
+}
+
+
+void UBloodhoundSteamLeapAction::BeginPostDelay()
+{
+	float UpRatio = 1.5f;
 
 	if (Target->HasAuthority())
 	{
 		FVector LaunchDireciton = (GetOwner()->GetActorForwardVector() + FVector::UpVector * UpRatio).GetSafeNormal();
-		Target->LaunchCharacter(LaunchDireciton * 1000.f, false, true);
+		Target->LaunchCharacter(LaunchDireciton * 500.f, false, true);
 	}
 }

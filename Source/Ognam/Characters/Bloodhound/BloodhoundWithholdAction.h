@@ -20,15 +20,12 @@ public:
 protected:
 	virtual void BeginChannel() override;
 	virtual void TickChannel(float DeltaTime) override;
-	virtual void EndChannel() override;
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void HideTarget();
-	void HideTarget_Implementation();
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void ShowTarget();
-	void ShowTarget_Implementation();
+	virtual void BeginPostDelay() override;
+	virtual void TickPostDelay(float DeltaTime) override;
+	virtual void EndPostDelay() override;
 
 	APawn* Instigator;
+	TArray<FVector> SavedLocations;
+	TArray<FRotator> SavedRotations;
+	TArray<class UStaticMeshComponent*> Metals;
 };

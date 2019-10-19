@@ -18,5 +18,6 @@ public:
 	UBloodhoundSteamLeapAction();
 
 protected:
-	virtual void EndChannel() override;
+	virtual void TickChannel(float DeltaTime) override;
+	virtual void BeginPostDelay() override;
 };

@@ -27,6 +27,8 @@ void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(AOgnamPlayerState, NumDeath);
 	DOREPLIFETIME(AOgnamPlayerState, Team);
 	DOREPLIFETIME(AOgnamPlayerState, bIsAlive);
+	DOREPLIFETIME(AOgnamPlayerState, PawnClass);
+	DOREPLIFETIME(AOgnamPlayerState, SelectedPawnClass);
 }
 
 void AOgnamPlayerState::CopyProperties(APlayerState* PlayerState)

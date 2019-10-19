@@ -74,4 +74,5 @@ protected:
 	FTimerHandle PostDelayTimer;
 
 	bool bInterrupted;
+	float ServerTimeDelay;
 };

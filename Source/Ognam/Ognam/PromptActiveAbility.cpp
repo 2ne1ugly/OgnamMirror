@@ -3,7 +3,9 @@
 #include "PromptActiveAbility.h"
 #include "OgnamCharacter.h"
 #include "TimerManager.h"
-
+#include "Engine/World.h"
+#include "OgnamGameState.h"
+#include "OgnamMacro.h"
 UPromptActiveAbility::UPromptActiveAbility()
 {
 	UnacceptedStatusEffects = EStatusEffect::Silenced;
@@ -38,15 +40,17 @@ void UPromptActiveAbility::ServerOnButtonPressed_Implementation()
 	}
 	ActivateAbility();
 	Target->GetWorldTimerManager().SetTimer(CooldownTimer, Cooldown, false);
-	ClientFeedbackUsed();
+	ClientFeedbackUsed(GetWorld()->GetTimeSeconds());
 }
 
 void UPromptActiveAbility::ActivateAbility()
 {
 }
 
-void UPromptActiveAbility::ClientFeedbackUsed_Implementation()
+void UPromptActiveAbility::ClientFeedbackUsed_Implementation(float TimeStamp)
 {
-	Target->GetWorldTimerManager().SetTimer(CooldownTimer, Cooldown, false);
+	O_LOG(TEXT("%f"), Cooldown - GetWorld()->GetGameState()->GetServerWorldTimeSeconds() + TimeStamp);
+	Target->GetWorldTimerManager().SetTimer(CooldownTimer, Cooldown - GetWorld()->GetGameState()->GetServerWorldTimeSeconds() + TimeStamp, false);
 }
 
+	

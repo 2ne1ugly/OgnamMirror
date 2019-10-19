@@ -21,8 +21,8 @@ protected:
 	virtual void EndChannel() override;
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void NetDrawTrajectory(FVector From, FVector To);
-	virtual void NetDrawTrajectory_Implementation(FVector From, FVector To);
+	void NetDrawTrajectory(FVector From, const TArray<FVector>& Tos);
+	virtual void NetDrawTrajectory_Implementation(FVector From, const TArray<FVector>& Tos);
 
 	/*
 	**	Props
