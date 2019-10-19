@@ -18,7 +18,6 @@ UJeraSuppressiveImpactAction::UJeraSuppressiveImpactAction()
 
 void UJeraSuppressiveImpactAction::EndChannel()
 {
-	Super::EndModifier();
 	if (!Target->HasAuthority())
 	{
 		return;

@@ -44,4 +44,12 @@ public:
 	FDelegateHandle FindSessionsCompleteHandle;
 	FDelegateHandle JoinSessionCompleteHandle;
 
+	UFUNCTION(BlueprintCallable)
+	void SetPrefferedName(FString Name);
+
+	FString GetPrefferedName() const;
+
+private:
+	FString PrefferedName;
+
 };

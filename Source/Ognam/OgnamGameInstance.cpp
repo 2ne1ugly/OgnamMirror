@@ -176,3 +176,13 @@ void UOgnamGameInstance::JoinSessionComplete(FName SessionName, EOnJoinSessionCo
 		}
 	}
 }
+
+FString UOgnamGameInstance::GetPrefferedName() const
+{
+	return PrefferedName;
+}
+
+void UOgnamGameInstance::SetPrefferedName(FString Name)
+{
+	PrefferedName = Name;
+}

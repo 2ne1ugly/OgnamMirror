@@ -60,6 +60,10 @@ public:
 	void ClientGameStarted();
 	void ClientGameStarted_Implementation();
 
+	UFUNCTION(Server, Reliable)
+	void ServerSendName(const FString& Name);
+	void ServerSendName_Implementation(const FString& Name);
+
 	UFUNCTION(exec)
 	void WhoAmI();
 

@@ -20,6 +20,8 @@
 #include "Ognam/OgnamMacro.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Ognam/OgnamGameState.h"
+#include "OgnamGameInstance.h"
+#include "OnlineSubsystem.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -90,6 +92,17 @@ void AOgnamPlayerController::ReceivedPlayer()
 	if (IsLocalController())
 	{
 		ServerRequestServerTime(GetWorld()->GetTimeSeconds());
+		UOgnamGameInstance* GameInstance = GetGameInstance<UOgnamGameInstance>();
+		ServerSendName(GameInstance->GetPrefferedName());
+	}
+}
+
+void AOgnamPlayerController::ServerSendName_Implementation(const FString& Name)
+{
+	IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
+	if (Name != "" && *Sub->GetOnlineServiceName().ToString() == NULL_SUBSYSTEM)
+	{
+		PlayerState->SetPlayerName(Name);
 	}
 }
 
@@ -230,7 +243,7 @@ void AOgnamPlayerController::SetSensitivity(float Sens)
 
 void AOgnamPlayerController::JoinGame(FString Address)
 {
-	ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+	ClientTravel(*Address, ETravelType::TRAVEL_Absolute);
 }
 
 void AOgnamPlayerController::CreateGame(FString MapName)
