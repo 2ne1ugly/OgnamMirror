@@ -49,5 +49,5 @@ protected:
 	FString ServerAddress;
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<class AKillFeed*> KillFeed;
+	TArray<class UKillFeed*> KillFeed;
 };

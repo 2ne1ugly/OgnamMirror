@@ -108,13 +108,12 @@ FString AOgnamGameState::GetServerIP() const
 
 void AOgnamGameState::AddPlayerKilled_Implementation(AOgnamPlayerState* Killer, AOgnamPlayerState* Receiver)
 {
-	AKillFeed* Feed = NewObject<AKillFeed>(this);
+	UKillFeed* Feed = NewObject<UKillFeed>(this);
 
 	Feed->Killer = Killer;
 	Feed->Receiver = Receiver;
 	GetWorld()->GetTimerManager().SetTimer(Feed->LifetimeHandle, Feed->LifetimeDuration, false);
 	KillFeed.Add(Feed);
-	O_LOG(TEXT("%s killed %s"), *Killer->GetPlayerName(), *Receiver->GetPlayerName());
 }
 
 void AOgnamGameState::RemoveFromKillFeed()
@@ -123,8 +122,7 @@ void AOgnamGameState::RemoveFromKillFeed()
 	{
 		if (!GetWorld()->GetTimerManager().IsTimerActive(KillFeed[i]->LifetimeHandle))
 		{
-			AKillFeed* Feed = KillFeed[i];
-			O_LOG(TEXT("%s killed %s -- removed"), *Feed->Killer->GetPlayerName(), *Feed->Receiver->GetPlayerName());
+			UKillFeed* Feed = KillFeed[i];
 			KillFeed.RemoveAt(i);
 		}
 	}

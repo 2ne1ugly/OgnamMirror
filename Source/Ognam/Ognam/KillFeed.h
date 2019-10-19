@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Object.h"
+#include "TimerManager.h"
 #include "KillFeed.generated.h"
 
 UCLASS()
-class OGNAM_API AKillFeed : public AActor
+class OGNAM_API UKillFeed : public UObject
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
-	AKillFeed();
+	UKillFeed();
 
 	UPROPERTY(BlueprintReadOnly)
 	class AOgnamPlayerState* Killer;
@@ -23,7 +23,4 @@ public:
 	FTimerHandle LifetimeHandle;
 
 	float LifetimeDuration = 5.f;
-
-protected:
-	// Called when the game starts or when spawned
 };

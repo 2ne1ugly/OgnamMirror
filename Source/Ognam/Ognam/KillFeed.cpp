@@ -3,7 +3,6 @@
 
 #include "KillFeed.h"
 
-// Sets default values
-AKillFeed::AKillFeed()
+UKillFeed::UKillFeed()
 {
 }

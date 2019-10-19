@@ -243,7 +243,7 @@ void AOgnamPlayerController::SetSensitivity(float Sens)
 
 void AOgnamPlayerController::JoinGame(FString Address)
 {
-	ClientTravel(*Address, ETravelType::TRAVEL_Absolute);
+	ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
 
 void AOgnamPlayerController::CreateGame(FString MapName)
