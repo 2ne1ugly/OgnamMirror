@@ -21,10 +21,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	FVector FindScaledOffset(AActor* FromActor);
+	FVector2D FindScaledOffset(AActor* FromActor);
 
 	UPROPERTY(EditAnywhere)
 	float Scale;
+
+	UPROPERTY(EditAnywhere)
+	FVector2D Offset;
 
 private:
 	UPROPERTY(EditAnywhere)

@@ -22,7 +22,7 @@ ARitualGameMode::ARitualGameMode()
 	PlayerControllerClass = ARitualPlayerController::StaticClass();
 
 	PostRoundTime = 1.5f;
-	CharacterSelectionTime = 5.f;
+	CharacterSelectionTime = 2.f;
 }
 
 void ARitualGameMode::Tick(float DeltaTime)

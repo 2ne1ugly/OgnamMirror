@@ -16,8 +16,6 @@ AMinimapAnchor::AMinimapAnchor()
 	AnchorMesh->SetStaticMesh(Mesh.Object);
 	//AnchorMesh->bHiddenInGame = true;
 	AnchorMesh->SetWorldRotation(FRotator(0.f, 0.f, 90.f));
-
-	Scale = 1.f;
 }
 
 void AMinimapAnchor::BeginPlay()
@@ -32,10 +30,9 @@ void AMinimapAnchor::Tick(float DeltaTime)
 
 }
 
-FVector AMinimapAnchor::FindScaledOffset(AActor* FromActor)
+FVector2D AMinimapAnchor::FindScaledOffset(AActor* FromActor)
 {
-	FVector Res = GetActorLocation() - FromActor->GetActorLocation();
-
+	FVector2D Res = FVector2D(FromActor->GetActorLocation()) + Offset;
 	return (Res * Scale);
 }
 
