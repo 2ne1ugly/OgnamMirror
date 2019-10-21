@@ -24,7 +24,10 @@ void UOgnamWidgetComponent::SetOwningState_Implementation(APlayerState* State)
 	OwningPlayerState = State;
 
 	UOgnamUserWidget* OgnamWidget = Cast<UOgnamUserWidget>(GetUserWidgetObject());
-	OgnamWidget->SetOwner(State);
+	if (OgnamWidget)
+	{
+		OgnamWidget->SetOwner(State);
+	}
 }
 
 APlayerState* UOgnamWidgetComponent::GetOwningState() const

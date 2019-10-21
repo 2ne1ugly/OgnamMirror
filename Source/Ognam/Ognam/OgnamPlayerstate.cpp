@@ -29,6 +29,7 @@ void AOgnamPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(AOgnamPlayerState, bIsAlive);
 	DOREPLIFETIME(AOgnamPlayerState, PawnClass);
 	DOREPLIFETIME(AOgnamPlayerState, SelectedPawnClass);
+	DOREPLIFETIME(AOgnamPlayerState, bHidePlayerName);
 }
 
 void AOgnamPlayerState::CopyProperties(APlayerState* PlayerState)
@@ -132,6 +133,16 @@ bool AOgnamPlayerState::IsAlive() const
 UClass* AOgnamPlayerState::GetSelectedPawnClass() const
 {
 	return SelectedPawnClass;
+}
+
+bool AOgnamPlayerState::ShouldHideName() const
+{
+	return bHidePlayerName;
+}
+
+void AOgnamPlayerState::SetShouldHideName(bool bHide)
+{
+	bHidePlayerName = bHide;
 }
 
 void AOgnamPlayerState::NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender)

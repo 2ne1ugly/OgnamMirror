@@ -639,9 +639,6 @@ void AOgnamCharacter::NetDie_Implementation()
 	bIsAlive = false;
 	TakeAction(EActionNotifier::Death);
 
-	AOgnamPlayerState* State = GetPlayerState<AOgnamPlayerState>();
-	State->bIsAlive = false;
-
 	//For local player
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (!PlayerController)

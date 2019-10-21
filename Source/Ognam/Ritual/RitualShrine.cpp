@@ -36,19 +36,12 @@ ARitualShrine::ARitualShrine()
 	CaptureField->OnComponentBeginOverlap.AddDynamic(this, &ARitualShrine::OnEnterField);
 	CaptureField->OnComponentEndOverlap.AddDynamic(this, &ARitualShrine::OnExitField);
 
-	bReplicates = true;
+	//bReplicates = true;
 
 	CaptureDuration = 20.f;
 	SpeedMultiplier = .15f;
 
 	ShrineName = FText::FromString("Default");
-}
-
-void ARitualShrine::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ARitualShrine, CaptureProgress);
 }
 
 void ARitualShrine::BeginPlay()
@@ -75,10 +68,15 @@ void ARitualShrine::Reset()
 {
 	Super::Reset();
 
+	NetReset();
+	O_LOG(TEXT("Shrine Reset"));
+}
+
+void ARitualShrine::NetReset_Implementation()
+{
 	AttackerCount = 0;
 	DefenderCount = 0;
 	CaptureProgress = 0;
-	O_LOG(TEXT("Shrine Reset"));
 }
 
 void ARitualShrine::OnEnterField(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -26,10 +26,13 @@ public:
 	/*
 	**	Binded Function
 	*/
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void Reset() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetReset();
+	void NetReset_Implmentation();
 
 	UFUNCTION()
 	void OnEnterField(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -64,6 +67,6 @@ protected:
 	float CaptureDuration;
 
 	/* The current progress of the capture */
-	UPROPERTY(Transient, Replicated)
+	UPROPERTY(Transient)
 	float CaptureProgress;
 };

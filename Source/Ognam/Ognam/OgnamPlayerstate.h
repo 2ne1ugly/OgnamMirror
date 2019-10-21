@@ -53,6 +53,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UClass* GetSelectedPawnClass() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool ShouldHideName() const;
+
+	void SetShouldHideName(bool bHide);
+
 	/* Chat functions */
 	UFUNCTION(Netmulticast, Unreliable)
 	void NetReceiveMessage(const FString& Message, class APlayerState* Sender);
@@ -76,6 +81,9 @@ public:
 
 	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
 	bool bIsAlive;
+
+	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
+	bool bHidePlayerName;
 
 	UPROPERTY(Transient, Replicated)
 	UClass* PawnClass;

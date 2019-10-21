@@ -32,10 +32,14 @@ void UModifier::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UModifier::ExecuteModifier);
 	if (!IsNetSimulating())
 	{
 		ServerTimeStamp = GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
+		ExecuteModifier();
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UModifier::ExecuteModifier);
 	}
 }
 

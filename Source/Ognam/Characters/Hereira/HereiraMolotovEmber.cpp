@@ -83,7 +83,6 @@ void AHereiraMolotovEmber::Tick(float DeltaTime)
 				if (!Modifier)
 				{
 					Modifier = NewObject<UHereiraMolotovBurning>(Character);
-					Modifier->UpdateTimeStamp();
 					Modifier->RegisterComponent();
 				}
 				else

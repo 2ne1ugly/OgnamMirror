@@ -21,8 +21,8 @@ ARitualGameMode::ARitualGameMode()
 	PlayerStateClass = ARitualPlayerState::StaticClass();
 	PlayerControllerClass = ARitualPlayerController::StaticClass();
 
-	PostRoundTime = 1.5f;
-	CharacterSelectionTime = 2.f;
+	PostRoundTime = 1.5f; // this is actually 3 seconds
+	CharacterSelectionTime = 5.f;
 }
 
 void ARitualGameMode::Tick(float DeltaTime)
@@ -110,6 +110,7 @@ void ARitualGameMode::PreRoundBegin()
 		else
 		{
 			RitualPlayerState->SetIsAlive(true);
+			RitualPlayerState->ForceNetUpdate();
 		}
 	}
 	GetWorld()->GetTimerManager().SetTimer(PreRoundTimer, this, &ARitualGameMode::PreRoundEnd, CharacterSelectionTime, false);
@@ -185,10 +186,6 @@ void ARitualGameMode::EndRound()
 	//Start round no matter what for testing purpose
 	RitualGameState->SwitchSides();
 
-	for (ARitualPlayerController* RitualPlayerController : PlayerControllers)
-	{
-		KillPlayer(RitualPlayerController);
-	}
 	for (TActorIterator<AOgnamCharacter> Itr(GetWorld()); Itr; ++Itr)
 	{
 		Itr->Destroy();
@@ -204,7 +201,6 @@ void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
 	if (Character != nullptr)
 	{
 		Character->NetDie();
-		ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	}
 	else
 	{
