@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright 2019 Ognam Studios. All Rights Reserved.
 #include "ExpirableModifier.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
