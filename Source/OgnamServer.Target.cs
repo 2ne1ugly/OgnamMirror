@@ -1,12 +1,14 @@
-﻿using UnrealBuildTool;
+﻿// Copyright 2019 Ognam Studios. All Rights Reserved.
+
+using UnrealBuildTool;
 using System.Collections.Generic;
 
 [SupportedPlatforms(UnrealPlatformClass.Server)]
-public class OgnamServerTarget : TargetRules   // Change this line as shown previously
+public class OgnamServerTarget : TargetRules  
 {
-    public OgnamServerTarget(TargetInfo Target) : base(Target)  // Change this line as shown previously
+    public OgnamServerTarget(TargetInfo Target) : base(Target)
     {
         Type = TargetType.Server;
-        ExtraModuleNames.Add("Ognam");    // Change this line as shown previously
+        ExtraModuleNames.Add("Ognam");
     }
 }
