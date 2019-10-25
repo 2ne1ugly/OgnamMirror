@@ -18,6 +18,8 @@ class OGNAM_API UOgnamGameInstance : public UGameInstance
 public:
 	UOgnamGameInstance(const FObjectInitializer& ObjectInitializer);
 
+	virtual void Init() override;
+
 	//Creates and starts session
 	UFUNCTION(BlueprintCallable)
 	bool CreateSession(FName SessionName, bool bIsLAN, int32 MaxNumPlayers, FString MapName);
@@ -49,7 +51,12 @@ public:
 
 	FString GetPrefferedName() const;
 
+	UFUNCTION(BlueprintCallable)
+	class UMatchMaker* GetMatchMaker() const;
+
 private:
 	FString PrefferedName;
+
+	class UMatchMaker* MatchMaker;
 
 };
