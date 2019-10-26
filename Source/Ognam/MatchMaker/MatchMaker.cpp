@@ -62,6 +62,13 @@ void UMatchMaker::ConnectedDelegate()
 		bIsConnected = false;
 	}
 	O_LOG(TEXT("Connection Complete, Success ? %s"), bIsConnected ? TEXT("Success") : TEXT("Failure"));
+
+	if (bIsConnected)
+	{
+		uint32 datasize;
+		bool pending = Sock->HasPendingData(datasize);
+		O_LOG(TEXT("pending data? %d : %d"), pending, datasize);
+	}
 }
 
 bool UMatchMaker::IsConnecting() const
@@ -87,12 +94,10 @@ bool UMatchMaker::IsInQueue() const
 void UMatchMaker::Login(FString UserName, FString Password)
 {
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetLogin(UserName, Password, RequestToken);
-	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), true);
+	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
+	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
-	// RSA
-
-	// SOCK->SEND
-	O_LOG(TEXT("Json: %s"), *JsonStr);
+	O_LOG(TEXT("Login Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::LoginResponse(TSharedPtr<FJsonObject> Response)
@@ -102,9 +107,10 @@ void UMatchMaker::LoginResponse(TSharedPtr<FJsonObject> Response)
 void UMatchMaker::JoinQueue()
 {
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetJoinQueue(SessionToken, RequestToken);
-	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), true);
+	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
+	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
-	O_LOG(TEXT("Json: %s"), *JsonStr);
+	O_LOG(TEXT("Login Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::JoinQueueResponse(TSharedPtr<FJsonObject> Response)
@@ -114,9 +120,10 @@ void UMatchMaker::JoinQueueResponse(TSharedPtr<FJsonObject> Response)
 void UMatchMaker::ExitQueue()
 {
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetExitQueue(SessionToken, RequestToken);
-	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), true);
+	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
+	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
-	O_LOG(TEXT("Json: %s"), *JsonStr);
+	O_LOG(TEXT("Login Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::ExitQueueResponse(TSharedPtr<FJsonObject> Response)
@@ -129,6 +136,11 @@ void UMatchMaker::GameFoundEvent(TSharedPtr<FJsonObject> Response)
 
 void UMatchMaker::GameFoundResponse(bool bAccepted)
 {
+	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetGameAccepted(SessionToken, bAccepted, RequestToken);
+	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
+	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
+
+	O_LOG(TEXT("Login Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::GameReceiveDetails(TSharedPtr<FJsonObject> Response)

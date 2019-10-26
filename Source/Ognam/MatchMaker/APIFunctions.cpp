@@ -4,6 +4,7 @@
 #include "Json.h"
 #include "JsonSerializer.h"
 #include "JsonObject.h"
+#include "Sockets.h"
 
 TSharedPtr<FJsonObject> FAPIFunctions::GetLogin(const FString Username, const FString Password, FString& RequestToken)
 {
@@ -25,9 +26,16 @@ TSharedPtr<FJsonObject> FAPIFunctions::GetExitQueue(const FString SessionToken, 
 	return Object;
 }
 
+TSharedPtr<class FJsonObject> FAPIFunctions::GetGameAccepted(const FString SessionToken, const bool bAccepted, FString& RequestToken)
+{
+	TSharedPtr<FJsonObject> Object = GetBaseObjectWithSession(SessionToken, GAME_FOUND, RequestToken);
+	Object->SetBoolField("accepted", bAccepted);
+	return Object;
+}
+
 FString FAPIFunctions::CreateRequestToken()
 {
-	return FString("request_token");
+	return FString(TEXT("request_token"));
 }
 
 TSharedPtr<FJsonObject> FAPIFunctions::GetBaseObject(const FString Func, FString& RequestToken)
@@ -64,5 +72,17 @@ FString FAPIFunctions::GetJsonString(TSharedRef<FJsonObject> Object, bool bPrett
 		TSharedRef<TJsonWriter<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>> Writer = TJsonWriterFactory<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>::Create(&Out, 0);
 		FJsonSerializer::Serialize(Object, Writer);
 	}
-	return Out;
+	return Out + "\n";
+}
+
+bool FAPIFunctions::SendJsonPacket(FSocket* Sock, FString Str)
+{
+	const uint8* Buf = (uint8*)StringCast<ANSICHAR>(*Str).Get();
+	int Len = Str.Len();
+	int Sent;
+	if (Sock)
+	{
+		Sock->Send(Buf, Len, Sent);
+	}
+	return Sent == Len;
 }

@@ -1,10 +1,12 @@
 // Copyright 2019 Ognam Studios. All Rights Reserved.
 
 using UnrealBuildTool;
+using System;
+using System.IO;
 
 public class Ognam : ModuleRules
 {
-	public Ognam(ReadOnlyTargetRules Target) : base(Target)
+    public Ognam(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

@@ -30,6 +30,8 @@ struct OGNAM_API FAPIFunctions
 
 	static class TSharedPtr<class FJsonObject> GetExitQueue(const FString SessionToken, FString& RequestToken);
 
+	static class TSharedPtr<class FJsonObject> GetGameAccepted(const FString SessionToken, const bool bAccepted, FString& RequestToken);
+
 	static class TSharedPtr<class FJsonObject> GetBaseObject(const FString Func, FString& RequestToken);
 
 	static class TSharedPtr<class FJsonObject> GetBaseObjectWithSession(const FString SessionToken, const FString Func, FString& RequestToken);
@@ -37,5 +39,7 @@ struct OGNAM_API FAPIFunctions
 	static FString CreateRequestToken();
 
 	static FString GetJsonString(TSharedRef<FJsonObject> Object, bool bPrettyPrint = false);
+
+	static bool SendJsonPacket(class FSocket* Sock, FString Str);
 
 };

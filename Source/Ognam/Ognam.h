@@ -4,7 +4,6 @@
 #include "CoreMinimal.h"
 #include "ModuleManager.h"
 
-
 class FOgnamModule
 	: public IModuleInterface
 {
