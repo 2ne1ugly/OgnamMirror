@@ -1,8 +1,9 @@
-// Copyright 2019 Ognam Studios. All Rights Reserved.#include "HereiraSprint.h"
+// Copyright 2019 Ognam Studios. All Rights Reserved.
+
+#include "HereiraSprint.h"
 #include "TimerManager.h"
 #include "HereiraSprinting.h"
 #include "Ognam/OgnamCharacter.h"
-// Fill out your copyright notice in the Description page of Project Settings.
 
 UHereiraSprint::UHereiraSprint()
 {
