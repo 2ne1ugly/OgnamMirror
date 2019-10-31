@@ -85,7 +85,6 @@ bool FAPIFunctions::SendJsonPacket(TSharedPtr<FSocket> Sock, FString& Str)
 	const uint8 LenBuf[4] = { 0 };
 	int32 Len = Str.Len();
 	FMemory::Memcpy((void*)LenBuf, &Len, 4);
-	//O_LOG(TEXT("%p, %p"), Sock, *Str);
 	int Sent;
 	int LenSent;
 	if (Sock.IsValid())

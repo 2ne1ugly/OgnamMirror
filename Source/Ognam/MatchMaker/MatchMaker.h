@@ -10,13 +10,17 @@
  * 
  */
 UCLASS(ClassGroup = (Custom))
-class OGNAM_API UMatchMaker : public UObject
+class OGNAM_API UMatchMaker : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()
 
 	UMatchMaker();
 	
 public:
+	virtual void Tick(float DeltaTime);
+	virtual bool IsTickable() const override;
+	virtual TStatId GetStatId() const override;
+
 	UFUNCTION(BlueprintCallable)
 	void ConnectToServer();
 
@@ -60,6 +64,8 @@ public:
 	void GameFoundResponse(bool bAccepted);
 
 	void GameReceiveDetails(TSharedPtr<class FJsonObject> Response);
+
+	bool ListenForResponse(FString& Response);
 
 private:
 	class ISocketSubsystem* SocketSub;

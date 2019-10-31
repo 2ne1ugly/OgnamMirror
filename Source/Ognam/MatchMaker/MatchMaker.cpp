@@ -21,6 +21,25 @@ UMatchMaker::UMatchMaker()
 	Sock = MakeShareable(SocketSub->CreateSocket(NAME_Stream, TEXT("Connection to Matchmaking server")));
 }
 
+void UMatchMaker::Tick(float DeltaTime)
+{
+	FString Response;
+	if (!ListenForResponse(Response))
+	{
+		return;
+	}
+}
+
+bool UMatchMaker::IsTickable() const
+{
+	return true;
+}
+
+TStatId UMatchMaker::GetStatId() const
+{
+	return GetStatID();
+}
+
 void UMatchMaker::ConnectToServer()
 {
 	if (bIsConnected)
@@ -63,14 +82,6 @@ void UMatchMaker::ConnectedDelegate()
 		bIsConnected = false;
 	}
 	O_LOG(TEXT("Connection Complete, Success ? %s"), bIsConnected ? TEXT("Success") : TEXT("Failure"));
-
-	// This should be moved to a tick-like function
-	if (bIsConnected)
-	{
-		uint32 datasize;
-		bool pending = Sock->HasPendingData(datasize);
-		O_LOG(TEXT("pending data? %d : %d"), pending, datasize);
-	}
 }
 
 bool UMatchMaker::IsConnecting() const
@@ -112,7 +123,7 @@ void UMatchMaker::JoinQueue()
 	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
 	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
-	O_LOG(TEXT("Login Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
+	O_LOG(TEXT("Join Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::JoinQueueResponse(TSharedPtr<FJsonObject> Response)
@@ -125,7 +136,7 @@ void UMatchMaker::ExitQueue()
 	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
 	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
-	O_LOG(TEXT("Login Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
+	O_LOG(TEXT("Exit Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::ExitQueueResponse(TSharedPtr<FJsonObject> Response)
@@ -142,9 +153,29 @@ void UMatchMaker::GameFoundResponse(bool bAccepted)
 	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
 	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
-	O_LOG(TEXT("Login Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
+	O_LOG(TEXT("GameFound Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::GameReceiveDetails(TSharedPtr<FJsonObject> Response)
 {
+}
+
+bool UMatchMaker::ListenForResponse(FString& Response)
+{
+	uint32 DataSize;
+	if (!Sock->HasPendingData(DataSize))
+	{
+		return false;
+	}
+	int32 Bread;
+	TArray<uint8> Data;
+	Data.SetNum(DataSize);
+	Sock->Recv(Data.GetData(), DataSize, Bread);
+	for (int32 i = 0; i < Bread; i++)
+	{
+		Data[i]--;
+	}
+	Response = BytesToString(Data.GetData(), Bread);
+	O_LOG(TEXT("%s"), *Response);
+	return true;
 }
