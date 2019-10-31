@@ -24,22 +24,22 @@ struct OGNAM_API FAPIFunctions
 {
 	GENERATED_USTRUCT_BODY()
 
-	static class TSharedPtr<class FJsonObject> GetLogin(const FString Username, const FString Password, FString& RequestToken);
+	static TSharedPtr<class FJsonObject> GetLogin(const FString Username, const FString Password, TSharedPtr<FString> RequestToken);
 
-	static class TSharedPtr<class FJsonObject> GetJoinQueue(const FString SessionToken, FString& RequestToken);
+	static TSharedPtr<class FJsonObject>  GetJoinQueue(const FString SessionToken, TSharedPtr<FString> RequestToken);
 
-	static class TSharedPtr<class FJsonObject> GetExitQueue(const FString SessionToken, FString& RequestToken);
+	static TSharedPtr<class FJsonObject>  GetExitQueue(const FString SessionToken, TSharedPtr<FString> RequestToken);
 
-	static class TSharedPtr<class FJsonObject> GetGameAccepted(const FString SessionToken, const bool bAccepted, FString& RequestToken);
+	static TSharedPtr<class FJsonObject>  GetGameAccepted(const FString SessionToken, const bool bAccepted, TSharedPtr<FString> RequestToken);
 
-	static class TSharedPtr<class FJsonObject> GetBaseObject(const FString Func, FString& RequestToken);
+	static TSharedPtr<class FJsonObject>  GetBaseObject(const FString Func, TSharedPtr<FString> RequestToken);
 
-	static class TSharedPtr<class FJsonObject> GetBaseObjectWithSession(const FString SessionToken, const FString Func, FString& RequestToken);
+	static TSharedPtr<class FJsonObject>  GetBaseObjectWithSession(const FString SessionToken, const FString Func, TSharedPtr<FString> RequestToken);
 
 	static FString CreateRequestToken();
 
-	static FString GetJsonString(TSharedRef<FJsonObject> Object, bool bPrettyPrint = false);
+	static FString GetJsonString(const TSharedRef<FJsonObject>& Object, bool bPrettyPrint = false);
 
-	static bool SendJsonPacket(class FSocket* Sock, FString Str);
+	static bool SendJsonPacket(TSharedPtr<class FSocket> Sock, FString& Str);
 
 };

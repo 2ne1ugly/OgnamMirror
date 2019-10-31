@@ -13,11 +13,12 @@
 #include "APIFunctions.h"
 #include "JsonPrintPolicy.h"
 #include "Policies/CondensedJsonPrintPolicy.h"
+#include "Misc/Paths.h"
 
 UMatchMaker::UMatchMaker()
 {
 	SocketSub = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
-	Sock = SocketSub->CreateSocket(NAME_Stream, TEXT("Connection to Matchmaking server"));
+	Sock = MakeShareable(SocketSub->CreateSocket(NAME_Stream, TEXT("Connection to Matchmaking server")));
 }
 
 void UMatchMaker::ConnectToServer()
@@ -31,7 +32,7 @@ void UMatchMaker::ConnectToServer()
 
 void UMatchMaker::Connect()
 {
-	if (!Sock)
+	if (!Sock.IsValid())
 	{
 		O_LOG(TEXT("Sock is null"));
 		return;
@@ -47,7 +48,7 @@ void UMatchMaker::Connect()
 
 void UMatchMaker::ConnectedDelegate()
 {
-	if (!Sock)
+	if (!Sock.IsValid())
 	{
 		O_LOG(TEXT("Sock is null"));
 		return;
@@ -63,6 +64,7 @@ void UMatchMaker::ConnectedDelegate()
 	}
 	O_LOG(TEXT("Connection Complete, Success ? %s"), bIsConnected ? TEXT("Success") : TEXT("Failure"));
 
+	// This should be moved to a tick-like function
 	if (bIsConnected)
 	{
 		uint32 datasize;
