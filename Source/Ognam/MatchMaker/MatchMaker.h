@@ -64,7 +64,7 @@ public:
 private:
 	class ISocketSubsystem* SocketSub;
 
-	class FSocket* Sock;
+	TSharedPtr<class FSocket> Sock;
 
 	bool bIsConnected;
 	bool bConnectionInProgress;
@@ -78,7 +78,7 @@ private:
 	FString SessionToken;
 
 	/* The most recently sent request. Used to ensure that the client is receiving the proper response */
-	FString RequestToken;
+	TSharedPtr<FString> RequestToken;
 	
 	/* The time the RequestToken was last updated, used for timeout */
 	long RequestSentTimestamp;

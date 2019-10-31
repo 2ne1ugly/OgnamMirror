@@ -56,6 +56,7 @@ public:
 private:
 	FString PrefferedName;
 
+	UPROPERTY()
 	class UMatchMaker* MatchMaker;
 
 };
