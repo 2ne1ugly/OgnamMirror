@@ -28,6 +28,11 @@ void UMatchMaker::Tick(float DeltaTime)
 	{
 		return;
 	}
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response);
+	TSharedPtr<FJsonObject> Object;
+	FJsonSerializer::Deserialize(Reader, Object);
+
+	O_LOG(TEXT("%s"), *Object->GetStringField("func"));
 }
 
 bool UMatchMaker::IsTickable() const
