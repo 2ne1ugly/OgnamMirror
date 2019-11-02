@@ -31,18 +31,6 @@ public:
 	void Connect();
 
 	UFUNCTION(BlueprintCallable)
-	bool IsConnecting() const;
-
-	UFUNCTION(BlueprintCallable)
-	bool IsConnected() const;
-
-	UFUNCTION(BlueprintCallable)
-	bool CheckIfAlive() const;
-
-	UFUNCTION(BlueprintCallable)
-	bool IsInQueue() const;
-
-	UFUNCTION(BlueprintCallable)
 	void Login(FString UserName, FString Password);
 
 	void LoginResponse(TSharedPtr<class FJsonObject> Response);
@@ -55,7 +43,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ExitQueue();
 
-	/* */
 	void ExitQueueResponse(TSharedPtr<class FJsonObject> Response);
 
 	void GameFoundEvent(TSharedPtr<class FJsonObject> Response);
@@ -65,17 +52,36 @@ public:
 
 	void GameReceiveDetails(TSharedPtr<class FJsonObject> Response);
 
+	void GameCancelledEvent(TSharedPtr<class FJsonObject> Response);
+
 	bool ListenForResponse(FString& Response);
+
+	void SetGameInstance(class UOgnamGameInstance* Instance);
+
+public:
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsConnected;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bConnectionInProgress;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bWaitingToStart;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsInQueue;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bGameFound;
 
 private:
 	class ISocketSubsystem* SocketSub;
 
+	class UOgnamGameInstance* GameInstance;
+
 	TSharedPtr<class FSocket> Sock;
 
-	bool bIsConnected;
-	bool bConnectionInProgress;
-
-	bool bIsInQueue;
+	FString GameAcceptToken;
 
 	/* If the Last sent request @see RequestToken is not retreived within this time, discard the request token and forget */
 	float RequestTimeout = 10.f;

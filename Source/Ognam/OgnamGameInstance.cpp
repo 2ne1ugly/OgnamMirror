@@ -20,6 +20,7 @@ void UOgnamGameInstance::Init()
 {
 	Super::Init();
 	MatchMaker = NewObject<UMatchMaker>(this);
+	MatchMaker->SetGameInstance(this);
 	MatchMaker->ConnectToServer();
 }
 
