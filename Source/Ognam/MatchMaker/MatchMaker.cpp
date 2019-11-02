@@ -14,11 +14,14 @@
 #include "JsonPrintPolicy.h"
 #include "Policies/CondensedJsonPrintPolicy.h"
 #include "Misc/Paths.h"
+#include "Kismet/GameplayStatics.h"
+#include "OgnamGameInstance.h"
 
 UMatchMaker::UMatchMaker()
 {
 	SocketSub = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
 	Sock = MakeShareable(SocketSub->CreateSocket(NAME_Stream, TEXT("Connection to Matchmaking server")));
+
 }
 
 void UMatchMaker::Tick(float DeltaTime)
@@ -32,7 +35,31 @@ void UMatchMaker::Tick(float DeltaTime)
 	TSharedPtr<FJsonObject> Object;
 	FJsonSerializer::Deserialize(Reader, Object);
 
-	O_LOG(TEXT("%s"), *Object->GetStringField("func"));
+	FString Function = Object->GetStringField("func");
+	if (Function == LOGIN)
+	{
+		LoginResponse(Object);
+	}
+	else if (Function == JOIN_QUEUE)
+	{
+		JoinQueueResponse(Object);
+	}
+	else if (Function == EXIT_QUEUE)
+	{
+		ExitQueueResponse(Object);
+	}
+	else if (Function == GAME_FOUND)
+	{
+		GameFoundEvent(Object);
+	}
+	else if (Function == GAME_DETAILS)
+	{
+		GameReceiveDetails(Object);
+	}
+	else if (Function == GAME_CANCELLED)
+	{
+		GameCancelledEvent(Object);
+	}
 }
 
 bool UMatchMaker::IsTickable() const
@@ -89,26 +116,6 @@ void UMatchMaker::ConnectedDelegate()
 	O_LOG(TEXT("Connection Complete, Success ? %s"), bIsConnected ? TEXT("Success") : TEXT("Failure"));
 }
 
-bool UMatchMaker::IsConnecting() const
-{
-	return bConnectionInProgress;
-}
-
-bool UMatchMaker::IsConnected() const
-{
-	return bIsConnected;
-}
-
-bool UMatchMaker::CheckIfAlive() const
-{
-	return true;
-}
-
-bool UMatchMaker::IsInQueue() const
-{
-	return bIsInQueue;
-}
-
 void UMatchMaker::Login(FString UserName, FString Password)
 {
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetLogin(UserName, Password, RequestToken);
@@ -148,13 +155,25 @@ void UMatchMaker::ExitQueueResponse(TSharedPtr<FJsonObject> Response)
 {
 }
 
+void UMatchMaker::GameCancelledEvent(TSharedPtr<FJsonObject> Response)
+{
+	bGameFound = false;
+	bWaitingToStart = false;
+	O_LOG(TEXT("Game cancelled!"));
+}
+
 void UMatchMaker::GameFoundEvent(TSharedPtr<FJsonObject> Response)
 {
+	bGameFound = true;
+
+	GameAcceptToken = Response->GetStringField(REQUEST_TOKEN);
 }
 
 void UMatchMaker::GameFoundResponse(bool bAccepted)
 {
-	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetGameAccepted(SessionToken, bAccepted, RequestToken);
+	bGameFound = false;
+	bWaitingToStart = true;
+	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetGameAccepted(SessionToken, bAccepted, MakeShared<FString>(GameAcceptToken));
 	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
 	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
@@ -163,6 +182,17 @@ void UMatchMaker::GameFoundResponse(bool bAccepted)
 
 void UMatchMaker::GameReceiveDetails(TSharedPtr<FJsonObject> Response)
 {
+	O_LOG(TEXT("Time to start! %s"), *Response->GetStringField("connection_string"));
+
+	APlayerController* PC = GameInstance->GetWorld()->GetFirstPlayerController();
+
+	if (!PC)
+	{
+		O_LOG(TEXT("controller is null"));
+	}
+	
+
+	PC->ClientTravel(Response->GetStringField("connection_string"), ETravelType::TRAVEL_Absolute);
 }
 
 bool UMatchMaker::ListenForResponse(FString& Response)
@@ -172,7 +202,11 @@ bool UMatchMaker::ListenForResponse(FString& Response)
 	{
 		return false;
 	}
+	uint8 Header[4] = { 0 };
 	int32 Bread;
+	Sock->Recv(Header, 4, Bread);
+	FMemory::Memcpy(&DataSize, Header, 4);
+	O_LOG(TEXT("Incoming Size: %d\n"), DataSize);
 	TArray<uint8> Data;
 	Data.SetNum(DataSize);
 	Sock->Recv(Data.GetData(), DataSize, Bread);
@@ -183,4 +217,9 @@ bool UMatchMaker::ListenForResponse(FString& Response)
 	Response = BytesToString(Data.GetData(), Bread);
 	O_LOG(TEXT("%s"), *Response);
 	return true;
+}
+
+void UMatchMaker::SetGameInstance(UOgnamGameInstance* Instance)
+{
+	GameInstance = Instance;
 }
