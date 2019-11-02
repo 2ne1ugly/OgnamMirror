@@ -105,15 +105,11 @@ void UMatchMaker::ConnectedDelegate()
 		return;
 	}
 	bConnectionInProgress = false;
-	if (Sock->GetConnectionState() == ESocketConnectionState::SCS_Connected)
+	if (Sock->GetConnectionState() != ESocketConnectionState::SCS_Connected)
 	{
-		bIsConnected = true;
+		OnConnectToServerFailure.Broadcast();
 	}
-	else
-	{
-		bIsConnected = false;
-	}
-	O_LOG(TEXT("Connection Complete, Success ? %s"), bIsConnected ? TEXT("Success") : TEXT("Failure"));
+	O_LOG(TEXT("Connection To Server %s"), bIsConnected ? TEXT("Success") : TEXT("Failure"));
 }
 
 void UMatchMaker::Login(FString UserName, FString Password)
@@ -122,11 +118,28 @@ void UMatchMaker::Login(FString UserName, FString Password)
 	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
 	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
+	if (!bSuccess)
+	{
+		OnSendMessageFailure.Broadcast();
+	}
 	O_LOG(TEXT("Login Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::LoginResponse(TSharedPtr<FJsonObject> Response)
 {
+	int32 Status = Response->GetIntegerField("ret");
+
+	EMatchMakingStatus MStatus = (EMatchMakingStatus)Status;
+	
+	if (Status)
+	{
+		FText StatusString = GetTextFromStatus(MStatus);
+		OnLoginFailure.Broadcast(StatusString);
+		return;
+	}
+
+	SessionToken = Response->GetStringField("session_token");
+	OnLoginSuccess.Broadcast();
 }
 
 void UMatchMaker::JoinQueue()
@@ -135,11 +148,27 @@ void UMatchMaker::JoinQueue()
 	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
 	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
+	if (!bSuccess)
+	{
+		OnSendMessageFailure.Broadcast();
+	}
 	O_LOG(TEXT("Join Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::JoinQueueResponse(TSharedPtr<FJsonObject> Response)
 {
+	int32 Status = Response->GetIntegerField("ret");
+
+	EMatchMakingStatus MStatus = (EMatchMakingStatus)Status;
+
+	if (Status)
+	{
+		FText StatusString = GetTextFromStatus(MStatus);
+		OnJoinQueueFailure.Broadcast(StatusString);
+		return;
+	}
+
+	OnJoinQueueSuccess.Broadcast();
 }
 
 void UMatchMaker::ExitQueue()
@@ -148,6 +177,10 @@ void UMatchMaker::ExitQueue()
 	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
 	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
+	if (!bSuccess)
+	{
+		OnSendMessageFailure.Broadcast();
+	}
 	O_LOG(TEXT("Exit Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
@@ -157,40 +190,35 @@ void UMatchMaker::ExitQueueResponse(TSharedPtr<FJsonObject> Response)
 
 void UMatchMaker::GameCancelledEvent(TSharedPtr<FJsonObject> Response)
 {
-	bGameFound = false;
-	bWaitingToStart = false;
 	O_LOG(TEXT("Game cancelled!"));
+	OnGameCancelled.Broadcast();
 }
 
 void UMatchMaker::GameFoundEvent(TSharedPtr<FJsonObject> Response)
 {
-	bGameFound = true;
-
+	OnGameFound.Broadcast();
 	GameAcceptToken = Response->GetStringField(REQUEST_TOKEN);
 }
 
 void UMatchMaker::GameFoundResponse(bool bAccepted)
 {
-	bGameFound = false;
-	bWaitingToStart = true;
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetGameAccepted(SessionToken, bAccepted, MakeShared<FString>(GameAcceptToken));
 	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
 	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
 
+	if (!bSuccess)
+	{
+		OnSendMessageFailure.Broadcast();
+	}
 	O_LOG(TEXT("GameFound Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::GameReceiveDetails(TSharedPtr<FJsonObject> Response)
 {
 	O_LOG(TEXT("Time to start! %s"), *Response->GetStringField("connection_string"));
+	OnJoinMatch.Broadcast();
 
 	APlayerController* PC = GameInstance->GetWorld()->GetFirstPlayerController();
-
-	if (!PC)
-	{
-		O_LOG(TEXT("controller is null"));
-	}
-	
 
 	PC->ClientTravel(Response->GetStringField("connection_string"), ETravelType::TRAVEL_Absolute);
 }
@@ -222,4 +250,34 @@ bool UMatchMaker::ListenForResponse(FString& Response)
 void UMatchMaker::SetGameInstance(UOgnamGameInstance* Instance)
 {
 	GameInstance = Instance;
+}
+
+FText UMatchMaker::GetTextFromStatus(EMatchMakingStatus Code)
+{
+	switch (Code)
+	{
+	case EMatchMakingStatus::Success:
+		return FText::FromString("Success");
+	case EMatchMakingStatus::BadLogin:
+		return BadLogin;
+	case EMatchMakingStatus::UserBanned:
+		return UserBanned;
+	case EMatchMakingStatus::BadVersion:
+		return BadVersion;
+	case EMatchMakingStatus::Maintenance:
+		return Maintenance;
+	case EMatchMakingStatus::MatchmakingBanned:
+		return MatchmakingBanned;
+	case EMatchMakingStatus::BadLevel:
+		return BadLevel;
+	case EMatchMakingStatus::QueueDisabled:
+		return QueueDisabled;
+	case EMatchMakingStatus::AlreadyInQueue:
+		return AlreadyInQueue;
+	case EMatchMakingStatus::InvalidSession:
+		return InvalidSession;
+	case EMatchMakingStatus::AlreadyLoggedIn:
+		return AlreadyLoggedIn;
+	}
+	return FText::FromString("Success");
 }

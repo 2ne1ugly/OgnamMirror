@@ -6,10 +6,31 @@
 #include "IPAddress.h"
 #include "MatchMaker.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMatchmakingEvent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMatchmakingEventFailure, FText, Message);
+
+
+UENUM()
+enum class EMatchMakingStatus : int32
+{
+	Success = 0,
+	BadLogin,
+	UserBanned,
+	BadVersion,
+	Maintenance,
+	MatchmakingBanned,
+	BadLevel,
+	QueueDisabled,
+	AlreadyInQueue,
+	InvalidSession,
+	AlreadyLoggedIn
+};
+
 /**
  * 
  */
-UCLASS(ClassGroup = (Custom))
+UCLASS(Blueprintable)
 class OGNAM_API UMatchMaker : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()
@@ -74,6 +95,33 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bGameFound;
 
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEvent OnGameFound;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEvent OnGameCancelled;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEventFailure OnLoginFailure;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEvent OnLoginSuccess;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEvent OnSendMessageFailure;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEvent OnConnectToServerFailure;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEvent OnJoinMatch;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEvent OnJoinQueueSuccess;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEventFailure OnJoinQueueFailure;
+
 private:
 	class ISocketSubsystem* SocketSub;
 
@@ -94,4 +142,22 @@ private:
 	
 	/* The time the RequestToken was last updated, used for timeout */
 	long RequestSentTimestamp;
+
+public:
+#define LOCTEXT_NAMESPACE "MatchMaking"
+
+	const FText BadLogin = LOCTEXT("badlogin", "Your username or password is invalid.");
+	const FText UserBanned = LOCTEXT("userbanned", "User is banned.");
+	const FText BadVersion = LOCTEXT("badversion", "Version out of date!");
+	const FText Maintenance = LOCTEXT("maintenance", "Game server under maintenance.");
+	const FText MatchmakingBanned = LOCTEXT("matchmakingban", "You are banned from matchmaking.");
+	const FText BadLevel = LOCTEXT("badlevel", "You are not a high enough level.");
+	const FText QueueDisabled = LOCTEXT("queuedisabled", "Queue has been temporarily disabled.");
+	const FText AlreadyInQueue = LOCTEXT("alreadyinqueue", "You are already in a queue!");
+	const FText InvalidSession = LOCTEXT("invalidsession", "Invalid Session."); // Maybe say the user needs to relogin?
+	const FText AlreadyLoggedIn = LOCTEXT("alreadyloggedin", "You are already logged in.");
+
+#undef LOCTEXT_NAMESPACE
+
+	FText GetTextFromStatus(EMatchMakingStatus Code);
 };
