@@ -21,11 +21,23 @@ UMatchMaker::UMatchMaker()
 {
 	SocketSub = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
 	Sock = MakeShareable(SocketSub->CreateSocket(NAME_Stream, TEXT("Connection to Matchmaking server")));
-
 }
 
 void UMatchMaker::Tick(float DeltaTime)
 {
+	if (bNotifyConnectionStatus)
+	{
+		bNotifyConnectionStatus = false;
+		if (bIsConnected)
+		{
+			OnConnectToServerSuccess.Broadcast();
+		}
+		else
+		{
+			OnConnectToServerFailure.Broadcast();
+		}
+	}
+
 	FString Response;
 	if (!ListenForResponse(Response))
 	{
@@ -35,6 +47,8 @@ void UMatchMaker::Tick(float DeltaTime)
 	TSharedPtr<FJsonObject> Object;
 	FJsonSerializer::Deserialize(Reader, Object);
 
+	// TODO
+	// Make this not bad
 	FString Function = Object->GetStringField("func");
 	if (Function == LOGIN)
 	{
@@ -88,7 +102,6 @@ void UMatchMaker::Connect()
 		O_LOG(TEXT("Sock is null"));
 		return;
 	}
-	bConnectionInProgress = true;
 	TSharedRef<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 
 	bool bIsValid;
@@ -104,10 +117,11 @@ void UMatchMaker::ConnectedDelegate()
 		O_LOG(TEXT("Sock is null"));
 		return;
 	}
-	bConnectionInProgress = false;
+	bIsConnected = true;
+	bNotifyConnectionStatus = true;
 	if (Sock->GetConnectionState() != ESocketConnectionState::SCS_Connected)
 	{
-		OnConnectToServerFailure.Broadcast();
+		bIsConnected = false;
 	}
 	O_LOG(TEXT("Connection To Server %s"), bIsConnected ? TEXT("Success") : TEXT("Failure"));
 }
@@ -115,8 +129,7 @@ void UMatchMaker::ConnectedDelegate()
 void UMatchMaker::Login(FString UserName, FString Password)
 {
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetLogin(UserName, Password, RequestToken);
-	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
-	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
+	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, Object);
 
 	if (!bSuccess)
 	{
@@ -137,7 +150,6 @@ void UMatchMaker::LoginResponse(TSharedPtr<FJsonObject> Response)
 		OnLoginFailure.Broadcast(StatusString);
 		return;
 	}
-
 	SessionToken = Response->GetStringField("session_token");
 	OnLoginSuccess.Broadcast();
 }
@@ -145,8 +157,7 @@ void UMatchMaker::LoginResponse(TSharedPtr<FJsonObject> Response)
 void UMatchMaker::JoinQueue()
 {
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetJoinQueue(SessionToken, RequestToken);
-	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
-	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
+	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, Object);
 
 	if (!bSuccess)
 	{
@@ -174,8 +185,7 @@ void UMatchMaker::JoinQueueResponse(TSharedPtr<FJsonObject> Response)
 void UMatchMaker::ExitQueue()
 {
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetExitQueue(SessionToken, RequestToken);
-	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
-	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
+	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, Object);
 
 	if (!bSuccess)
 	{
@@ -190,7 +200,6 @@ void UMatchMaker::ExitQueueResponse(TSharedPtr<FJsonObject> Response)
 
 void UMatchMaker::GameCancelledEvent(TSharedPtr<FJsonObject> Response)
 {
-	O_LOG(TEXT("Game cancelled!"));
 	OnGameCancelled.Broadcast();
 }
 
@@ -203,14 +212,12 @@ void UMatchMaker::GameFoundEvent(TSharedPtr<FJsonObject> Response)
 void UMatchMaker::GameFoundResponse(bool bAccepted)
 {
 	TSharedPtr<FJsonObject> Object = FAPIFunctions::GetGameAccepted(SessionToken, bAccepted, MakeShared<FString>(GameAcceptToken));
-	FString JsonStr = FAPIFunctions::GetJsonString(Object.ToSharedRef(), false);
-	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, JsonStr);
+	bool bSuccess = FAPIFunctions::SendJsonPacket(Sock, Object);
 
 	if (!bSuccess)
 	{
 		OnSendMessageFailure.Broadcast();
 	}
-	O_LOG(TEXT("GameFound Send %s"), bSuccess ? TEXT("SUCCESS") : TEXT("FAILURE"));
 }
 
 void UMatchMaker::GameReceiveDetails(TSharedPtr<FJsonObject> Response)
@@ -218,9 +225,9 @@ void UMatchMaker::GameReceiveDetails(TSharedPtr<FJsonObject> Response)
 	O_LOG(TEXT("Time to start! %s"), *Response->GetStringField("connection_string"));
 	OnJoinMatch.Broadcast();
 
-	APlayerController* PC = GameInstance->GetWorld()->GetFirstPlayerController();
+	//APlayerController* PC = GameInstance->GetWorld()->GetFirstPlayerController();
 
-	PC->ClientTravel(Response->GetStringField("connection_string"), ETravelType::TRAVEL_Absolute);
+	//PC->ClientTravel(Response->GetStringField("connection_string"), ETravelType::TRAVEL_Absolute);
 }
 
 bool UMatchMaker::ListenForResponse(FString& Response)
@@ -230,11 +237,13 @@ bool UMatchMaker::ListenForResponse(FString& Response)
 	{
 		return false;
 	}
-	uint8 Header[4] = { 0 };
+	// First we have to check the payload of bytes, saving it into HeaderBuff
+	uint8 HeaderBuff[4] = { 0 };
 	int32 Bread;
-	Sock->Recv(Header, 4, Bread);
-	FMemory::Memcpy(&DataSize, Header, 4);
-	O_LOG(TEXT("Incoming Size: %d\n"), DataSize);
+	Sock->Recv(HeaderBuff, 4, Bread);
+	FMemory::Memcpy(&DataSize, HeaderBuff, 4);
+
+	// We allocate Data with the amount of incoming bytes, to use it as a uint8* 
 	TArray<uint8> Data;
 	Data.SetNum(DataSize);
 	Sock->Recv(Data.GetData(), DataSize, Bread);
@@ -243,6 +252,7 @@ bool UMatchMaker::ListenForResponse(FString& Response)
 		Data[i]--;
 	}
 	Response = BytesToString(Data.GetData(), Bread);
+	// BytesToString adds 1 to every byte, so we then subtract one from each
 	O_LOG(TEXT("%s"), *Response);
 	return true;
 }
@@ -279,5 +289,5 @@ FText UMatchMaker::GetTextFromStatus(EMatchMakingStatus Code)
 	case EMatchMakingStatus::AlreadyLoggedIn:
 		return AlreadyLoggedIn;
 	}
-	return FText::FromString("Success");
+	return FText::FromString("Success"); // Unreachable
 }
