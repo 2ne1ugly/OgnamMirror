@@ -9,6 +9,8 @@
 #include "Ognam/OgnamMacro.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Characters/Hereira/Hereira.h"
+#include "OgnamChatMessage.h"
+#include "OgnamGameState.h"
 
 AOgnamPlayerState::AOgnamPlayerState()
 {
@@ -145,24 +147,13 @@ void AOgnamPlayerState::SetShouldHideName(bool bHide)
 	bHidePlayerName = bHide;
 }
 
-void AOgnamPlayerState::NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender)
-{
-	if (GEngine->GetFirstLocalPlayerController(GetWorld()) &&
-		GEngine->GetFirstLocalPlayerController(GetWorld())->GetPlayerState<APlayerState>() != Sender)
-	{
-		DisplayMessage(Message, Sender);
-	}
-}
 
 void AOgnamPlayerState::ServerSendMessage_Implementation(const FString& Message)
 {
-	NetReceiveMessage(Message, this);
+	AOgnamGameState* GameState = GetWorld()->GetGameState<AOgnamGameState>();
+	GameState->NetReceiveMessage(Message, this);
 }
 
-void AOgnamPlayerState::DisplayMessage(const FString& Message, APlayerState* Sender)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, FString::Printf(TEXT("%s: %s"), *Sender->GetPlayerName(), *Message));
-}
 
 UClass* AOgnamPlayerState::GetPawnClass() const
 {

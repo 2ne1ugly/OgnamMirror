@@ -49,6 +49,12 @@ public:
 	bool IsBeingCaptured() const;
 
 protected:
+	//UPROPERTY(Replicated)
+	TArray<class AOgnamPlayerState*> Attackers;
+
+	//UPROPERTY(Replicated)
+	TArray<class AOgnamPlayerState*> Defenders;
+
 	UPROPERTY(Transient)
 	int32 DefenderCount;
 
@@ -67,6 +73,6 @@ protected:
 	float CaptureDuration;
 
 	/* The current progress of the capture */
-	UPROPERTY(Transient)
+	UPROPERTY()
 	float CaptureProgress;
 };

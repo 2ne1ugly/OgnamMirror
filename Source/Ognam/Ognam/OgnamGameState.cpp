@@ -13,6 +13,7 @@
 #include "UnrealNetwork.h"
 #include "TimerManager.h"
 #include "OgnamPlayerController.h"
+#include "OgnamChatMessage.h"
 
 AOgnamGameState::AOgnamGameState()
 {
@@ -139,4 +140,18 @@ float AOgnamGameState::GetServerWorldTimeSeconds() const
 	{
 		return GetWorld()->GetTimeSeconds() + Controller->ServerTimeDelta;
 	}
+}
+
+void AOgnamGameState::NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender)
+{
+	DisplayMessage(Message, Sender);
+}
+
+void AOgnamGameState::DisplayMessage(const FString& Message, APlayerState* Sender)
+{
+	UOgnamChatMessage* ChatMessage = NewObject<UOgnamChatMessage>(Sender);
+	ChatMessage->Sender = Sender;
+	ChatMessage->Message = Message;
+	Messages.Add(ChatMessage);
+	GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, FString::Printf(TEXT("%s: %s"), *Sender->GetPlayerName(), *Message));
 }

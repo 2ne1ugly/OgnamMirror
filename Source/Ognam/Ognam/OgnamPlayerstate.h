@@ -58,17 +58,9 @@ public:
 
 	void SetShouldHideName(bool bHide);
 
-	/* Chat functions */
-	UFUNCTION(Netmulticast, Unreliable)
-	void NetReceiveMessage(const FString& Message, class APlayerState* Sender);
-	void NetReceiveMessage_Implementation(const FString& Message, class APlayerState* Sender);
-
 	UFUNCTION(Server, Unreliable)
 	void ServerSendMessage(const FString& Message);
 	void ServerSendMessage_Implementation(const FString& Message);
-
-	UFUNCTION(BlueprintCallable)
-	void DisplayMessage(const FString& Message, class APlayerState* Sender);
 
 	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	FName Team;
@@ -90,4 +82,5 @@ public:
 
 	UPROPERTY(Transient, Replicated)
 	UClass* SelectedPawnClass;
+
 };

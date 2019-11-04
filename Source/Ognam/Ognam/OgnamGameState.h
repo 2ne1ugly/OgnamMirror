@@ -44,10 +44,21 @@ public:
 
 	virtual float GetServerWorldTimeSeconds() const override;
 
+	/* Chat functions */
+	UFUNCTION(Netmulticast, Unreliable)
+	void NetReceiveMessage(const FString& Message, APlayerState* Sender);
+	void NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender);
+
+	UFUNCTION(BlueprintCallable)
+	void DisplayMessage(const FString& Message, APlayerState* Sender);
+
 protected:
 	UPROPERTY(Transient, Replicated)
 	FString ServerAddress;
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<class UKillFeed*> KillFeed;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<class UOgnamChatMessage*> Messages;
 };

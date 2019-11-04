@@ -246,17 +246,10 @@ void AOgnamPlayerController::JoinGame(FString Address)
 	ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
 
-void AOgnamPlayerController::CreateGame(FString MapName)
-{
-	UGameplayStatics::OpenLevel(GetWorld(), *MapName, true, FString("?listen?numplayers=4"));
-}
-
 void AOgnamPlayerController::WhoAmI()
 {
 	IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
-	O_LOG(TEXT("Sub : %s"), *Sub->GetOnlineServiceName().ToString());
 	ULocalPlayer* LocalPlayer = GetLocalPlayer();
-	O_LOG(TEXT("Playerid : %s"), *LocalPlayer->GetPreferredUniqueNetId().ToString());
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("My name is %s"), *PlayerState->GetPlayerName()));
 }
 
@@ -264,7 +257,6 @@ void AOgnamPlayerController::SendMessage(FString& Message)
 {
 	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
 	OgnamPlayerState->ServerSendMessage(Message);
-	OgnamPlayerState->DisplayMessage(Message, OgnamPlayerState);
 }
 
 void AOgnamPlayerController::ServerRequestServerTime_Implementation(float requestWorldTime)
@@ -275,7 +267,6 @@ void AOgnamPlayerController::ServerRequestServerTime_Implementation(float reques
 
 void AOgnamPlayerController::ClientReportServerTime_Implementation(float requestWorldTime, float serverTime)
 {
-	O_LOG(TEXT("Sync"));
 	float roundTripTime = GetWorld()->GetTimeSeconds() - requestWorldTime;
 	float adjustedTime = serverTime + (roundTripTime * 0.5f);
 	ServerTimeDelta = adjustedTime - GetWorld()->GetTimeSeconds();

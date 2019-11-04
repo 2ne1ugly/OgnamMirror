@@ -53,9 +53,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void JoinGame(FString Address);
 
-	UFUNCTION(BlueprintCallable)
-	void CreateGame(FString MapName);
-
 	UFUNCTION(Client, Reliable)
 	void ClientGameStarted();
 	void ClientGameStarted_Implementation();
