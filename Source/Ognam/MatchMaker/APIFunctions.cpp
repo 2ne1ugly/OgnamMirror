@@ -94,3 +94,10 @@ bool FAPIFunctions::SendJsonPacket(TSharedPtr<FSocket> Sock, FString& Str)
 	}
 	return Sent == Len;
 }
+
+bool FAPIFunctions::SendJsonPacket(TSharedPtr<class FSocket> Sock, TSharedPtr<FJsonObject> Object)
+{
+	FString JsonStr = GetJsonString(Object.ToSharedRef());
+	bool bSuccess = SendJsonPacket(Sock, JsonStr);
+	return bSuccess;
+}

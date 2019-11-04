@@ -10,6 +10,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMatchmakingEvent);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMatchmakingEventFailure, FText, Message);
 
+#define CHECK_SEND_STATUS(x) if (!x) OnSendMessageFailure.Broadcast()
 
 UENUM()
 enum class EMatchMakingStatus : int32
@@ -84,34 +85,36 @@ public:
 	bool bIsConnected;
 
 	UPROPERTY(BlueprintReadOnly)
-	bool bConnectionInProgress;
-
-	UPROPERTY(BlueprintReadOnly)
 	bool bWaitingToStart;
 
 	UPROPERTY(BlueprintReadOnly)
-	bool bIsInQueue;
+	bool bNotifyConnectionStatus;
 
-	UPROPERTY(BlueprintReadOnly)
-	bool bGameFound;
-
+	/* Triggered once a game has been found and is ready to accept */
 	UPROPERTY(BlueprintAssignable)
 	FMatchmakingEvent OnGameFound;
 
+	/* Triggered when the Client's matchmaker is notified that the game is was grouped for was cancelled before the server was started. */
 	UPROPERTY(BlueprintAssignable)
 	FMatchmakingEvent OnGameCancelled;
 
+	/* Triggered when the Client fails to login, with a status code. */
 	UPROPERTY(BlueprintAssignable)
 	FMatchmakingEventFailure OnLoginFailure;
 
 	UPROPERTY(BlueprintAssignable)
 	FMatchmakingEvent OnLoginSuccess;
 
+	/* Triggered when the client is unable to send a message, most likely loss of connection */
 	UPROPERTY(BlueprintAssignable)
 	FMatchmakingEvent OnSendMessageFailure;
 
+	/* Triggered when the client is unable to connect to the server */
 	UPROPERTY(BlueprintAssignable)
 	FMatchmakingEvent OnConnectToServerFailure;
+
+	UPROPERTY(BlueprintAssignable)
+	FMatchmakingEvent OnConnectToServerSuccess;
 
 	UPROPERTY(BlueprintAssignable)
 	FMatchmakingEvent OnJoinMatch;
@@ -123,6 +126,7 @@ public:
 	FMatchmakingEventFailure OnJoinQueueFailure;
 
 private:
+
 	class ISocketSubsystem* SocketSub;
 
 	class UOgnamGameInstance* GameInstance;
@@ -131,18 +135,12 @@ private:
 
 	FString GameAcceptToken;
 
-	/* If the Last sent request @see RequestToken is not retreived within this time, discard the request token and forget */
-	float RequestTimeout = 10.f;
-
 	/* The current session token, if it ever expires the client must re-login into the server */
 	FString SessionToken;
 
 	/* The most recently sent request. Used to ensure that the client is receiving the proper response */
 	TSharedPtr<FString> RequestToken;
 	
-	/* The time the RequestToken was last updated, used for timeout */
-	long RequestSentTimestamp;
-
 public:
 #define LOCTEXT_NAMESPACE "MatchMaking"
 

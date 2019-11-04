@@ -42,4 +42,6 @@ struct OGNAM_API FAPIFunctions
 
 	static bool SendJsonPacket(TSharedPtr<class FSocket> Sock, FString& Str);
 
+	static bool SendJsonPacket(TSharedPtr<class FSocket> Sock, TSharedPtr<FJsonObject> Object);
+
 };
