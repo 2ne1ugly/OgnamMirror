@@ -82,6 +82,8 @@ void AOgnamPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("GameMenu"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowMenu);
 	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowGameInfo);
 	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Released, this, &AOgnamPlayerController::HideGameInfo);
+	InputComponent->BindAction(TEXT("Chat"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ChatTrigger);
+	InputComponent->BindAction(TEXT("Release"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::Release);
 }
 
 void AOgnamPlayerController::ReceivedPlayer()
@@ -119,10 +121,10 @@ void AOgnamPlayerController::ClientFeedbackDamageDealt_Implementation(AActor* Ca
 
 void AOgnamPlayerController::ClientFeedbackDamageRecieved_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage)
 {
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(Reciever);
-	if (Character)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(Reciever);
+	if (OgnamCharacter)
 	{
-		GetWorld()->GetTimerManager().SetTimer(Character->DamageTimer, 3.f, false);
+		GetWorld()->GetTimerManager().SetTimer(OgnamCharacter->DamageTimer, 3.f, false);
 	}
 }
 
@@ -246,15 +248,12 @@ void AOgnamPlayerController::JoinGame(FString Address)
 	ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
 
-void AOgnamPlayerController::WhoAmI()
+void AOgnamPlayerController::SendMessage(FString Message)
 {
-	IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
-	ULocalPlayer* LocalPlayer = GetLocalPlayer();
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("My name is %s"), *PlayerState->GetPlayerName()));
-}
-
-void AOgnamPlayerController::SendMessage(FString& Message)
-{
+	if (Message == "")
+	{
+		return;
+	}
 	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
 	OgnamPlayerState->ServerSendMessage(Message);
 }
@@ -270,4 +269,14 @@ void AOgnamPlayerController::ClientReportServerTime_Implementation(float request
 	float roundTripTime = GetWorld()->GetTimeSeconds() - requestWorldTime;
 	float adjustedTime = serverTime + (roundTripTime * 0.5f);
 	ServerTimeDelta = adjustedTime - GetWorld()->GetTimeSeconds();
+}
+
+void AOgnamPlayerController::ChatTrigger()
+{
+	OnChatTrigger.Broadcast();
+}
+
+void AOgnamPlayerController::Release()
+{
+	OnChatRelease.Broadcast();
 }

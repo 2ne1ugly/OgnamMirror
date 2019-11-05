@@ -6,8 +6,6 @@
 #include "GameFramework/GameState.h"
 #include "OgnamGameState.generated.h"
 
-
-
 /**
  *	This state should never be used.
  *	Not even meant for inheritance
@@ -61,4 +59,11 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<class UOgnamChatMessage*> Messages;
+
+	UPROPERTY(BlueprintReadOnly)
+	float ChatVisibleLifetime;
+
+	/* bChatDirty tells blueprint it should update the in-game chat box and auto-scroll the box. */
+	UPROPERTY(BlueprintReadWrite)
+	bool bChatDirty;
 };

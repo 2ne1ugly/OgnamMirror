@@ -24,6 +24,7 @@ void AOgnamGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	RemoveFromKillFeed();
+	ChatVisibleLifetime -= DeltaTime;
 }
 
 void AOgnamGameState::BeginPlay()
@@ -153,5 +154,6 @@ void AOgnamGameState::DisplayMessage(const FString& Message, APlayerState* Sende
 	ChatMessage->Sender = Sender;
 	ChatMessage->Message = Message;
 	Messages.Add(ChatMessage);
-	GEngine->AddOnScreenDebugMessage(-1, 60.f, FColor::Red, FString::Printf(TEXT("%s: %s"), *Sender->GetPlayerName(), *Message));
+	ChatVisibleLifetime = 20.f;
+	bChatDirty = true;
 }

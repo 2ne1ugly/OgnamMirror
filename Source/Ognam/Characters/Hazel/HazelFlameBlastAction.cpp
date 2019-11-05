@@ -20,6 +20,10 @@ UHazelFlameBlastAction::UHazelFlameBlastAction()
 
 void UHazelFlameBlastAction::BeginChannel()
 {
+	if (!GetOwner()->HasAuthority())
+	{
+		return;
+	}
 	FHitResult AimHit;
 	Target->GetAimHitResult(AimHit, 0.f, 2000.f);
 	FVector From;

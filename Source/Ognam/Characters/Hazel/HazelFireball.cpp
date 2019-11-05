@@ -51,6 +51,11 @@ void AHazelFireball::BeginPlay()
 
 void AHazelFireball::ProjectileStop(const FHitResult& ImpactResult)
 {
+	Destroy();
+	if (!HasAuthority())
+	{
+		return;
+	}
 	if (!Instigator)
 	{
 		O_LOG(TEXT("No Instigator!"));
@@ -59,12 +64,6 @@ void AHazelFireball::ProjectileStop(const FHitResult& ImpactResult)
 
 	AOgnamCharacter* Character = Cast<AOgnamCharacter>(ImpactResult.GetActor());
 	if (!Character)
-	{
-		return;
-	}
-	Collision->AttachToComponent(ImpactResult.GetComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), ImpactResult.BoneName);
-
-	if (!HasAuthority())
 	{
 		return;
 	}
