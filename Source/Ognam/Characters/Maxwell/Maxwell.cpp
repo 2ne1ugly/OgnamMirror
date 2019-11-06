@@ -4,11 +4,24 @@
 #include "MaxwellSniperRifle.h"
 #include "MaxwellShadowShift.h"
 #include "MaxwellVault.h"
+#include "ConstructorHelpers.h"
+#include "Components/SkeletalMeshComponent.h"
 //#include "MaxwellClaretStrike.h"
 
 AMaxwell::AMaxwell()
 {
 	CharacterName = FText::FromString("Maxwell");
+
+
+	static ConstructorHelpers::FObjectFinder<UClass> AnimBP(
+		TEXT("AnimBlueprint'/Game/Animation/Maxwell/MaxwellAnim.MaxwellAnim_C'"));
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkMesh(TEXT("SkeletalMesh'/Game/Meshes/MaxwellRedo.MaxwellRedo'"));
+	GetMesh()->SetSkeletalMesh(SkMesh.Object);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+
+	GetMesh()->SetAnimInstanceClass(AnimBP.Object);
 }
 
 void AMaxwell::BeginPlay()
