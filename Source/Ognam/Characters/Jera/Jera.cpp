@@ -11,6 +11,7 @@ AJera::AJera()
 {
 	RootComponent->SetRelativeScale3D(FVector(1.1f));
 	MaxHealth = 300.f;
+	Health = MaxHealth;
 
 	CharacterName = FText::FromString("Jera");
 }

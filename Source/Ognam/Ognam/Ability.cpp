@@ -33,6 +33,11 @@ float UAbility::GetNumber() const
 	return 0.f;
 }
 
+UTexture2D *UAbility::GetIcon() const
+{
+	return Icon;
+}
+
 bool UAbility::IsSupportedForNetworking() const
 {
 	return true;

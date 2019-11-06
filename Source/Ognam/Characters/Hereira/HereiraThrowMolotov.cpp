@@ -5,11 +5,15 @@
 #include "TimerManager.h"
 #include "HereiraMolotov.h"
 #include "Camera/CameraComponent.h"
+#include "ConstructorHelpers.h"
 
 UHereiraThrowMolotov::UHereiraThrowMolotov()
 {
 	AbilityType = EAbilityType::Unique;
 	Cooldown = 10.f;
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Hereira/Molotov.Molotov'"));
+	Icon = IconTexture.Object;
 }
 
 void UHereiraThrowMolotov::ActivateAbility()

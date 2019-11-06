@@ -1,14 +1,18 @@
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "HereiraSprint.h"
 #include "TimerManager.h"
 #include "HereiraSprinting.h"
 #include "Ognam/OgnamCharacter.h"
-// Fill out your copyright notice in the Description page of Project Settings.
+#include "ConstructorHelpers.h"
 
 UHereiraSprint::UHereiraSprint()
 {
 	AbilityType = EAbilityType::Mobility;
 	Cooldown = 8.f;
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Hereira/Sprint.Sprint'"));
+	Icon = IconTexture.Object;
 }
 
 bool UHereiraSprint::ShouldShowNumber() const
