@@ -17,6 +17,6 @@ bool UMaxwellVaultModifier::ShouldEnd()
 
 void UMaxwellVaultModifier::TickModifier(float DeltaTime)
 {
-	Target->Gravity += Target->BaseGravity * 2;
+	Target->Gravity += Target->BaseGravity;
 	Target->AirControl += Target->BaseAirControl * 3;
 }

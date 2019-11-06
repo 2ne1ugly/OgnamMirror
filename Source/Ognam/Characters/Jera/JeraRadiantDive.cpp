@@ -6,11 +6,16 @@
 #include "Ognam/OgnamCharacter.h"
 #include "JeraDescending.h"
 #include "Camera/CameraComponent.h"
+#include "ConstructorHelpers.h"
+
 UJeraRadiantDive::UJeraRadiantDive()
 {
 	AbilityType = EAbilityType::Mobility;
 	Cooldown = 6.f;
 	UnacceptedStatusEffects |= EStatusEffect::Rooted;
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Jera/super_jump.super_jump'"));
+	Icon = IconTexture.Object;
 }
 
 void UJeraRadiantDive::ActivateAbility()

@@ -16,7 +16,7 @@ UBloodhoundImpactShotgunAction::UBloodhoundImpactShotgunAction()
 	PostDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
 
 	NumPellets = 16;
-	Spread = PI / 16.f;
+	Spread = PI / 12.f;
 }
 
 void UBloodhoundImpactShotgunAction::EndChannel()
@@ -40,7 +40,7 @@ void UBloodhoundImpactShotgunAction::EndChannel()
 		float RandAngle = FMath::RandRange(0.f, PI * 2.f);
 		float RandSpread = FMath::Tan(FMath::RandRange(0.f, Spread));
 		FVector BulletDirection = FVector(1, FMath::Cos(RandAngle) * RandSpread, FMath::Sin(RandAngle) * RandSpread).GetSafeNormal();
-		To = From + Direction.Rotation().RotateVector(BulletDirection) * 500.f;
+		To = From + Direction.Rotation().RotateVector(BulletDirection) * 700.f;
 
 		FHitResult BulletHit;
 		GetWorld()->LineTraceSingleByChannel(BulletHit, From, To, ECollisionChannel::ECC_GameTraceChannel1, Params);
@@ -68,7 +68,7 @@ void UBloodhoundImpactShotgunAction::EndChannel()
 	}
 
 	//Pushback
-	Target->LaunchCharacter(-GetOwner()->GetActorForwardVector() * 1000.f, false, true);
+	Target->LaunchCharacter(-GetOwner()->GetActorForwardVector() * 800.f, false, true);
 }
 
 void UBloodhoundImpactShotgunAction::NetDrawTrajectory_Implementation(FVector From, const TArray<FVector>& Tos)
