@@ -46,4 +46,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	EAbilityType AbilityType;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsPassive;
 };
