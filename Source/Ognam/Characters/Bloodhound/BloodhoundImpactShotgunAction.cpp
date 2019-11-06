@@ -58,7 +58,7 @@ void UBloodhoundImpactShotgunAction::EndChannel()
 		{
 			continue ;
 		}
-		Damage.FindOrAdd(OtherCharacter) += 6.f;
+		Damage.FindOrAdd(OtherCharacter) += 7.f;
 	}
 	NetDrawTrajectory(From, Tos);
 

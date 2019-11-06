@@ -6,6 +6,7 @@
 UBloodhoundSteamLeap::UBloodhoundSteamLeap()
 {
 	AbilityType = EAbilityType::Mobility;
+	Cooldown = 7.f;
 }
 
 void UBloodhoundSteamLeap::ActivateAbility()

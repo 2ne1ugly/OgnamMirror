@@ -62,6 +62,12 @@ public:
 	void SubReleased();
 
 	/*
+	**	Testing functions
+	*/
+	UFUNCTION(BlueprintCallable)
+	void SetCamera(float ArmLength, FVector SocketOffset, float FOV);
+
+	/*
 	**	Getters, Setters
 	*/
 	UFUNCTION(BlueprintCallable)

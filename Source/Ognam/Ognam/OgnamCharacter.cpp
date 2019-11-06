@@ -37,8 +37,8 @@ AOgnamCharacter::AOgnamCharacter()
 
 	//Create Spring arm and Camera
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm->SocketOffset = FVector(0.f, 0.f, 120.f);
-	SpringArm->SetRelativeRotation(FRotator(-30.f, 0.f, 0.f));
+	SpringArm->TargetArmLength = 250.f;
+	SpringArm->SocketOffset = FVector(0.f, 40.f, 80.f);
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->bDoCollisionTest = false;
@@ -101,6 +101,7 @@ AOgnamCharacter::AOgnamCharacter()
 	NameTagComponent->SetRelativeLocation(FVector(0, 0, 90));
 	NameTagComponent->SetOwnerNoSee(true);
 	NameTagComponent->SetWidgetClass(NameTagWidgetClass.Class);
+	NameTagComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -345,6 +346,13 @@ void AOgnamCharacter::SubPressed()
 void AOgnamCharacter::SubReleased()
 {
 	OnSubReleased.Broadcast();
+}
+
+void AOgnamCharacter::SetCamera(float ArmLength, FVector SocketOffset, float FOV)
+{
+	SpringArm->TargetArmLength = ArmLength;
+	SpringArm->SocketOffset = SocketOffset;
+	Camera->FieldOfView = FOV;
 }
  
 void AOgnamCharacter::MoveForward(float Amount)

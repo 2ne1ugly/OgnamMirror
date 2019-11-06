@@ -7,7 +7,7 @@
 UBloodhoundHuntingHour::UBloodhoundHuntingHour()
 {
 	AbilityType = EAbilityType::Unique;
-	Cooldown = 1.f;
+	Cooldown = 7.f;
 }
 
 void UBloodhoundHuntingHour::ActivateAbility()

@@ -7,7 +7,7 @@
 UBloodhoundImpactShotgun::UBloodhoundImpactShotgun()
 {
 	AbilityType = EAbilityType::Special;
-	Cooldown = 1.f;
+	Cooldown = 5.f;
 }
 
 void UBloodhoundImpactShotgun::ActivateAbility()

@@ -28,8 +28,8 @@ void UMaxwellAimDowned::BeginModifier()
 	{
 		return;
 	}
-	Target->SpringArm->SocketOffset = FVector(15.f, 0.f, 50.f);
-	Target->SpringArm->TargetArmLength = 0.f;
+	//Target->SpringArm->SocketOffset = FVector(15.f, 0.f, 50.f);
+	//Target->SpringArm->TargetArmLength = 0.f;
 	Target->Camera->FieldOfView = 30.f;
 	Target->GetMesh()->SetOwnerNoSee(true);
 }
@@ -41,8 +41,8 @@ void UMaxwellAimDowned::EndModifier()
 	{
 		return;
 	}
-	Target->SpringArm->SocketOffset = FVector(0.f, 0.f, 120.f);
-	Target->SpringArm->TargetArmLength = 300.f;
+	//Target->SpringArm->SocketOffset = FVector(0.f, 0.f, 120.f);
+	//Target->SpringArm->TargetArmLength = 300.f;
 	Target->Camera->FieldOfView = 90.f;
 	Target->GetMesh()->SetOwnerNoSee(false);
 }
