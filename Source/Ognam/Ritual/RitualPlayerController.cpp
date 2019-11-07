@@ -125,10 +125,10 @@ void ARitualPlayerController::HideCharacterSelection()
 	}
 	if (GetPawn())
 	{
-		AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
+		AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetCharacter());
 		// This is a placeholder to prevent cheating
 		// We need a spectator to actually prevent real life cheating involving code changes
-		if (Character && Character->IsAlive())
+		if (OgnamCharacter && OgnamCharacter->IsAlive())
 		{
 			GetPawn()->EnableInput(this);
 		}
@@ -176,22 +176,22 @@ void ARitualPlayerController::ToggleChangeCharacterUI()
 void ARitualPlayerController::PreRoundBegin_Implementation()
 {
 	ShowCharacterSelection();
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-	if (Character)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetCharacter());
+	if (OgnamCharacter)
 	{
-		Character->SetCanMove(false);
-		Character->DisableInput(this);
+		OgnamCharacter->SetCanMove(false);
+		OgnamCharacter->DisableInput(this);
 	}
 }
 
 void ARitualPlayerController::PreRoundEnd_Implementation()
 {
 	HideCharacterSelection();
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-	if (Character)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetCharacter());
+	if (OgnamCharacter)
 	{
-		Character->SetCanMove(true);
-		Character->EnableInput(this);
+		OgnamCharacter->SetCanMove(true);
+		OgnamCharacter->EnableInput(this);
 	}
 }
 

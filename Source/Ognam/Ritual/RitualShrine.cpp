@@ -90,16 +90,16 @@ void ARitualShrine::Tick(float DeltaTime)
 void ARitualShrine::Reset()
 {
 	Super::Reset();
-	NetReset();
-}
-
-void ARitualShrine::NetReset_Implementation()
-{
 	Attackers.Empty();
 	Defenders.Empty();
 	AttackerCount = 0;
 	DefenderCount = 0;
 	CaptureProgress = 0;
+	//NetReset();
+}
+
+void ARitualShrine::NetReset_Implementation()
+{
 }
 
 void ARitualShrine::OnEnterField(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

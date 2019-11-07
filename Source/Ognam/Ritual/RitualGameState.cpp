@@ -320,3 +320,11 @@ void ARitualGameState::NetStartSlowMotion_Implementation()
 {
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), DilationAmount);
 }
+
+void ARitualGameState::NetReset_Implementation()
+{
+	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
+	{
+		Itr->Reset();
+	}
+}

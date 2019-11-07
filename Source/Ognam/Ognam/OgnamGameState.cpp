@@ -157,3 +157,8 @@ void AOgnamGameState::DisplayMessage(const FString& Message, APlayerState* Sende
 	ChatVisibleLifetime = 20.f;
 	bChatDirty = true;
 }
+
+void AOgnamGameState::NetReset_Implementation()
+{
+
+}

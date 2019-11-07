@@ -50,6 +50,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DisplayMessage(const FString& Message, APlayerState* Sender);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void NetReset();
+	virtual void NetReset_Implementation();
+
 protected:
 	UPROPERTY(Transient, Replicated)
 	FString ServerAddress;

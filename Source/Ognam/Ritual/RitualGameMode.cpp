@@ -99,6 +99,7 @@ void ARitualGameMode::PreRoundBegin()
 	}
 	RitualGameState->SetPreRoundStage(true);
 	RitualGameState->UpdateProperties();
+	RitualGameState->NetReset();
 	for (ARitualPlayerController* PlayerController : PlayerControllers)
 	{
 		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
