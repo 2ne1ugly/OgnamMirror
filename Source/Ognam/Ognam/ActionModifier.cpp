@@ -6,6 +6,7 @@
 #include "TimerManager.h"
 #include "OgnamCharacter.h"
 #include "Ognam/OgnamMacro.h"
+#include "UnrealNetwork.h"
 
 UActionModifier::UActionModifier()
 {
@@ -21,6 +22,13 @@ UActionModifier::UActionModifier()
 	PreDelayAction = EActionNotifier::None;
 	ChannelAction = EActionNotifier::None;;
 	PostDelayAction = EActionNotifier::None;;
+}
+
+void UActionModifier::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UActionModifier, bInterrupted);
 }
 
 bool UActionModifier::ShouldEnd()
@@ -67,7 +75,28 @@ void UActionModifier::EndModifier()
 {
 	if (Stage != EActionStage::PostAction)
 	{
-		Interrupt();
+		if (bInterrupted)
+		{
+			Interrupt();
+		}
+		else
+		{
+			switch (Stage)
+			{
+			case EActionStage::PreAction:
+				BeginPreDelay();
+			case EActionStage::PreDelay:
+				EndPreDelay();
+				BeginChannel();
+			case EActionStage::Channel:
+				EndChannel();
+				BeginPostDelay();
+			case EActionStage::PostDelay:
+				EndPostDelay();
+			default:
+				Stage = EActionStage::PostAction;
+			}
+		}
 	}
 }
 
@@ -247,4 +276,5 @@ void UActionModifier::Interrupt()
 	default:
 		break;
 	}
+	Stage = EActionStage::PostAction;
 }
