@@ -42,7 +42,7 @@ void ARitualGameMode::Tick(float DeltaTime)
 	RitualGameState->UpdateProperties();
 	if (RitualGameState->ShouldEndRound() && !RitualGameState->IsRoundEnding())
 	{
-		PostRoundBegin();
+		StartPostRound();
 	}
 }
 
@@ -86,10 +86,10 @@ void ARitualGameMode::HandleMatchHasStarted()
 		O_LOG(TEXT("Not a Ritual Gamestate"));
 		return;
 	}
-	PreRoundBegin();
+	StartPreRound();
 }
 
-void ARitualGameMode::PreRoundBegin()
+void ARitualGameMode::StartPreRound()
 {
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (!RitualGameState)
@@ -114,10 +114,10 @@ void ARitualGameMode::PreRoundBegin()
 			RitualPlayerState->ForceNetUpdate();
 		}
 	}
-	GetWorld()->GetTimerManager().SetTimer(PreRoundTimer, this, &ARitualGameMode::PreRoundEnd, CharacterSelectionTime, false);
+	GetWorld()->GetTimerManager().SetTimer(PreRoundTimer, this, &ARitualGameMode::EndPreRound, CharacterSelectionTime, false);
 }
 
-void ARitualGameMode::PreRoundEnd()
+void ARitualGameMode::EndPreRound()
 {
 	for (ARitualPlayerController* PlayerController : PlayerControllers)
 	{
@@ -140,7 +140,7 @@ void ARitualGameMode::BeginRound()
 	RitualGameState->StartNewRound();
 }
 
-void ARitualGameMode::PostRoundBegin()
+void ARitualGameMode::StartPostRound()
 {
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
@@ -150,10 +150,10 @@ void ARitualGameMode::PostRoundBegin()
 	}
 	RitualGameState->SetRoundEnding(true);
 	RitualGameState->NetStartSlowMotion();
-	GetWorld()->GetTimerManager().SetTimer(PostRoundTimer, this, &ARitualGameMode::PostRoundEnd, PostRoundTime, false);
+	GetWorld()->GetTimerManager().SetTimer(PostRoundTimer, this, &ARitualGameMode::EndPostRound, PostRoundTime, false);
 }
 
-void ARitualGameMode::PostRoundEnd()
+void ARitualGameMode::EndPostRound()
 {
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
@@ -191,7 +191,7 @@ void ARitualGameMode::EndRound()
 	{
 		Itr->Destroy();
 	}
-	PreRoundBegin();
+	StartPreRound();
 }
 
 void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)

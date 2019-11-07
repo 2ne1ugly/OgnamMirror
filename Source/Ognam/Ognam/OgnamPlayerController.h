@@ -90,6 +90,24 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnChatTrigger OnChatRelease;
 
+	UFUNCTION(BlueprintCallable)
+	void RequestMouseControl();
+
+	UFUNCTION(BlueprintCallable)
+	void ReleaseMouseControl();
+
+	UFUNCTION(BlueprintCallable)
+	void LockPlayerInput();
+
+	UFUNCTION(BlueprintCallable)
+	void UnlockPlayerInput();
+
+	UFUNCTION(BlueprintCallable)
+	void RequestCompleteLock();
+
+	UFUNCTION(BlueprintCallable)
+	void ReleaseCompleteLock();
+
 private:
 
 	/*
@@ -121,4 +139,8 @@ private:
 
 	UPROPERTY()
 	class USoundCue* KillSound;
+
+	int32 MouseControl;
+
+	int32 InputControl;
 };
