@@ -7,6 +7,7 @@
 UHazelLightenedWill::UHazelLightenedWill()
 {
 	AbilityType = EAbilityType::Mobility;
+	bIsPassive = true;
 }
 
 void UHazelLightenedWill::BeginPlay()

@@ -10,6 +10,7 @@ UAbility::UAbility()
 	SetNetAddressable();
 	SetIsReplicated(true);
 	bAutoRegister = true;
+	bIsPassive = false;
 }
 
 void UAbility::BeginPlay()

@@ -7,7 +7,7 @@
 /*
 **	Type of Ability. Affects key binding and UI
 */
-UENUM()
+UENUM(BlueprintType)
 enum class EAbilityType : uint8
 {
 	None,
@@ -15,6 +15,7 @@ enum class EAbilityType : uint8
 	Unique,
 	Utility,
 	Special,
+	Max,
 };
 
 /*
