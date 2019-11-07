@@ -105,36 +105,22 @@ void ARitualPlayerController::ShowCharacterSelection()
 			CharacterSelectionHUD = CreateWidget<UUserWidget>(this, CharacterSelectionHUDClass);
 		}
 	}
-	if (CharacterSelectionHUD)
+	if (CharacterSelectionHUD && !CharacterSelectionHUD->IsInViewport())
 	{
 		CharacterSelectionHUD->AddToViewport();
+		LockPlayerInput();
+		RequestMouseControl();
 	}
-	if (GetPawn())
-	{
-		GetPawn()->DisableInput(this);
-	}
-	bShowMouseCursor = true;
-	SetInputMode(FInputModeGameAndUI());
 }
 
 void ARitualPlayerController::HideCharacterSelection()
 {
-	if (CharacterSelectionHUD)
+	if (CharacterSelectionHUD && CharacterSelectionHUD->IsInViewport())
 	{
 		CharacterSelectionHUD->RemoveFromViewport();
+		UnlockPlayerInput();
+		ReleaseMouseControl();
 	}
-	if (GetPawn())
-	{
-		AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetCharacter());
-		// This is a placeholder to prevent cheating
-		// We need a spectator to actually prevent real life cheating involving code changes
-		if (OgnamCharacter && OgnamCharacter->IsAlive())
-		{
-			GetPawn()->EnableInput(this);
-		}
-	}
-	bShowMouseCursor = false;
-	SetInputMode(FInputModeGameOnly());
 }
 
 AActor* ARitualPlayerController::GetTargetedActor() const
@@ -180,7 +166,8 @@ void ARitualPlayerController::PreRoundBegin_Implementation()
 	if (OgnamCharacter)
 	{
 		OgnamCharacter->SetCanMove(false);
-		OgnamCharacter->DisableInput(this);
+		LockPlayerInput();
+		//OgnamCharacter->DisableInput(this);
 	}
 }
 
@@ -191,7 +178,8 @@ void ARitualPlayerController::PreRoundEnd_Implementation()
 	if (OgnamCharacter)
 	{
 		OgnamCharacter->SetCanMove(true);
-		OgnamCharacter->EnableInput(this);
+		UnlockPlayerInput();
+		//OgnamCharacter->EnableInput(this);
 	}
 }
 

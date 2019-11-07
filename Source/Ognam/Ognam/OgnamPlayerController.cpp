@@ -189,22 +189,14 @@ void AOgnamPlayerController::ShowMenu()
 	if (MenuHUD->IsInViewport())
 	{
 		MenuHUD->RemoveFromViewport();
-		if (GetPawn())
-		{
-			GetPawn()->EnableInput(this);
-		}
-		SetInputMode(FInputModeGameOnly());
-		bShowMouseCursor = false;
+		UnlockPlayerInput();
+		ReleaseMouseControl();
 	}
 	else
 	{
 		MenuHUD->AddToViewport();
-		if (GetPawn())
-		{
-			GetPawn()->DisableInput(this);
-		}
-		SetInputMode(FInputModeGameAndUI());
-		bShowMouseCursor = true;
+		LockPlayerInput();
+		RequestMouseControl();
 	}
 }
 
@@ -215,7 +207,6 @@ void AOgnamPlayerController::ShowGameInfo()
 		O_LOG_E(TEXT("No Game Info"));
 		return;
 	}
-
 	GameInfoHUD->AddToViewport();
 }
 
@@ -226,7 +217,6 @@ void AOgnamPlayerController::HideGameInfo()
 		O_LOG_E(TEXT("No Game Info"));
 		return;
 	}
-
 	GameInfoHUD->RemoveFromViewport();
 }
 
@@ -265,4 +255,62 @@ void AOgnamPlayerController::ChatTrigger()
 void AOgnamPlayerController::Release()
 {
 	OnChatRelease.Broadcast();
+}
+
+void AOgnamPlayerController::RequestMouseControl()
+{
+	MouseControl++;
+	bShowMouseCursor = true;
+	SetInputMode(FInputModeGameAndUI());
+}
+
+void AOgnamPlayerController::ReleaseMouseControl()
+{
+	if (MouseControl > 0)
+	{
+		MouseControl--;
+	}
+	if (MouseControl == 0)
+	{
+		bShowMouseCursor = false;
+		SetInputMode(FInputModeGameOnly());
+	}
+}
+
+void AOgnamPlayerController::LockPlayerInput()
+{
+	InputControl++;
+	O_LOG(TEXT("lockInputControl: %d"), InputControl);
+	if (GetPawn())
+	{
+		GetPawn()->DisableInput(this);
+	}
+}
+
+void AOgnamPlayerController::UnlockPlayerInput()
+{
+	if (InputControl > 0)
+	{
+		InputControl--;
+	}
+	O_LOG(TEXT("unlockInputControl: %d"), InputControl);
+	if (InputControl == 0)
+	{
+		if (GetPawn())
+		{
+			GetPawn()->EnableInput(this);
+		}
+	}
+}
+
+void AOgnamPlayerController::RequestCompleteLock()
+{
+	RequestMouseControl();
+	LockPlayerInput();
+}
+
+void AOgnamPlayerController::ReleaseCompleteLock()
+{
+	ReleaseMouseControl();
+	UnlockPlayerInput();
 }
