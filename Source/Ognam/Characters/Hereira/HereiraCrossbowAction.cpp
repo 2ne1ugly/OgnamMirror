@@ -3,6 +3,7 @@
 #include "HereiraCrossbowAction.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "HereiraArrow.h"
 #include "Engine/World.h"
 
@@ -24,7 +25,7 @@ void UHereiraCrossbowAction::BeginChannel()
 	FHitResult Aim;
 	Target->GetAimHitResult(Aim, 0.f, 10000.f);
 
-	FVector From = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
+	FVector From = Target->GetMesh()->GetSocketLocation("BulletSpawn");
 	FVector To;
 	if (Aim.bBlockingHit)
 		To = Aim.ImpactPoint;
@@ -36,19 +37,4 @@ void UHereiraCrossbowAction::BeginChannel()
 	Params.bNoFail = true;
 	Params.Instigator = Target;
 	GetWorld()->SpawnActor<AHereiraArrow>(From, Direction.Rotation(), Params)->SetReplicates(true);
-	//GetWorld()->SpawnActor<AJeraCrystalShard>(From, Direction.Rotation(), Params)->SetReplicates(true);
-
-
-	//float UpRatio = 0.06f;
-	//FVector Direction = Target->Camera->GetForwardVector() * (1 - UpRatio) + FVector::UpVector * UpRatio;
-	//FRotator Rotator = FRotationMatrix::MakeFromX(Direction.GetSafeNormal()).Rotator();
-
-	////Set Spawner
-	//FActorSpawnParameters SpawnParameters;
-	//SpawnParameters.bNoFail = true;
-	//SpawnParameters.Instigator = Target;
-
-	//FVector Location = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
-
-	//GetWorld()->SpawnActor<AHereiraArrow>(Location, Rotator, SpawnParameters)->SetReplicates(true);
 }
