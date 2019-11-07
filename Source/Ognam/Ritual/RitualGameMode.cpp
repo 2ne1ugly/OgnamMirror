@@ -235,18 +235,21 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 	else
 	{
-		if (PlayerControllers.Num() % 2)
-		{
-			RitualPlayerState->SetTeam(RitualGameState->GreenName);
-			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumGreenPlayers());
-		}
-		else
+		int32 GreenCount = RitualGameState->GetNumGreenPlayers();
+		int32 BlueCount = RitualGameState->GetNumBluePlayers();
+		if (GreenCount > BlueCount)
 		{
 			RitualPlayerState->SetTeam(RitualGameState->BlueName);
 			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumBluePlayers());
 		}
+		else
+		{
+			RitualPlayerState->SetTeam(RitualGameState->GreenName);
+			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumGreenPlayers());
+		}
 		PlayerController->ClientGameStarted();
 		PlayerControllers.Push(PlayerController);
+		RitualGameState->UpdateProperties();
 	}
 }
 
