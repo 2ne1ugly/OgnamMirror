@@ -82,6 +82,8 @@ void AOgnamPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("GameMenu"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowMenu);
 	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ShowGameInfo);
 	InputComponent->BindAction(TEXT("GameInfo"), EInputEvent::IE_Released, this, &AOgnamPlayerController::HideGameInfo);
+	InputComponent->BindAction(TEXT("Chat"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::ChatTrigger);
+	InputComponent->BindAction(TEXT("Release"), EInputEvent::IE_Pressed, this, &AOgnamPlayerController::Release);
 }
 
 void AOgnamPlayerController::ReceivedPlayer()
@@ -119,10 +121,10 @@ void AOgnamPlayerController::ClientFeedbackDamageDealt_Implementation(AActor* Ca
 
 void AOgnamPlayerController::ClientFeedbackDamageRecieved_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage)
 {
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(Reciever);
-	if (Character)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(Reciever);
+	if (OgnamCharacter)
 	{
-		GetWorld()->GetTimerManager().SetTimer(Character->DamageTimer, 3.f, false);
+		GetWorld()->GetTimerManager().SetTimer(OgnamCharacter->DamageTimer, 3.f, false);
 	}
 }
 
@@ -246,25 +248,14 @@ void AOgnamPlayerController::JoinGame(FString Address)
 	ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
 
-void AOgnamPlayerController::CreateGame(FString MapName)
+void AOgnamPlayerController::SendMessage(FString Message)
 {
-	UGameplayStatics::OpenLevel(GetWorld(), *MapName, true, FString("?listen?numplayers=4"));
-}
-
-void AOgnamPlayerController::WhoAmI()
-{
-	IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
-	O_LOG(TEXT("Sub : %s"), *Sub->GetOnlineServiceName().ToString());
-	ULocalPlayer* LocalPlayer = GetLocalPlayer();
-	O_LOG(TEXT("Playerid : %s"), *LocalPlayer->GetPreferredUniqueNetId().ToString());
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("My name is %s"), *PlayerState->GetPlayerName()));
-}
-
-void AOgnamPlayerController::SendMessage(FString& Message)
-{
+	if (Message == "")
+	{
+		return;
+	}
 	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
 	OgnamPlayerState->ServerSendMessage(Message);
-	OgnamPlayerState->DisplayMessage(Message, OgnamPlayerState);
 }
 
 void AOgnamPlayerController::ServerRequestServerTime_Implementation(float requestWorldTime)
@@ -275,8 +266,17 @@ void AOgnamPlayerController::ServerRequestServerTime_Implementation(float reques
 
 void AOgnamPlayerController::ClientReportServerTime_Implementation(float requestWorldTime, float serverTime)
 {
-	O_LOG(TEXT("Sync"));
 	float roundTripTime = GetWorld()->GetTimeSeconds() - requestWorldTime;
 	float adjustedTime = serverTime + (roundTripTime * 0.5f);
 	ServerTimeDelta = adjustedTime - GetWorld()->GetTimeSeconds();
+}
+
+void AOgnamPlayerController::ChatTrigger()
+{
+	OnChatTrigger.Broadcast();
+}
+
+void AOgnamPlayerController::Release()
+{
+	OnChatRelease.Broadcast();
 }

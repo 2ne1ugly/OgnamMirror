@@ -13,6 +13,7 @@
 #include "UnrealNetwork.h"
 #include "TimerManager.h"
 #include "OgnamPlayerController.h"
+#include "OgnamChatMessage.h"
 
 AOgnamGameState::AOgnamGameState()
 {
@@ -23,6 +24,7 @@ void AOgnamGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	RemoveFromKillFeed();
+	ChatVisibleLifetime -= DeltaTime;
 }
 
 void AOgnamGameState::BeginPlay()
@@ -139,4 +141,19 @@ float AOgnamGameState::GetServerWorldTimeSeconds() const
 	{
 		return GetWorld()->GetTimeSeconds() + Controller->ServerTimeDelta;
 	}
+}
+
+void AOgnamGameState::NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender)
+{
+	DisplayMessage(Message, Sender);
+}
+
+void AOgnamGameState::DisplayMessage(const FString& Message, APlayerState* Sender)
+{
+	UOgnamChatMessage* ChatMessage = NewObject<UOgnamChatMessage>(Sender);
+	ChatMessage->Sender = Sender;
+	ChatMessage->Message = Message;
+	Messages.Add(ChatMessage);
+	ChatVisibleLifetime = 20.f;
+	bChatDirty = true;
 }

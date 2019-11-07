@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "OgnamPlayerController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnChatTrigger);
+
 /**
  * 
  */
@@ -53,9 +55,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void JoinGame(FString Address);
 
-	UFUNCTION(BlueprintCallable)
-	void CreateGame(FString MapName);
-
 	UFUNCTION(Client, Reliable)
 	void ClientGameStarted();
 	void ClientGameStarted_Implementation();
@@ -64,11 +63,8 @@ public:
 	void ServerSendName(const FString& Name);
 	void ServerSendName_Implementation(const FString& Name);
 
-	UFUNCTION(exec)
-	void WhoAmI();
-
-	UFUNCTION(exec)
-	void SendMessage(FString& Message);
+	UFUNCTION(exec, BlueprintCallable)
+	void SendMessage(FString Message);
 
 	void ShowGameInfo();
 	void HideGameInfo();
@@ -83,6 +79,16 @@ public:
 	void ClientReportServerTime_Implementation(float requestWorldTime, float serverTime);
 
 	float ServerTimeDelta;
+
+	void ChatTrigger();
+
+	void Release();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnChatTrigger OnChatTrigger;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnChatTrigger OnChatRelease;
 
 private:
 

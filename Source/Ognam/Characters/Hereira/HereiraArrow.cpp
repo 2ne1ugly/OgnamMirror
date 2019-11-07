@@ -35,7 +35,6 @@ AHereiraArrow::AHereiraArrow()
 	Mesh->SetRelativeScale3D(FVector(0.66, 0.66, .66f));
 	Mesh->SetRelativeLocationAndRotation(FVector(-20.f, 0.f, 0.f), FRotator(-90.f, 0.f, 0.f));
 
-	GravityScale = 1.f;
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->bInterpMovement = true;
 	Movement->bRotationFollowsVelocity = true;
@@ -43,6 +42,8 @@ AHereiraArrow::AHereiraArrow()
 	Movement->bShouldBounce = false;
 	Movement->InitialSpeed = 6000.f;
 	Movement->OnProjectileStop.AddDynamic(this, &AHereiraArrow::ProjectileStop);
+	Movement->ProjectileGravityScale = 0.f;
+
 	//Stop happens only when two collision is blocking eachother.
 
 	BaseDamage = 75.f;
@@ -51,7 +52,6 @@ AHereiraArrow::AHereiraArrow()
 void AHereiraArrow::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	Movement->ProjectileGravityScale = GravityScale;
 }
 
 // Called when the game starts or when spawned

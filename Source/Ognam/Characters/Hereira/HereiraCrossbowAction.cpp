@@ -21,17 +21,34 @@ void UHereiraCrossbowAction::BeginChannel()
 	{
 		return;
 	}
+	FHitResult Aim;
+	Target->GetAimHitResult(Aim, 0.f, 10000.f);
 
-	float UpRatio = 0.06f;
-	FVector Direction = Target->Camera->GetForwardVector() * (1 - UpRatio) + FVector::UpVector * UpRatio;
-	FRotator Rotator = FRotationMatrix::MakeFromX(Direction.GetSafeNormal()).Rotator();
+	FVector From = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
+	FVector To;
+	if (Aim.bBlockingHit)
+		To = Aim.ImpactPoint;
+	else
+		To = Aim.TraceEnd;
 
-	//Set Spawner
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.bNoFail = true;
-	SpawnParameters.Instigator = Target;
+	FVector Direction = To - From;
+	FActorSpawnParameters Params;
+	Params.bNoFail = true;
+	Params.Instigator = Target;
+	GetWorld()->SpawnActor<AHereiraArrow>(From, Direction.Rotation(), Params)->SetReplicates(true);
+	//GetWorld()->SpawnActor<AJeraCrystalShard>(From, Direction.Rotation(), Params)->SetReplicates(true);
 
-	FVector Location = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
 
-	GetWorld()->SpawnActor<AHereiraArrow>(Location, Rotator, SpawnParameters)->SetReplicates(true);
+	//float UpRatio = 0.06f;
+	//FVector Direction = Target->Camera->GetForwardVector() * (1 - UpRatio) + FVector::UpVector * UpRatio;
+	//FRotator Rotator = FRotationMatrix::MakeFromX(Direction.GetSafeNormal()).Rotator();
+
+	////Set Spawner
+	//FActorSpawnParameters SpawnParameters;
+	//SpawnParameters.bNoFail = true;
+	//SpawnParameters.Instigator = Target;
+
+	//FVector Location = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
+
+	//GetWorld()->SpawnActor<AHereiraArrow>(Location, Rotator, SpawnParameters)->SetReplicates(true);
 }

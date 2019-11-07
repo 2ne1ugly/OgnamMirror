@@ -3,11 +3,15 @@
 
 #include "BloodhoundImpactShotgun.h"
 #include "BloodhoundImpactShotgunAction.h"
+#include "ConstructorHelpers.h"
 
 UBloodhoundImpactShotgun::UBloodhoundImpactShotgun()
 {
 	AbilityType = EAbilityType::Special;
-	Cooldown = 1.f;
+	Cooldown = 5.f;
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Bloodhound/shotgun.shotgun'"));
+	Icon = IconTexture.Object;
 }
 
 void UBloodhoundImpactShotgun::ActivateAbility()

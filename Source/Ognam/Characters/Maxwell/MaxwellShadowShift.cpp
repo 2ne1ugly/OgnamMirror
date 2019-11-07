@@ -4,12 +4,16 @@
 #include "MaxwellShadowForm.h"
 #include "Ognam/OgnamCharacter.h"
 #include "TimerManager.h"
+#include "ConstructorHelpers.h"
 
 UMaxwellShadowShift::UMaxwellShadowShift()
 {
 	AbilityType = EAbilityType::Mobility;
 	//Cooldown = 7.f;
 	Cooldown = 4.f;
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Maxwell/shadow_walk.shadow_walk'"));
+	Icon = IconTexture.Object;
 }
 
 void UMaxwellShadowShift::OnButtonPressed()

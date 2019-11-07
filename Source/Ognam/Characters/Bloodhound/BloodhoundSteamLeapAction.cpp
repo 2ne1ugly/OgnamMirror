@@ -33,6 +33,6 @@ void UBloodhoundSteamLeapAction::BeginPostDelay()
 	if (Target->HasAuthority())
 	{
 		FVector LaunchDireciton = (GetOwner()->GetActorForwardVector() + FVector::UpVector * UpRatio).GetSafeNormal();
-		Target->LaunchCharacter(LaunchDireciton * 500.f, false, true);
+		Target->LaunchCharacter(LaunchDireciton * 750.f, false, true);
 	}
 }

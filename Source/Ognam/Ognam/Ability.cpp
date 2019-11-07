@@ -10,6 +10,7 @@ UAbility::UAbility()
 	SetNetAddressable();
 	SetIsReplicated(true);
 	bAutoRegister = true;
+	bIsPassive = false;
 }
 
 void UAbility::BeginPlay()
@@ -31,6 +32,11 @@ bool UAbility::ShouldShowNumber() const
 float UAbility::GetNumber() const
 {
 	return 0.f;
+}
+
+UTexture2D *UAbility::GetIcon() const
+{
+	return Icon;
 }
 
 bool UAbility::IsSupportedForNetworking() const

@@ -54,26 +54,49 @@ void ARitualShrine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	AttackerCount = 0;
+	DefenderCount = 0;
+
+	for (AOgnamPlayerState* State : Attackers)
+	{
+		if (State->IsAlive())
+		{
+			AttackerCount++;
+		}
+	}
+
+	for (AOgnamPlayerState* State : Defenders)
+	{
+		if (State->IsAlive())
+		{
+			DefenderCount++;
+		}
+	}
+
 	if (AttackerCount > DefenderCount)
 	{
 		CaptureProgress += DeltaTime + (AttackerCount - DefenderCount - 1) * DeltaTime * SpeedMultiplier;
 	}
-	else
+	else if (AttackerCount < DefenderCount && CaptureProgress > 0)
 	{
-		CaptureProgress = 0;
+		CaptureProgress -= DeltaTime + (DefenderCount - AttackerCount - 1) * DeltaTime * SpeedMultiplier;
+	}
+	else if (AttackerCount == 0 && DefenderCount == 0 && CaptureProgress > 0)
+	{
+		CaptureProgress -= DeltaTime;
 	}
 }
 
 void ARitualShrine::Reset()
 {
 	Super::Reset();
-
 	NetReset();
-	O_LOG(TEXT("Shrine Reset"));
 }
 
 void ARitualShrine::NetReset_Implementation()
 {
+	Attackers.Empty();
+	Defenders.Empty();
 	AttackerCount = 0;
 	DefenderCount = 0;
 	CaptureProgress = 0;
@@ -92,9 +115,13 @@ void ARitualShrine::OnEnterField(UPrimitiveComponent* OverlappedComponent, AActo
 		return;
 
 	if (PlayerState->GetSide() == TEXT("Offense"))
-		AttackerCount++;
+	{
+		Attackers.Add(PlayerState);
+	}
 	if (PlayerState->GetSide() == TEXT("Defense"))
-		DefenderCount++;
+	{
+		Defenders.Add(PlayerState);
+	}
 }
 
 void ARitualShrine::OnExitField(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -110,9 +137,13 @@ void ARitualShrine::OnExitField(UPrimitiveComponent* OverlappedComp, AActor* Oth
 		return;
 
 	if (PlayerState->GetSide() == TEXT("Offense"))
-		AttackerCount--;
+	{
+		Attackers.Remove(PlayerState);
+	}
 	if (PlayerState->GetSide() == TEXT("Defense"))
-		DefenderCount--;
+	{
+		Defenders.Remove(PlayerState);
+	}
 }
 
 bool ARitualShrine::ShouldRoundEnd() const

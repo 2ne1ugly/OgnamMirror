@@ -6,8 +6,6 @@
 #include "GameFramework/GameState.h"
 #include "OgnamGameState.generated.h"
 
-
-
 /**
  *	This state should never be used.
  *	Not even meant for inheritance
@@ -44,10 +42,28 @@ public:
 
 	virtual float GetServerWorldTimeSeconds() const override;
 
+	/* Chat functions */
+	UFUNCTION(Netmulticast, Unreliable)
+	void NetReceiveMessage(const FString& Message, APlayerState* Sender);
+	void NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender);
+
+	UFUNCTION(BlueprintCallable)
+	void DisplayMessage(const FString& Message, APlayerState* Sender);
+
 protected:
 	UPROPERTY(Transient, Replicated)
 	FString ServerAddress;
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<class UKillFeed*> KillFeed;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<class UOgnamChatMessage*> Messages;
+
+	UPROPERTY(BlueprintReadOnly)
+	float ChatVisibleLifetime;
+
+	/* bChatDirty tells blueprint it should update the in-game chat box and auto-scroll the box. */
+	UPROPERTY(BlueprintReadWrite)
+	bool bChatDirty;
 };
