@@ -13,7 +13,6 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamPlayerstate.h"
-#include "MaxwellAimDowned.h"
 
 UMaxwellSniperRifleAction::UMaxwellSniperRifleAction()
 {
@@ -117,7 +116,7 @@ void UMaxwellSniperRifleAction::BeginChannel()
 		float Multiplier = FMath::GetMappedRangeValueClamped(FVector2D(2000, 8000), FVector2D(1.f, .67f), Distance);
 		float Damage = BaseDamage * Multiplier;
 
-		if (Target->GetModifier<UMaxwellAimDowned>() && BulletHit.BoneName == TEXT("Head"))
+		if (BulletHit.BoneName == TEXT("Head"))
 		{
 			Damage *= 2;
 		}

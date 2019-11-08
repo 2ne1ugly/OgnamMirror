@@ -83,8 +83,6 @@ void UActionModifier::EndModifier()
 		{
 			switch (Stage)
 			{
-			case EActionStage::PreAction:
-				BeginPreDelay();
 			case EActionStage::PreDelay:
 				EndPreDelay();
 				BeginChannel();
