@@ -53,6 +53,25 @@ protected:
 	virtual void SubPressed();
 	virtual void SubReleased();
 
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerStartAimDown();
+	bool ServerStartAimDown_Validate() { return true; }
+	void ServerStartAimDown_Implementation();
+
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerEndAimDown();
+	bool ServerEndAimDown_Validate() { return true; }
+	void ServerEndAimDown_Implementation();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetStartAimDown();
+	void NetStartAimDown_Implementation();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetEndAimDown();
+	void NetEndAimDown_Implementation();
+
+
 	virtual void ReloadPressed();
 
 	UFUNCTION(Server, WithValidation, Unreliable)
@@ -110,5 +129,12 @@ protected:
 
 	FTimerHandle ReloadTimer;
 
+	//Aim Down on Sub
+	bool bCanAimDown;
 
+	UPROPERTY(VisibleAnywhere)
+	TSubclassOf<class UAimDownModifier> AimDownClass;
+
+	UPROPERTY(Transient, VisibleAnywhere)
+	class UAimDownModifier* AimDownAction;
 };

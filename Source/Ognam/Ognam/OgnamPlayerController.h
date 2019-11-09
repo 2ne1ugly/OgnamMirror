@@ -69,17 +69,6 @@ public:
 	void ShowGameInfo();
 	void HideGameInfo();
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerRequestServerTime(float requestWorldTime);
-	bool ServerRequestServerTime_Validate(float requestWorldTime) { return true; }
-	void ServerRequestServerTime_Implementation(float requestWorldTime);
-
-	UFUNCTION(Client, Reliable)
-	void ClientReportServerTime(float requestWorldTime, float serverTime);
-	void ClientReportServerTime_Implementation(float requestWorldTime, float serverTime);
-
-	float ServerTimeDelta;
-
 	void ChatTrigger();
 
 	void Release();

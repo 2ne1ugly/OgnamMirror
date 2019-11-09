@@ -50,7 +50,7 @@ void ARitualSpectator::NextPlayerPressed()
 	}
 
 	index++;
-	if (index >= AlivePlayerStates.Num())
+	if (index >= AlivePlayerStates.Num() || index < 0)
 	{
 		index = 0;
 	}
@@ -67,7 +67,7 @@ void ARitualSpectator::PrevPlayerPressed()
 	}
 
 	index--;
-	if (index < 0)
+	if (index >= AlivePlayerStates.Num() || index < 0)
 	{
 		index = AlivePlayerStates.Num() - 1;
 	}
@@ -108,7 +108,7 @@ void ARitualSpectator::FindAlivePlayerStates()
 	for (APlayerState* TargetPlayerState: GameState->PlayerArray)
 	{
 		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(TargetPlayerState);
-		if (RitualPlayerState->IsAlive())
+		if (RitualPlayerState && RitualPlayerState->IsAlive())
 		{
 			AlivePlayerStates.Push(RitualPlayerState);
 		}

@@ -93,7 +93,6 @@ void AOgnamPlayerController::ReceivedPlayer()
 	//Sync server timer
 	if (IsLocalController())
 	{
-		ServerRequestServerTime(GetWorld()->GetTimeSeconds());
 		UOgnamGameInstance* GameInstance = GetGameInstance<UOgnamGameInstance>();
 		ServerSendName(GameInstance->GetPrefferedName());
 	}
@@ -246,19 +245,6 @@ void AOgnamPlayerController::SendMessage(FString Message)
 	}
 	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
 	OgnamPlayerState->ServerSendMessage(Message);
-}
-
-void AOgnamPlayerController::ServerRequestServerTime_Implementation(float requestWorldTime)
-{
-	float ServerTime = GetWorld()->GetTimeSeconds();
-	ClientReportServerTime(requestWorldTime, ServerTime);
-}
-
-void AOgnamPlayerController::ClientReportServerTime_Implementation(float requestWorldTime, float serverTime)
-{
-	float roundTripTime = GetWorld()->GetTimeSeconds() - requestWorldTime;
-	float adjustedTime = serverTime + (roundTripTime * 0.5f);
-	ServerTimeDelta = adjustedTime - GetWorld()->GetTimeSeconds();
 }
 
 void AOgnamPlayerController::ChatTrigger()

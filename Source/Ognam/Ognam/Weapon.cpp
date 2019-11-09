@@ -7,6 +7,7 @@
 #include "UnrealNetwork.h"
 #include "TimerManager.h"
 #include "Engine/World.h"
+#include "AimDownModifier.h"
 
 // Sets default values for this component's properties
 UWeapon::UWeapon()
@@ -76,7 +77,7 @@ void UWeapon::BeginPlay()
 	{
 		O_LOG_F(TEXT("No Weapon action Class"));
 		return;
-	}
+	}	
 	WeaponAction = NewObject<UWeaponActionModifier>(GetOwner(), WeaponActionClass, TEXT("Weapon Action"));
 	WeaponAction->RegisterComponent();
 
@@ -85,6 +86,13 @@ void UWeapon::BeginPlay()
 		ReloadPressHandle = Target->OnReloadPressed.AddUObject(this, &UWeapon::ReloadPressed);
 
 	}
+
+	if (!bCanAimDown || !AimDownClass)
+	{
+		return;
+	}
+	AimDownAction = NewObject<UAimDownModifier>(GetOwner(), AimDownClass, TEXT("Aim Down"));
+	AimDownAction->RegisterComponent();
 }
 
 void UWeapon::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -125,10 +133,44 @@ void UWeapon::BasicReleased()
 
 void UWeapon::SubPressed()
 {
+	if (bCanAimDown)
+	{
+		ServerStartAimDown_Implementation();
+	}
 }
 
 void UWeapon::SubReleased()
 {
+	if (bCanAimDown)
+	{
+		ServerEndAimDown_Implementation();
+	}
+}
+
+void UWeapon::ServerStartAimDown_Implementation()
+{
+	NetStartAimDown();
+}
+
+void UWeapon::ServerEndAimDown_Implementation()
+{
+	NetEndAimDown();
+}
+
+void UWeapon::NetStartAimDown_Implementation()
+{
+	if (bCanAimDown && AimDownAction)
+	{
+		AimDownAction->StartAimDown();
+	}
+}
+
+void UWeapon::NetEndAimDown_Implementation()
+{
+	if (bCanAimDown && AimDownAction)
+	{
+		AimDownAction->StopAimDown();
+	}
 }
 
 void UWeapon::ReloadPressed()

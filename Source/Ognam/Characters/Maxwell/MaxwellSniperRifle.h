@@ -16,14 +16,4 @@ class OGNAM_API UMaxwellSniperRifle : public USemiAutoWeapon
 
 public:
 	UMaxwellSniperRifle();
-
-protected:
-	//Sub
-	//Client call
-	virtual void SubPressed() override;
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerToggleAimDown();
-	bool ServerToggleAimDown_Validate() { return true; };
-	void ServerToggleAimDown_Implementation();
 };
