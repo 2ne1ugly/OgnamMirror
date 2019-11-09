@@ -8,5 +8,7 @@ public class OgnamServerTarget : TargetRules   // Change this line as shown prev
     {
         Type = TargetType.Server;
         ExtraModuleNames.Add("Ognam");    // Change this line as shown previously
+
+        bCompileChaos = true;
     }
 }
