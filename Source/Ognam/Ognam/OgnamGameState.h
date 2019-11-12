@@ -40,8 +40,6 @@ public:
 	UFUNCTION()
 	void RemoveFromKillFeed();
 
-	virtual float GetServerWorldTimeSeconds() const override;
-
 	/* Chat functions */
 	UFUNCTION(Netmulticast, Unreliable)
 	void NetReceiveMessage(const FString& Message, APlayerState* Sender);
@@ -49,6 +47,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DisplayMessage(const FString& Message, APlayerState* Sender);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetReset();
+	virtual void NetReset_Implementation();
 
 protected:
 	UPROPERTY(Transient, Replicated)

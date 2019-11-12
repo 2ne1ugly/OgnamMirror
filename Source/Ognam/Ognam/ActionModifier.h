@@ -19,6 +19,7 @@ class OGNAM_API UActionModifier : public UModifier
 public:
 	UActionModifier();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool ShouldEnd() override;
 	virtual void TickModifier(float DeltaTime) override;
 	EActionStage GetStage() const;
@@ -73,6 +74,8 @@ protected:
 	FTimerHandle ChannelTimer;
 	FTimerHandle PostDelayTimer;
 
+	UPROPERTY(Replicated)
 	bool bInterrupted;
+
 	float ServerTimeDelay;
 };

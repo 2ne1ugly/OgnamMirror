@@ -51,13 +51,13 @@ public:
 	** Here we begin the "draft" phase of the round. 
 	** We will lock character movement and make them choose their character here
 	*/
-	void PreRoundBegin();
+	void StartPreRound();
 
 	/*
 	** This is the cleanup after the timer ends from PreRoundBegin()
 	** Here we reactivate input and any other cleaning up that needs to be done
 	*/
-	void PreRoundEnd();
+	void EndPreRound();
 
 	/*
 	** Here we officially start the round, called immediately after PreRoundEnd
@@ -67,12 +67,12 @@ public:
 	/*
 	** Here we enable special round end effects such as slow motion, and begin the timer to start a new round
 	*/
-	void PostRoundBegin();
+	void StartPostRound();
 
 	/*
 	** We return the game to it's normal state here (turn off slow motion
 	*/
-	void PostRoundEnd();
+	void EndPostRound();
 
 	/*
 	** We do calulations to determine the match winner, award points, clean up the map, and respawn players

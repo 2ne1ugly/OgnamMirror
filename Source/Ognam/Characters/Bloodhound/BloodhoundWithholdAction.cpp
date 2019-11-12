@@ -25,8 +25,6 @@ void UBloodhoundWithholdAction::BeginChannel()
 	Target->GetMesh()->SetVisibility(false);
 
 	AOgnamPlayerState* SelfState = Target->GetPlayerState<AOgnamPlayerState>();
-	SelfState->SetShouldHideName(true);
-
 	//Save the locations of metals
 	ABloodhound* Bloodhound = CastChecked<ABloodhound>(Target);
 	TArray<UActorComponent*> Components = Bloodhound->GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Metal"));
@@ -121,7 +119,6 @@ void UBloodhoundWithholdAction::EndPostDelay()
 	Target->GetMesh()->SetVisibility(true);
 
 	AOgnamPlayerState* SelfState = Target->GetPlayerState<AOgnamPlayerState>();
-	SelfState->SetShouldHideName(false);
 	for (int i = 0; i < 3; i++)
 	{
 		Metals[i]->AttachToComponent(Target->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));

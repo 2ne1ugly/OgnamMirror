@@ -87,6 +87,8 @@ public:
 	void NetEndSlowMotion();
 	void NetEndSlowMotion_Implementation();
 
+	virtual void NetReset_Implementation() override;
+
 	/*
 	**	Exported Functions
 	*/

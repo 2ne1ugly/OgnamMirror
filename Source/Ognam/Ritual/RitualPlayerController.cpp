@@ -105,36 +105,22 @@ void ARitualPlayerController::ShowCharacterSelection()
 			CharacterSelectionHUD = CreateWidget<UUserWidget>(this, CharacterSelectionHUDClass);
 		}
 	}
-	if (CharacterSelectionHUD)
+	if (CharacterSelectionHUD && !CharacterSelectionHUD->IsInViewport())
 	{
 		CharacterSelectionHUD->AddToViewport();
+		LockPlayerInput();
+		RequestMouseControl();
 	}
-	if (GetPawn())
-	{
-		GetPawn()->DisableInput(this);
-	}
-	bShowMouseCursor = true;
-	SetInputMode(FInputModeGameAndUI());
 }
 
 void ARitualPlayerController::HideCharacterSelection()
 {
-	if (CharacterSelectionHUD)
+	if (CharacterSelectionHUD && CharacterSelectionHUD->IsInViewport())
 	{
 		CharacterSelectionHUD->RemoveFromViewport();
+		UnlockPlayerInput();
+		ReleaseMouseControl();
 	}
-	if (GetPawn())
-	{
-		AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-		// This is a placeholder to prevent cheating
-		// We need a spectator to actually prevent real life cheating involving code changes
-		if (Character && Character->IsAlive())
-		{
-			GetPawn()->EnableInput(this);
-		}
-	}
-	bShowMouseCursor = false;
-	SetInputMode(FInputModeGameOnly());
 }
 
 AActor* ARitualPlayerController::GetTargetedActor() const
@@ -176,22 +162,24 @@ void ARitualPlayerController::ToggleChangeCharacterUI()
 void ARitualPlayerController::PreRoundBegin_Implementation()
 {
 	ShowCharacterSelection();
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-	if (Character)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetCharacter());
+	if (OgnamCharacter)
 	{
-		Character->SetCanMove(false);
-		Character->DisableInput(this);
+		OgnamCharacter->SetCanMove(false);
+		LockPlayerInput();
+		//OgnamCharacter->DisableInput(this);
 	}
 }
 
 void ARitualPlayerController::PreRoundEnd_Implementation()
 {
 	HideCharacterSelection();
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(GetCharacter());
-	if (Character)
+	AOgnamCharacter* OgnamCharacter = Cast<AOgnamCharacter>(GetCharacter());
+	if (OgnamCharacter)
 	{
-		Character->SetCanMove(true);
-		Character->EnableInput(this);
+		OgnamCharacter->SetCanMove(true);
+		UnlockPlayerInput();
+		//OgnamCharacter->EnableInput(this);
 	}
 }
 

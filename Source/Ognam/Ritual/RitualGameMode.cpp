@@ -42,7 +42,7 @@ void ARitualGameMode::Tick(float DeltaTime)
 	RitualGameState->UpdateProperties();
 	if (RitualGameState->ShouldEndRound() && !RitualGameState->IsRoundEnding())
 	{
-		PostRoundBegin();
+		StartPostRound();
 	}
 }
 
@@ -86,10 +86,10 @@ void ARitualGameMode::HandleMatchHasStarted()
 		O_LOG(TEXT("Not a Ritual Gamestate"));
 		return;
 	}
-	PreRoundBegin();
+	StartPreRound();
 }
 
-void ARitualGameMode::PreRoundBegin()
+void ARitualGameMode::StartPreRound()
 {
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (!RitualGameState)
@@ -99,6 +99,7 @@ void ARitualGameMode::PreRoundBegin()
 	}
 	RitualGameState->SetPreRoundStage(true);
 	RitualGameState->UpdateProperties();
+	RitualGameState->NetReset();
 	for (ARitualPlayerController* PlayerController : PlayerControllers)
 	{
 		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
@@ -113,10 +114,10 @@ void ARitualGameMode::PreRoundBegin()
 			RitualPlayerState->ForceNetUpdate();
 		}
 	}
-	GetWorld()->GetTimerManager().SetTimer(PreRoundTimer, this, &ARitualGameMode::PreRoundEnd, CharacterSelectionTime, false);
+	GetWorld()->GetTimerManager().SetTimer(PreRoundTimer, this, &ARitualGameMode::EndPreRound, CharacterSelectionTime, false);
 }
 
-void ARitualGameMode::PreRoundEnd()
+void ARitualGameMode::EndPreRound()
 {
 	for (ARitualPlayerController* PlayerController : PlayerControllers)
 	{
@@ -139,7 +140,7 @@ void ARitualGameMode::BeginRound()
 	RitualGameState->StartNewRound();
 }
 
-void ARitualGameMode::PostRoundBegin()
+void ARitualGameMode::StartPostRound()
 {
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
@@ -149,10 +150,10 @@ void ARitualGameMode::PostRoundBegin()
 	}
 	RitualGameState->SetRoundEnding(true);
 	RitualGameState->NetStartSlowMotion();
-	GetWorld()->GetTimerManager().SetTimer(PostRoundTimer, this, &ARitualGameMode::PostRoundEnd, PostRoundTime, false);
+	GetWorld()->GetTimerManager().SetTimer(PostRoundTimer, this, &ARitualGameMode::EndPostRound, PostRoundTime, false);
 }
 
-void ARitualGameMode::PostRoundEnd()
+void ARitualGameMode::EndPostRound()
 {
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (RitualGameState == nullptr)
@@ -190,7 +191,7 @@ void ARitualGameMode::EndRound()
 	{
 		Itr->Destroy();
 	}
-	PreRoundBegin();
+	StartPreRound();
 }
 
 void ARitualGameMode::KillPlayer(ARitualPlayerController* PlayerController)
@@ -234,18 +235,21 @@ void ARitualGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 	else
 	{
-		if (PlayerControllers.Num() % 2)
-		{
-			RitualPlayerState->SetTeam(RitualGameState->GreenName);
-			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumGreenPlayers());
-		}
-		else
+		int32 GreenCount = RitualGameState->GetNumGreenPlayers();
+		int32 BlueCount = RitualGameState->GetNumBluePlayers();
+		if (GreenCount > BlueCount)
 		{
 			RitualPlayerState->SetTeam(RitualGameState->BlueName);
 			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumBluePlayers());
 		}
+		else
+		{
+			RitualPlayerState->SetTeam(RitualGameState->GreenName);
+			RitualPlayerState->SetTeamIndex(RitualGameState->GetNumGreenPlayers());
+		}
 		PlayerController->ClientGameStarted();
 		PlayerControllers.Push(PlayerController);
+		RitualGameState->UpdateProperties();
 	}
 }
 

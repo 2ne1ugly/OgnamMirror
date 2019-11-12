@@ -130,19 +130,6 @@ void AOgnamGameState::RemoveFromKillFeed()
 	}
 }
 
-float AOgnamGameState::GetServerWorldTimeSeconds() const
-{
-	AOgnamPlayerController* Controller = Cast<AOgnamPlayerController>(GetGameInstance()->GetFirstLocalPlayerController(GetWorld()));
-	if (HasAuthority() || !Controller)
-	{
-		return GetWorld()->GetTimeSeconds();
-	}
-	else
-	{
-		return GetWorld()->GetTimeSeconds() + Controller->ServerTimeDelta;
-	}
-}
-
 void AOgnamGameState::NetReceiveMessage_Implementation(const FString& Message, APlayerState* Sender)
 {
 	DisplayMessage(Message, Sender);
@@ -156,4 +143,9 @@ void AOgnamGameState::DisplayMessage(const FString& Message, APlayerState* Sende
 	Messages.Add(ChatMessage);
 	ChatVisibleLifetime = 20.f;
 	bChatDirty = true;
+}
+
+void AOgnamGameState::NetReset_Implementation()
+{
+
 }

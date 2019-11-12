@@ -15,7 +15,7 @@
 AJeraCrystalSpear::AJeraCrystalSpear()
 {
 	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
-	Collision->SetBoxExtent(FVector(100.f, 10.f, 10.f));
+	Collision->SetBoxExtent(FVector(70.f, 10.f, 10.f));
 	Collision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Collision->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	Collision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -28,7 +28,7 @@ AJeraCrystalSpear::AJeraCrystalSpear()
 	Mesh->SetupAttachment(Collision);
 	Mesh->SetStaticMesh(ArrowObj.Object);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh->SetRelativeScale3D(FVector(.2f, .2f, 2.f));
+	Mesh->SetRelativeScale3D(FVector(.2f, .2f, 1.4f));
 	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator(-90.f, 0.f, 0.f));
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));

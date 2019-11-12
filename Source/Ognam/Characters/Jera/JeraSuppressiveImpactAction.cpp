@@ -3,6 +3,7 @@
 
 #include "JeraSuppressiveImpactAction.h"
 #include "Ognam/OgnamCharacter.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "JeraCrystalSpear.h"
 #include "Engine/World.h"
 
@@ -25,7 +26,7 @@ void UJeraSuppressiveImpactAction::EndChannel()
 	FHitResult Aim;
 	Target->GetAimHitResult(Aim, 0.f, 10000.f);
 
-	FVector From = Target->GetActorLocation() + FVector(0.f, 0.f, 60.f);
+	FVector From = Target->GetMesh()->GetSocketLocation("BulletSpawn");
 	FVector To;
 	if (Aim.bBlockingHit)
 		To = Aim.ImpactPoint;

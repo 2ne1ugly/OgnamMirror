@@ -53,11 +53,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UClass* GetSelectedPawnClass() const;
 
-	UFUNCTION(BlueprintCallable)
-	bool ShouldHideName() const;
-
-	void SetShouldHideName(bool bHide);
-
 	UFUNCTION(Server, Unreliable)
 	void ServerSendMessage(const FString& Message);
 	void ServerSendMessage_Implementation(const FString& Message);
@@ -73,9 +68,6 @@ public:
 
 	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
 	bool bIsAlive;
-
-	UPROPERTY(Transient, VisibleAnywhere, Replicated, BlueprintReadOnly)
-	bool bHidePlayerName;
 
 	UPROPERTY(Transient, Replicated)
 	UClass* PawnClass;
