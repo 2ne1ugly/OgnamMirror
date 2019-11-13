@@ -6,11 +6,8 @@
 
 UAbility::UAbility()
 {
-	PrimaryComponentTick.bCanEverTick = false;
 	SetNetAddressable();
 	SetIsReplicated(true);
-	bAutoRegister = true;
-	bIsPassive = false;
 }
 
 void UAbility::BeginPlay()

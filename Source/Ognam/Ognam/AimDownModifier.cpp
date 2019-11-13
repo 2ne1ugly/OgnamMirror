@@ -3,6 +3,7 @@
 
 #include "AimDownModifier.h"
 #include "ConstructorHelpers.h"
+#include "Ognam/OgnamMacro.h"
 
 UAimDownModifier::UAimDownModifier()
 {
@@ -23,11 +24,8 @@ void UAimDownModifier::StopAimDown()
 void UAimDownModifier::TickModifier(float DeltaTime)
 {
 	Super::TickModifier(DeltaTime);
+
 	FocusTime += bAimDowned ? DeltaTime : -DeltaTime;
 	FocusTime = FMath::Clamp(FocusTime, 0.f, MaxFocusTime);
 }
 
-bool UAimDownModifier::IsSupportedForNetworking() const
-{
-	return true;
-}

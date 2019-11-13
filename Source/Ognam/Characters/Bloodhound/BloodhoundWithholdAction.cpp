@@ -16,7 +16,7 @@ UBloodhoundWithholdAction::UBloodhoundWithholdAction()
 
 	PreDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
 	ChannelStatusEffect |= EStatusEffect::Silenced | EStatusEffect::Unarmed;
-	PostDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
+	PostDelayStatusEffect |= EStatusEffect::Silenced | EStatusEffect::Unarmed;
 }
 
 void UBloodhoundWithholdAction::BeginChannel()

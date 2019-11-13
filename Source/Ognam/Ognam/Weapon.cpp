@@ -135,7 +135,7 @@ void UWeapon::SubPressed()
 {
 	if (bCanAimDown)
 	{
-		ServerStartAimDown_Implementation();
+		ServerStartAimDown();
 	}
 }
 
@@ -143,18 +143,32 @@ void UWeapon::SubReleased()
 {
 	if (bCanAimDown)
 	{
-		ServerEndAimDown_Implementation();
+		ServerEndAimDown();
 	}
 }
 
 void UWeapon::ServerStartAimDown_Implementation()
 {
-	NetStartAimDown();
+	if (bCanAimDown && AimDownAction)
+	{
+		NetStartAimDown();
+	}
+	else
+	{
+		O_LOG(TEXT("Bad Request"));
+	}
 }
 
 void UWeapon::ServerEndAimDown_Implementation()
 {
-	NetEndAimDown();
+	if (bCanAimDown && AimDownAction)
+	{
+		NetEndAimDown();
+	}
+	else
+	{
+		O_LOG(TEXT("Bad Request"));
+	}
 }
 
 void UWeapon::NetStartAimDown_Implementation()
@@ -163,6 +177,10 @@ void UWeapon::NetStartAimDown_Implementation()
 	{
 		AimDownAction->StartAimDown();
 	}
+	else
+	{
+		O_LOG(TEXT("No AimDown action"));
+	}
 }
 
 void UWeapon::NetEndAimDown_Implementation()
@@ -170,6 +188,10 @@ void UWeapon::NetEndAimDown_Implementation()
 	if (bCanAimDown && AimDownAction)
 	{
 		AimDownAction->StopAimDown();
+	}
+	else
+	{
+		O_LOG(TEXT("No AimDown action"));
 	}
 }
 

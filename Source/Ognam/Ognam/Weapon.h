@@ -71,7 +71,6 @@ protected:
 	void NetEndAimDown();
 	void NetEndAimDown_Implementation();
 
-
 	virtual void ReloadPressed();
 
 	UFUNCTION(Server, WithValidation, Unreliable)

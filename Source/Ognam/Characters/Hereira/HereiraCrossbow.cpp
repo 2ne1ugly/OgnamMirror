@@ -6,7 +6,7 @@
 
 UHereiraCrossbow::UHereiraCrossbow()
 {
-	MaxAmmo = 3;
+	MaxAmmo = 5;
 	Ammo = MaxAmmo;
 	ReloadTime = 3.0f;
 	WeaponActionClass = UHereiraCrossbowAction::StaticClass();

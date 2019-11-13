@@ -9,6 +9,10 @@
 AMaxwell::AMaxwell()
 {
 	CharacterName = FText::FromString("Maxwell");
+
+	BaseMaxHealth = 160.f;
+	MaxHealth = BaseMaxHealth;
+	Health = BaseMaxHealth;
 }
 
 void AMaxwell::BeginPlay()

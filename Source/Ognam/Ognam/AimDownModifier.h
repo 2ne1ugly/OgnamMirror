@@ -21,7 +21,6 @@ public:
 	void StopAimDown();
 
 	virtual void TickModifier(float DeltaTime) override;
-	virtual bool IsSupportedForNetworking() const override;
 
 protected:
 

@@ -84,7 +84,7 @@ AOgnamCharacter::AOgnamCharacter()
 
 	GetCharacterMovement()->BrakingFrictionFactor = .5f;
 	GetCharacterMovement()->JumpZVelocity = 510.f;
-
+	GetCharacterMovement()->SetWalkableFloorAngle(38.f);
 	bReplicates = true;
 	bIsAlive = true;
 	bCanMove = true;

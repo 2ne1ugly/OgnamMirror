@@ -11,7 +11,5 @@ public class OgnamTarget : TargetRules
 
         bUsesSteam = true;
         ExtraModuleNames.AddRange( new string[] { "Ognam" } );
-
-        bCompileChaos = true;
 	}
 }

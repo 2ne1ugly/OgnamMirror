@@ -33,7 +33,8 @@ protected:
 	/*
 	**	Props
 	*/
-	float BaseDamage;
+	UPROPERTY()
+	class UCurveFloat* DamageCurve;
 
 	UPROPERTY()
 	class UParticleSystem* ParticleSystem;

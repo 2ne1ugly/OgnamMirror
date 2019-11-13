@@ -13,16 +13,18 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamPlayerstate.h"
+#include "Curves/CurveFloat.h"
 
 UMaxwellSniperRifleAction::UMaxwellSniperRifleAction()
 {
-	BaseDamage = 90.f;
-
 	ConstructorHelpers::FObjectFinder<USoundCue> SniperShotCue(TEXT("SoundCue'/Game/Sounds/Maxwell/maxwell_shot_cue2.maxwell_shot_cue2'"));
 	ShotSoundCue = SniperShotCue.Object;
 
 	ConstructorHelpers::FObjectFinder<UParticleSystem> SniperShotParticle(TEXT("ParticleSystem'/Game/ParagonMurdock/FX/Particles/Abilities/Primary/FX/P_Murdock_Bullet_Trail_Smoke_Spline.P_Murdock_Bullet_Trail_Smoke_Spline'"));
 	ParticleSystem = SniperShotParticle.Object;
+
+	ConstructorHelpers::FObjectFinder<UCurveFloat> DamageCurveCH(TEXT("CurveFloat'/Game/Curve/Maxwell/MaxwellSniperRifleDmg.MaxwellSniperRifleDmg'"));
+	DamageCurve = DamageCurveCH.Object;
 
 	float RoundsPerSecond = 2.f;
 
@@ -113,14 +115,12 @@ void UMaxwellSniperRifleAction::BeginChannel()
 	if (OtherPlayerState->GetTeam() != PlayerState->GetTeam())
 	{
 		float Distance = (BulletTo - From).Size();
-		float Multiplier = FMath::GetMappedRangeValueClamped(FVector2D(2000, 8000), FVector2D(1.f, .67f), Distance);
-		float Damage = BaseDamage * Multiplier;
+		float Damage = DamageCurve->GetFloatValue(Distance);
 
 		if (BulletHit.BoneName == TEXT("Head"))
 		{
 			Damage *= 2;
 		}
-
 		UGameplayStatics::ApplyPointDamage(OtherCharacter, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
 	}
 }

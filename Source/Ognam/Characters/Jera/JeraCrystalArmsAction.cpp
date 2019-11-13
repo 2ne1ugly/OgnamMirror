@@ -98,7 +98,7 @@ void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 
 	if (PlayerState->GetTeam() != OtherPlayerState->GetTeam())
 	{
-		UGameplayStatics::ApplyDamage(Character, 40.f, Target->GetController(), Target, nullptr);
+		UGameplayStatics::ApplyDamage(Character, 50.f, Target->GetController(), Target, nullptr);
 	}
 }
 
