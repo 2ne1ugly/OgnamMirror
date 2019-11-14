@@ -29,3 +29,8 @@ void UAimDownModifier::TickModifier(float DeltaTime)
 	FocusTime = FMath::Clamp(FocusTime, 0.f, MaxFocusTime);
 }
 
+float UAimDownModifier::GetFocusPercent() const
+{
+	return FocusTime / MaxFocusTime;
+}
+

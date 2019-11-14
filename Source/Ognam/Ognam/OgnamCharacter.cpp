@@ -70,7 +70,7 @@ AOgnamCharacter::AOgnamCharacter()
 
 	BaseMaxHealth = 200.f;
 	BaseDefense = 0.f;
-	BaseSpeed = 600.f;
+	BaseSpeed = 650.f;
 
 	MaxHealth = BaseMaxHealth;
 	Defense = BaseDefense;

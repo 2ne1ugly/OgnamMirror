@@ -21,6 +21,7 @@ public:
 
 protected:
 	virtual void BeginChannel() override;
+	virtual void TickPostDelay(float DeltaTime) override;
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void NetDrawTrajectory(FVector From, FVector To);

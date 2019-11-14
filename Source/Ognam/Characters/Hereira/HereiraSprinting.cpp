@@ -8,7 +8,7 @@
 UHereiraSprinting::UHereiraSprinting()
 {
 	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced;
-	Duration = 3.f;
+	Duration = 2.5f;
 }
 
 void UHereiraSprinting::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -26,7 +26,8 @@ bool UHereiraSprinting::ShouldEnd()
 
 void UHereiraSprinting::TickModifier(float DeltaTime)
 {
-	Target->Speed += Target->BaseSpeed * .8f;
+	Target->Speed += Target->BaseSpeed;
+	Target->Acceleration += Target->BaseAcceleration;
 }
 
 void UHereiraSprinting::SetAbility(UHereiraSprint* SprintAbility)

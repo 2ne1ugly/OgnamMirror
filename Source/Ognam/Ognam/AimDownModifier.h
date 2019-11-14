@@ -22,6 +22,8 @@ public:
 
 	virtual void TickModifier(float DeltaTime) override;
 
+	float GetFocusPercent() const;
+
 protected:
 
 	/*

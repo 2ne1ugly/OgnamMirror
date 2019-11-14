@@ -8,15 +8,21 @@
 #include "TimerManager.h"
 #include "Engine/World.h"
 #include "AimDownModifier.h"
+#include "UserWidget.h"
 
 // Sets default values for this component's properties
 UWeapon::UWeapon()
 {
+	PrimaryComponentTick.bCanEverTick = true;
+
 	SetNetAddressable();
 	SetIsReplicated(true);
 	BasicBlockingEffects |= EStatusEffect::Unarmed;
 	ReloadTime = 3.f;
 	bReloadOnNoAmmo = true;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> WeaponHUDClassCH(TEXT("/Game/UI/WeaponHUD"));
+	WeaponHUDClass = WeaponHUDClassCH.Class;
 }
 
 bool UWeapon::IsSupportedForNetworking() const
@@ -50,7 +56,7 @@ int32 UWeapon::GetAmmo() const
 	return Ammo;
 }
 
-int32 UWeapon::GetMaxAmmo() const
+int32 UWeapon::GetMaxAmmo() const	
 {
 	return MaxAmmo;
 }
@@ -58,6 +64,19 @@ int32 UWeapon::GetMaxAmmo() const
 bool UWeapon::IsInfinteAmmo() const
 {
 	return bInfiniteAmmo;
+}
+
+float UWeapon::GetSpread() const
+{
+	return Spread;
+}
+
+FVector UWeapon::ApplyRandomSpread(FVector Direction) const
+{
+	float RandAngle = FMath::RandRange(0.f, PI * 2.f);
+	float RandSpread = FMath::Tan(FMath::RandRange(0.f, FMath::DegreesToRadians(Spread)));
+	FVector BulletDirection = FVector(1, FMath::Cos(RandAngle) * RandSpread, FMath::Sin(RandAngle) * RandSpread).GetSafeNormal();
+	return Direction.Rotation().RotateVector(BulletDirection);
 }
 
 void UWeapon::BeginPlay()
@@ -71,6 +90,19 @@ void UWeapon::BeginPlay()
 	{
 		SubPressHandle = Target->OnSubPressed.AddUObject(this, &UWeapon::SubPressed);
 		SubReleaseHandle = Target->OnSubReleased.AddUObject(this, &UWeapon::SubReleased);
+	}
+
+	if (WeaponHUDClass && !IsRunningDedicatedServer())
+	{
+		WeaponHUD = CreateWidget<UUserWidget>(GetWorld(), WeaponHUDClass);
+		if (WeaponHUD)
+		{
+			WeaponHUD->AddToViewport();
+		}
+		else
+		{
+			O_LOG(TEXT("Ognam HUD Creation failed"));
+		}
 	}
 
 	if (!WeaponActionClass)
@@ -95,6 +127,12 @@ void UWeapon::BeginPlay()
 	AimDownAction->RegisterComponent();
 }
 
+void UWeapon::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Spread = ComputeSpread();
+}
+
 void UWeapon::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
@@ -110,6 +148,11 @@ void UWeapon::EndPlay(EEndPlayReason::Type EndPlayReason)
 	{
 		Target->OnReloadPressed.Remove(ReloadPressHandle);
 	}
+
+	if (WeaponHUD->IsInViewport())
+	{
+		WeaponHUD->RemoveFromViewport();
+	}
 }
 
 void UWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -119,6 +162,15 @@ void UWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	DOREPLIFETIME(UWeapon, bReloading);
 	DOREPLIFETIME_CONDITION(UWeapon, Ammo, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(UWeapon, MaxAmmo, COND_OwnerOnly);
+}
+
+float UWeapon::ComputeSpread()
+{
+	if (!AimDownAction)
+	{
+		return 0.f;
+	}
+	return (1 - AimDownAction->GetFocusPercent()) * 2.f;
 }
 
 void UWeapon::BasicPressed()

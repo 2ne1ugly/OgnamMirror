@@ -7,6 +7,7 @@
 #include "HazelFireball.h"
 #include "HazelBlazed.h"
 #include "TimerManager.h"
+#include "Ognam/Weapon.h"
 
 UHazelPyromancyAction::UHazelPyromancyAction()
 {
@@ -34,6 +35,8 @@ void UHazelPyromancyAction::BeginChannel()
 		To = Aim.TraceEnd;
 
 	FVector Direction = To - From;
+	Direction = Target->GetWeapon()->ApplyRandomSpread(Direction);
+
 	FActorSpawnParameters Params;
 	Params.bNoFail = true;
 	Params.Instigator = Target;
@@ -42,7 +45,7 @@ void UHazelPyromancyAction::BeginChannel()
 
 void UHazelPyromancyAction::TickPostDelay(float DeltaTime)
 {
-	Target->Speed *= 0.8f;
+	Target->Speed *= .7f;
 }
 
 void UHazelPyromancyAction::ExecutePostDelay()

@@ -20,7 +20,7 @@ AHazelFlamePillar::AHazelFlamePillar()
 	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECR_Block);
 	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Block);
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AHazelFlamePillar::BeginOverlap);
-	Collision->SetWorldScale3D(FVector(6.f, 6.f, 8.f));
+	Collision->SetWorldScale3D(FVector(7.f, 7.f, 8.f));
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(TEXT("StaticMesh'/Engine/BasicShapes/Cylinder.Cylinder'"));
 	Collision->SetStaticMesh(Mesh.Object);

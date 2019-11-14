@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "HereiraArrow.h"
 #include "Engine/World.h"
+#include "Ognam/Weapon.h"
 
 UHereiraCrossbowAction::UHereiraCrossbowAction()
 {
@@ -33,6 +34,8 @@ void UHereiraCrossbowAction::BeginChannel()
 		To = Aim.TraceEnd;
 
 	FVector Direction = To - From;
+	Direction = Target->GetWeapon()->ApplyRandomSpread(Direction);
+
 	FActorSpawnParameters Params;
 	Params.bNoFail = true;
 	Params.Instigator = Target;

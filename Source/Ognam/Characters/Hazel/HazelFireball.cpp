@@ -10,6 +10,7 @@
 #include "Ognam/OgnamPlayerstate.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamMacro.h"
+#include "Ognam/OgnamProjectileComponent.h"
 
 AHazelFireball::AHazelFireball()
 {
@@ -29,17 +30,19 @@ AHazelFireball::AHazelFireball()
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh->SetRelativeScale3D(FVector(0.33f));
 
-	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
+	Movement = CreateDefaultSubobject<UOgnamProjectileComponent>(TEXT("Movement"));
 	Movement->bInterpMovement = true;
 	Movement->bRotationFollowsVelocity = true;
 	Movement->bSweepCollision = true;
 	Movement->bShouldBounce = false;
-	Movement->InitialSpeed = 4000.f;
+	Movement->InitialSpeed = 2000.f;
 	Movement->OnProjectileStop.AddDynamic(this, &AHazelFireball::ProjectileStop);
 	Movement->ProjectileGravityScale = 0.f;
+	Movement->DirecitionalAcceleration = 2000.f;
+
 	//Stop happens only when two collision is blocking eachother.
 
-	BaseDamage = 20.f;
+	BaseDamage = 30.f;
 	InitialLifeSpan = 3.f;
 }
 
