@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamPlayerstate.h"
 #include "Curves/CurveFloat.h"
+#include "Ognam/Weapon.h"
 
 UMaxwellSniperRifleAction::UMaxwellSniperRifleAction()
 {
@@ -26,7 +27,7 @@ UMaxwellSniperRifleAction::UMaxwellSniperRifleAction()
 	ConstructorHelpers::FObjectFinder<UCurveFloat> DamageCurveCH(TEXT("CurveFloat'/Game/Curve/Maxwell/MaxwellSniperRifleDmg.MaxwellSniperRifleDmg'"));
 	DamageCurve = DamageCurveCH.Object;
 
-	float RoundsPerSecond = 2.f;
+	float RoundsPerSecond = 1.4f;
 
 	PreDelayDuration = 0.f;
 	ChannelDuration = 0.f;
@@ -77,6 +78,7 @@ void UMaxwellSniperRifleAction::BeginChannel()
 	//find direction to shoot bullets
 	FVector Direction = To - From;
 	Direction = Direction.GetSafeNormal();
+	Direction = Target->GetWeapon()->ApplyRandomSpread(Direction);
 
 	//shoot ray from camera to see where it should land.
 	FHitResult BulletHit;
@@ -119,10 +121,15 @@ void UMaxwellSniperRifleAction::BeginChannel()
 
 		if (BulletHit.BoneName == TEXT("Head"))
 		{
-			Damage *= 2;
+			Damage *= 1.5;
 		}
 		UGameplayStatics::ApplyPointDamage(OtherCharacter, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
 	}
+}
+
+void UMaxwellSniperRifleAction::TickPostDelay(float DeltaTime)
+{
+	Target->Speed *= .75f;
 }
 
 void UMaxwellSniperRifleAction::NetDrawTrajectory_Implementation(FVector From, FVector To)

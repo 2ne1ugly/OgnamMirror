@@ -54,7 +54,7 @@ void AJeraRadiantDiveDropPoint::BeginPlay()
 		//if not on same team, push them up and deal damage
 		if ((!OverlappedPlayerState || OverlappedPlayerState->GetTeam() != PlayerState->GetTeam()) && !Affected.Contains(Character))
 		{
-			UGameplayStatics::ApplyDamage(Character, 50.f, Instigator->GetController(), this, nullptr);
+			UGameplayStatics::ApplyDamage(Character, 75.f, Instigator->GetController(), this, nullptr);
 			if (Character->GetMesh()->IsSimulatingPhysics())
 			{
 				Character->GetMesh()->AddImpulse(FVector::UpVector * 50000.f);

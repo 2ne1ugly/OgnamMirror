@@ -12,9 +12,9 @@
 
 UBloodhoundClawsAction::UBloodhoundClawsAction()
 {
-	PreDelayDuration = .25f;
+	PreDelayDuration = .1f;
 	ChannelDuration = .25f;
-	PostDelayDuration = .45f;
+	PostDelayDuration = .3f;
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Game/Material/DamageZone.DamageZone'"));
 	DamageBoxMaterial = Material.Object;

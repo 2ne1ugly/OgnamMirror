@@ -40,7 +40,7 @@ AHereiraArrow::AHereiraArrow()
 	Movement->bRotationFollowsVelocity = true;
 	Movement->bSweepCollision = true;
 	Movement->bShouldBounce = false;
-	Movement->InitialSpeed = 6000.f;
+	Movement->InitialSpeed = 7500.f;
 	Movement->OnProjectileStop.AddDynamic(this, &AHereiraArrow::ProjectileStop);
 	Movement->ProjectileGravityScale = 0.f;
 

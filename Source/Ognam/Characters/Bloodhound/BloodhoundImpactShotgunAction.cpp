@@ -16,7 +16,7 @@ UBloodhoundImpactShotgunAction::UBloodhoundImpactShotgunAction()
 	PostDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
 
 	NumPellets = 16;
-	Spread = PI / 12.f;
+	Spread = PI / 16.f;
 }
 
 void UBloodhoundImpactShotgunAction::EndChannel()

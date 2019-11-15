@@ -9,7 +9,7 @@
 UHereiraSprint::UHereiraSprint()
 {
 	AbilityType = EAbilityType::Mobility;
-	Cooldown = 8.f;
+	Cooldown = 12.f;
 
 	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Hereira/Sprint.Sprint'"));
 	Icon = IconTexture.Object;

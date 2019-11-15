@@ -19,6 +19,7 @@ public:
 
 protected:
 	virtual void BeginChannel() override;
+	virtual void TickChannel(float DeltaTime) override;
 
 	void ReleaseFireBall();
 

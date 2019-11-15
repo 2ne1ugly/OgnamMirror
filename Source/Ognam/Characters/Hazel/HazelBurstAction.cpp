@@ -15,8 +15,8 @@ UHazelBurstAction::UHazelBurstAction()
 	ChannelDuration = 1.f;
 	TotalCount = 15;
 	Count = TotalCount;
-	PreDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
-	ChannelStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
+	PreDelayStatusEffect |= EStatusEffect::Silenced | EStatusEffect::Unarmed;
+	ChannelStatusEffect |= EStatusEffect::Silenced | EStatusEffect::Unarmed;
 }
 
 void UHazelBurstAction::ReleaseFireBall()
@@ -52,4 +52,9 @@ void UHazelBurstAction::ReleaseFireBall()
 void UHazelBurstAction::BeginChannel()
 {
 	GetWorld()->GetTimerManager().SetTimer(ReleaseTimer, this, &UHazelBurstAction::ReleaseFireBall, ChannelDuration / (TotalCount - 1), false);
+}
+
+void UHazelBurstAction::TickChannel(float DeltaTime)
+{
+	Target->Speed *= .5f;
 }

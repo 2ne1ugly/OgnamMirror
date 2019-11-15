@@ -14,5 +14,5 @@ void UHazelLightenedWill::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Target->BaseSpeed *= 1.1f;
+	Target->BaseSpeed *= 1.15f;
 }

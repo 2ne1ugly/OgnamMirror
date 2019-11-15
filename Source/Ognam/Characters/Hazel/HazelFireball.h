@@ -19,7 +19,7 @@ protected:
 	class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere)
-	class UProjectileMovementComponent* Movement;
+	class UOgnamProjectileComponent* Movement;
 
 public:
 	AHazelFireball();

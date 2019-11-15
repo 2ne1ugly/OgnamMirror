@@ -10,9 +10,9 @@
 
 UJeraCrystalArmsAction::UJeraCrystalArmsAction()
 {
-	PreDelayDuration = .25f;
-	ChannelDuration = .25f;
-	PostDelayDuration = .45f;
+	PreDelayDuration = .2f;
+	ChannelDuration = .2f;
+	PostDelayDuration = .4f;
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Game/Material/DamageZone.DamageZone'"));
 	DamageBoxMaterial = Material.Object;

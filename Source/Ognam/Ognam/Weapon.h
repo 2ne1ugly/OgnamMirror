@@ -17,6 +17,7 @@ public:
 	UWeapon();
 
 	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction);
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool IsSupportedForNetworking() const override;
@@ -30,7 +31,6 @@ public:
 
 	//Cancel reload
 	virtual void InterruptReloading();
-
 
 	/*
 	**	Getters, Setters
@@ -47,7 +47,15 @@ public:
 	UFUNCTION(BluePrintCallable)
 	bool IsInfinteAmmo() const;
 
+	UFUNCTION(BluePrintCallable)
+	float GetSpread() const;
+
+	UFUNCTION(BluePrintCallable)
+	FVector ApplyRandomSpread(FVector Direction) const;
+
 protected:
+	virtual float ComputeSpread();
+
 	virtual void BasicPressed();
 	virtual void BasicReleased();
 	virtual void SubPressed();
@@ -136,4 +144,11 @@ protected:
 
 	UPROPERTY(Transient, VisibleAnywhere)
 	class UAimDownModifier* AimDownAction;
+
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> WeaponHUDClass;
+
+	UUserWidget* WeaponHUD;
+
+	float Spread;
 };
