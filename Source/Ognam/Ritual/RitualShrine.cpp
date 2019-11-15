@@ -10,7 +10,6 @@
 #include "Ognam/OgnamCharacter.h"
 #include "UnrealNetwork.h"
 #include "Ognam/OgnamMacro.h"
-#include "SceneView.h"
 
 // Sets default values
 ARitualShrine::ARitualShrine()
@@ -155,12 +154,6 @@ bool ARitualShrine::ShouldRoundEnd() const
 bool ARitualShrine::IsBeingCaptured() const
 {
 	return GetProgressPercent() > 0 || AttackerCount > DefenderCount;
-}
-
-FVector4 ARitualShrine::GetScreenPosistion()
-{
-	FSceneView::WorldToScreen(GetActorLocation());
-	return FVector4();
 }
 
 float ARitualShrine::GetProgressPercent() const
