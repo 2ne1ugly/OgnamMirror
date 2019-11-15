@@ -20,8 +20,8 @@ UActionModifier::UActionModifier()
 	PostDelayStatusEffect = EStatusEffect::None;
 
 	PreDelayAction = EActionNotifier::None;
-	ChannelAction = EActionNotifier::None;;
-	PostDelayAction = EActionNotifier::None;;
+	ChannelAction = EActionNotifier::None;
+	PostDelayAction = EActionNotifier::None;
 }
 
 void UActionModifier::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
