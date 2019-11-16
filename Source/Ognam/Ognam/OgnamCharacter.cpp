@@ -102,6 +102,9 @@ AOgnamCharacter::AOgnamCharacter()
 	NameTagComponent->SetOwnerNoSee(true);
 	NameTagComponent->SetWidgetClass(NameTagWidgetClass.Class);
 	NameTagComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> WalkingCue(TEXT("/Game/Animation/Step_Cue.Step_Cue"));
+	WalkingSoundCue = WalkingCue.Object;
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -654,4 +657,9 @@ void AOgnamCharacter::NetDie_Implementation()
 		return;
 	}
 	DisableInput(PlayerController);
+}
+
+USoundCue* AOgnamCharacter::GetWalkingSound() const
+{
+	return WalkingSoundCue;
 }
