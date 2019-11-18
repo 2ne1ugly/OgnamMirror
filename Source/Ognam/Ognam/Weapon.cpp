@@ -149,7 +149,7 @@ void UWeapon::EndPlay(EEndPlayReason::Type EndPlayReason)
 		Target->OnReloadPressed.Remove(ReloadPressHandle);
 	}
 
-	if (WeaponHUD->IsInViewport())
+	if (WeaponHUD && WeaponHUD->IsInViewport())
 	{
 		WeaponHUD->RemoveFromViewport();
 	}
