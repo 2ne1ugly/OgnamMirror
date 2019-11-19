@@ -10,7 +10,6 @@
 #include "Ognam/OgnamCharacter.h"
 #include "UnrealNetwork.h"
 #include "Ognam/OgnamMacro.h"
-#include "SceneView.h"
 
 // Sets default values
 ARitualShrine::ARitualShrine()

@@ -104,6 +104,9 @@ public:
 	void SetCanMove(bool b);
 
 	UFUNCTION(BlueprintCallable)
+	class USoundCue* GetWalkingSound() const;
+
+	UFUNCTION(BlueprintCallable)
 	FVector GetInputVector() const;
 	/*
 	**	Exported functions
@@ -267,4 +270,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	class UOgnamWidgetComponent* NameTagComponent;
+
+	UPROPERTY()
+	class USoundCue* WalkingSoundCue;
 };

@@ -48,9 +48,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsBeingCaptured() const;
 
-	UFUNCTION(BlueprintCallable)
-	FVector4 GetScreenPosistion();
-
 protected:
 	//UPROPERTY(Replicated)
 	TArray<class AOgnamPlayerState*> Attackers;

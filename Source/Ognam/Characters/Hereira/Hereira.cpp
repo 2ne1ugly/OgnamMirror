@@ -4,6 +4,7 @@
 #include "HereiraSprint.h"
 #include "HereiraCrossbow.h"
 #include "HereiraThrowMolotov.h"
+#include "Sound/SoundCue.h"
 
 AHereira::AHereira()
 {
@@ -20,6 +21,9 @@ AHereira::AHereira()
 	//ShotAudio->SetRelativeLocation(FVector::ZeroVector);
 	//ShotAudio->bAutoActivate = 0;
 	CharacterName = FText::FromString(TEXT("Hereira"));
+
+	//static ConstructorHelpers::FObjectFinder<USoundCue> WalkingCue(TEXT("SoundCue'/Game/Sounds/Arrow/SparkFizzle_Cue.SparkFizzle_Cue'"));
+	//WalkingSoundCue = WalkingCue.Object;
 }
 
 void AHereira::BeginPlay()
