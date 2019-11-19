@@ -71,8 +71,10 @@ AOgnamCharacter::AOgnamCharacter()
 	BaseMaxHealth = 200.f;
 	BaseDefense = 0.f;
 	BaseSpeed = 650.f;
+	BaseHealthRegen = 0.5f;
 
 	MaxHealth = BaseMaxHealth;
+
 	Defense = BaseDefense;
 	Speed = BaseSpeed;
 
@@ -123,6 +125,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	Acceleration = BaseAcceleration;
 	AirControl = BaseAirControl;
 	Gravity = BaseGravity;
+	HealthRegen = BaseHealthRegen;
 
 	//Check ending conditions of Modiifers and apply tick.
 	for (int i = Modifiers.Num() - 1; i >= 0; i--)
@@ -169,6 +172,16 @@ void AOgnamCharacter::Tick(float DeltaTime)
 
 	FRotator Rot = UKismetMathLibrary::FindLookAtRotation(CompLoc, CamLoc);
 	NameTagComponent->SetWorldRotation(FRotator(Rot.Pitch, Rot.Yaw, 0.f));
+
+	//Health Regen
+	if (IsAlive())
+	{
+		Health += HealthRegen * DeltaTime;
+	}
+	if (Health > MaxHealth)
+	{
+		Health = MaxHealth;
+	}
 }
 
 void AOgnamCharacter::BeginPlay()

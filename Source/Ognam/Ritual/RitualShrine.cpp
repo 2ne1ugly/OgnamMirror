@@ -159,7 +159,7 @@ bool ARitualShrine::IsBeingCaptured() const
 
 FVector4 ARitualShrine::GetScreenPosistion()
 {
-	FSceneView::WorldToScreen(GetActorLocation());
+	//FSceneView::WorldToScreen(GetActorLocation());
 	return FVector4();
 }
 

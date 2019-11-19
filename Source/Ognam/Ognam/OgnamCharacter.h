@@ -143,6 +143,13 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	float MaxHealth;
 
+	//Per second
+	UPROPERTY(VisibleAnywhere)
+	float BaseHealthRegen;
+
+	UPROPERTY(VisibleAnywhere)
+	float HealthRegen;
+
 	UPROPERTY(VisibleAnywhere)
 	float BaseDefense;
 
