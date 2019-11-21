@@ -9,8 +9,9 @@ public class OgnamEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 
-        //bCompileChaos = true;
-        //BuildEnvironment = TargetBuildEnvironment.Unique;
+        BuildEnvironment = TargetBuildEnvironment.Shared;
+
+        bCompileChaos = true;
 
         ExtraModuleNames.AddRange( new string[] { "Ognam" } );
     }

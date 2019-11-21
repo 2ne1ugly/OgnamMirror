@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "4.23",
+	"EngineAssociation": "{658D437C-4B7D-AD31-08D0-11890E411CB7}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -25,31 +25,15 @@
 			"Enabled": true
 		},
 		{
-			"Name": "ChaosCloth",
-			"Enabled": true
-		},
-		{
-			"Name": "ChaosNiagara",
-			"Enabled": true
-		},
-		{
-			"Name": "ChaosSolverPlugin",
-			"Enabled": true
-		},
-		{
 			"Name": "ChaosEditor",
 			"Enabled": true
 		},
 		{
-			"Name": "PlanarCut",
-			"Enabled": true
-		},
-		{
-			"Name": "GeometryCollectionPlugin",
-			"Enabled": true
-		},
-		{
 			"Name": "FieldSystemPlugin",
+			"Enabled": true
+		},
+		{
+			"Name": "ChaosNiagara",
 			"Enabled": true
 		}
 	]
