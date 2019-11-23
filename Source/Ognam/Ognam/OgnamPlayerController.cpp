@@ -186,6 +186,11 @@ void AOgnamPlayerController::ShowMenu()
 		return;
 	}
 
+	if (bIsInMainMenu)
+	{
+		return;
+	}
+
 	if (MenuHUD->IsInViewport())
 	{
 		MenuHUD->RemoveFromViewport();
@@ -313,4 +318,14 @@ void AOgnamPlayerController::ReleaseCompleteLock()
 {
 	ReleaseMouseControl();
 	UnlockPlayerInput();
+}
+
+bool AOgnamPlayerController::IsInMainMenu() const
+{
+	return bIsInMainMenu;
+}
+
+void AOgnamPlayerController::SetIsInMainMenu(bool bInMenu)
+{
+	bIsInMainMenu = bInMenu;
 }

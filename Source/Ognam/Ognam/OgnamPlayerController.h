@@ -97,6 +97,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ReleaseCompleteLock();
 
+	UFUNCTION(BlueprintCallable)
+	bool IsInMainMenu() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsInMainMenu(bool bInMenu);
+
 private:
 
 	/*
@@ -132,4 +138,6 @@ private:
 	int32 MouseControl;
 
 	int32 InputControl;
+
+	bool bIsInMainMenu;
 };
