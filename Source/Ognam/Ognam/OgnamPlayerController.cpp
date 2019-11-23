@@ -35,7 +35,7 @@ AOgnamPlayerController::AOgnamPlayerController()
 		O_LOG(TEXT("Not Loaded"));
 	}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> MenuHUDFinder(TEXT("/Game/UI/GameMenu"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> MenuHUDFinder(TEXT("/Game/UI/GameMenu/GameMenu"));
 	if (MenuHUDFinder.Succeeded())
 	{
 		MenuHUDClass = MenuHUDFinder.Class;

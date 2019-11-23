@@ -156,12 +156,6 @@ bool ARitualShrine::IsBeingCaptured() const
 	return GetProgressPercent() > 0 || AttackerCount > DefenderCount;
 }
 
-FVector4 ARitualShrine::GetScreenPosistion()
-{
-	//FSceneView::WorldToScreen(GetActorLocation());
-	return FVector4();
-}
-
 float ARitualShrine::GetProgressPercent() const
 {
 	return CaptureProgress / CaptureDuration;
