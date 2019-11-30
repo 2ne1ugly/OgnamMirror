@@ -82,10 +82,10 @@ AOgnamCharacter::AOgnamCharacter()
 
 	BaseAcceleration = 1536.f;
 	BaseAirControl = 2.f;
-	BaseGravity = 1.5f;
+	BaseGravity = 2.5f;
 
 	GetCharacterMovement()->BrakingFrictionFactor = .5f;
-	GetCharacterMovement()->JumpZVelocity = 800.f;
+	GetCharacterMovement()->JumpZVelocity = 1000.f;
 	GetCharacterMovement()->SetWalkableFloorAngle(38.f);
 	bReplicates = true;
 	bIsAlive = true;

@@ -10,7 +10,7 @@ AMaxwell::AMaxwell()
 {
 	CharacterName = FText::FromString("Maxwell");
 
-	BaseMaxHealth = 160.f;
+	BaseMaxHealth = 150.f;
 	MaxHealth = BaseMaxHealth;
 	Health = BaseMaxHealth;
 }

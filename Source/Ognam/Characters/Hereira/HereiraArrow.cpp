@@ -40,13 +40,13 @@ AHereiraArrow::AHereiraArrow()
 	Movement->bRotationFollowsVelocity = true;
 	Movement->bSweepCollision = true;
 	Movement->bShouldBounce = false;
-	Movement->InitialSpeed = 7500.f;
+	Movement->InitialSpeed = 15000.f;
 	Movement->OnProjectileStop.AddDynamic(this, &AHereiraArrow::ProjectileStop);
 	Movement->ProjectileGravityScale = 0.f;
 
 	//Stop happens only when two collision is blocking eachother.
 
-	BaseDamage = 75.f;
+	BaseDamage = 60.f;
 }
 
 void AHereiraArrow::PostInitializeComponents()

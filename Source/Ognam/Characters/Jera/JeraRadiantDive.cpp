@@ -27,7 +27,7 @@ void UJeraRadiantDive::ActivateAbility()
 	FacingDirection.Z += 1.5;
 
 	Target->GetCharacterMovement()->Velocity.Z = 0.f;
-	Target->GetCharacterMovement()->AddImpulse(FacingDirection.GetSafeNormal() * 160000.f);
+	Target->GetCharacterMovement()->AddImpulse(FacingDirection.GetSafeNormal() * 170000.f);
 	Target->GetCharacterMovement()->MovementMode = MOVE_Falling;
 	NewObject<UJeraDescending>(Target)->RegisterComponent();
 }

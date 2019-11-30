@@ -19,7 +19,9 @@ UMaxwellVault::UMaxwellVault()
 
 void UMaxwellVault::ActivateAbility()
 {
-	Target->LaunchCharacter(FVector::UpVector * 1800.f, false, true);
+	float HorizontalRatio = 0.2f;
+	FVector Direction = FVector::UpVector * (1 - HorizontalRatio) + Target->GetActorForwardVector() * HorizontalRatio;
+	Target->LaunchCharacter(Direction * 2200.f, false, true);
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UMaxwellVault::ApplyModifier);
 }
 

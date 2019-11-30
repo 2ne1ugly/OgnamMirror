@@ -78,5 +78,4 @@ void AJeraCrystalSpear::ProjectileStop(const FHitResult& ImpactResult)
 		AController* Controller = Instigator->GetController();
 		UGameplayStatics::ApplyPointDamage(Character, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, Controller, this, nullptr);
 	}
-	Character->GetCharacterMovement()->AddImpulse(GetActorForwardVector().GetSafeNormal2D() * 500000.f);
 }
