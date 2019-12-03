@@ -20,4 +20,7 @@ public:
 protected:
 	//Server Call
 	virtual void ActivateAbility() override;
+
+private:
+	class USoundCue* BuildupSound;
 };

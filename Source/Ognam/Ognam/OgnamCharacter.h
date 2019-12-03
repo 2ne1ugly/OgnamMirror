@@ -273,4 +273,17 @@ protected:
 
 	UPROPERTY()
 	class USoundCue* WalkingSoundCue;
+
+	UPROPERTY()
+	class UAudioComponent* JumpStart;
+
+	UPROPERTY()
+	class UAudioComponent* JumpEnd;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetJumpStart();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetJumpLand();
+
 };

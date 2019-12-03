@@ -107,6 +107,20 @@ AOgnamCharacter::AOgnamCharacter()
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> WalkingCue(TEXT("/Game/Animation/Step_Cue.Step_Cue"));
 	WalkingSoundCue = WalkingCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> JumpStartCue(TEXT("SoundCue'/Game/Sounds/General/jump_start_Cue.jump_start_Cue'"));
+	JumpStart = CreateDefaultSubobject<UAudioComponent>(TEXT("JumpStartSound"));
+	JumpStart->SetupAttachment(RootComponent);
+	JumpStart->SetRelativeLocation(FVector::ZeroVector);
+	JumpStart->SetSound(JumpStartCue.Object);
+	JumpStart->SetAutoActivate(false);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> JumpEndCue(TEXT("SoundCue'/Game/Sounds/General/jump_land_Cue.jump_land_Cue'"));
+	JumpEnd = CreateDefaultSubobject<UAudioComponent>(TEXT("JumpEndSound"));
+	JumpEnd->SetupAttachment(RootComponent);
+	JumpEnd->SetRelativeLocation(FVector::ZeroVector);
+	JumpEnd->SetSound(JumpEndCue.Object);
+	JumpEnd->SetAutoActivate(false);
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -568,6 +582,7 @@ void AOgnamCharacter::ServerJump_Implementation()
 	}
 	TakeAction(EActionNotifier::Jump);
 	ACharacter::Jump();
+	NetJumpStart();
 	bIsJumping = true;
 }
 
@@ -618,6 +633,7 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 		GetCharacterMovement()->Velocity = GetCharacterMovement()->Velocity.GetSafeNormal() * GetCharacterMovement()->GetMaxSpeed();
 	}
 	bIsJumping = false;
+	NetJumpLand();
 }
 
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -675,4 +691,14 @@ void AOgnamCharacter::NetDie_Implementation()
 USoundCue* AOgnamCharacter::GetWalkingSound() const
 {
 	return WalkingSoundCue;
+}
+
+void AOgnamCharacter::NetJumpStart_Implementation()
+{
+	JumpStart->Activate();
+}
+
+void AOgnamCharacter::NetJumpLand_Implementation()
+{
+	JumpEnd->Activate();
 }
