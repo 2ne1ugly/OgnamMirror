@@ -6,7 +6,7 @@
 
 ALangdon::ALangdon()
 {
-
+	CharacterName = FText::FromString("Langdon");
 }
 
 void ALangdon::BeginPlay()

@@ -5,11 +5,24 @@
 #include "UnrealNetwork.h"
 #include "Ognam/OgnamCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/AudioComponent.h"
+#include "ConstructorHelpers.h"
+#include "Sound/SoundCue.h"
 
 UMaxwellShadowForm::UMaxwellShadowForm()
 {
 	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced | EStatusEffect::Unbreakable;
 	Duration = .4f;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> ShiftSoundCueObject(TEXT("SoundCue'/Game/Sounds/Maxwell/Maxwell_dash_Cue.Maxwell_dash_Cue'"));
+	ShiftSoundCue = ShiftSoundCueObject.Object;
+
+	ShiftSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Shift Sound"));
+	ShiftSound->SetupAttachment(Target->GetRootComponent());
+	ShiftSound->SetRelativeLocation(FVector::ZeroVector);
+	ShiftSound->SetAutoActivate(false);
+	ShiftSound->SetSound(ShiftSoundCue);
+	ShiftSound->SetIsReplicated(true);
 }
 
 void UMaxwellShadowForm::TickModifier(float DeltaTime)
@@ -23,4 +36,5 @@ void UMaxwellShadowForm::BeginModifier()
 	Super::BeginModifier();
 	Target->GetCharacterMovement()->Velocity.Z = 0.f;
 	Target->GetCharacterMovement()->MovementMode = MOVE_Falling;
+	ShiftSound->Activate();
 }

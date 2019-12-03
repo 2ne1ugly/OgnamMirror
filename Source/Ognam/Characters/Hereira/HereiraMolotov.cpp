@@ -9,6 +9,8 @@
 #include "ConstructorHelpers.h"
 #include "HereiraMolotovEmber.h"
 #include "UnrealNetwork.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 AHereiraMolotov::AHereiraMolotov()
 {
@@ -37,6 +39,9 @@ AHereiraMolotov::AHereiraMolotov()
 	Movement->ProjectileGravityScale = 1.5f;
 	Movement->OnProjectileStop.AddDynamic(this, &AHereiraMolotov::ProjectileStop);
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> MolotovBreakCueObject(TEXT("SoundCue'/Game/Sounds/Hereira/molotov_break_cue.molotov_break_cue'"));
+	MolotovBreakCue = MolotovBreakCueObject.Object;
+
 	InitialLifeSpan = 10.f;
 }
 
@@ -55,6 +60,7 @@ void AHereiraMolotov::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void AHereiraMolotov::ProjectileStop(const FHitResult& ImpactResult)
 {
+	MolotovBreakSound->Activate();
 	if (HasAuthority())
 	{
 		FActorSpawnParameters SpawnParam;
@@ -85,5 +91,12 @@ void AHereiraMolotov::BeginPlay()
 	Super::BeginPlay();
 
 	Collision->MoveIgnoreActors.Add(Instigator);
+
+	MolotovBreakSound = NewObject<UAudioComponent>(this);
+	MolotovBreakSound->SetSound(MolotovBreakCue);
+	MolotovBreakSound->SetupAttachment(RootComponent);
+	MolotovBreakSound->SetRelativeLocation(FVector::ZeroVector);
+	MolotovBreakSound->SetAutoActivate(false);
+	MolotovBreakSound->SetIsReplicated(true);
 }
 

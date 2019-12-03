@@ -15,6 +15,9 @@ AJera::AJera()
 	Health = MaxHealth;
 
 	CharacterName = FText::FromString("Jera");
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> WalkingCue(TEXT("SoundCue'/Game/Sounds/Jera/Jera_walk_Cue.Jera_walk_Cue'"));
+	WalkingSoundCue = WalkingCue.Object;
 }
 
 void AJera::BeginPlay()

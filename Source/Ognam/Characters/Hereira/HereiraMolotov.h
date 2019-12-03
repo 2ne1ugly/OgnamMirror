@@ -20,6 +20,12 @@ class OGNAM_API AHereiraMolotov : public AActor
 	UPROPERTY(EditAnywhere)
 	class UProjectileMovementComponent* Movement;
 
+	UPROPERTY()
+	class UAudioComponent* MolotovBreakSound;
+
+	UPROPERTY()
+	class USoundCue* MolotovBreakCue;
+
 public:	
 	AHereiraMolotov();
 

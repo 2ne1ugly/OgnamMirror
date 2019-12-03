@@ -5,6 +5,8 @@
 #include "Ognam/OgnamCharacter.h"
 #include "TimerManager.h"
 #include "ConstructorHelpers.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 UMaxwellShadowShift::UMaxwellShadowShift()
 {
@@ -15,6 +17,7 @@ UMaxwellShadowShift::UMaxwellShadowShift()
 	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Maxwell/shadow_walk.shadow_walk'"));
 	Icon = IconTexture.Object;
 }
+
 
 void UMaxwellShadowShift::OnButtonPressed()
 {
