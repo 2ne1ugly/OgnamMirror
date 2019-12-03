@@ -19,7 +19,6 @@ public:
 
 	virtual void TickModifier(float DeltaTime) override;
 	virtual void BeginModifier() override;
-	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY()

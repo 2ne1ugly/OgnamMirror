@@ -32,7 +32,6 @@ void UHereiraCrossbowAction::BeginPlay()
 	ShotSound->SetRelativeLocation(FVector::ZeroVector);
 	ShotSound->SetSound(ShotSoundCue);
 	ShotSound->SetAutoActivate(false);
-	ShotSound->SetIsReplicated(true);
 }
 
 void UHereiraCrossbowAction::BeginChannel()
