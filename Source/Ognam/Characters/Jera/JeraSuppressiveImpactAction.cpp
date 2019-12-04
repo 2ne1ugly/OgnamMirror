@@ -26,7 +26,7 @@ UJeraSuppressiveImpactAction::UJeraSuppressiveImpactAction()
 void UJeraSuppressiveImpactAction::EndChannel()
 {
 	UAudioComponent* IceForming = NewObject<UAudioComponent>(Target);
-	IceForming->SetupAttachment(Target->GetRootComponent());
+	IceForming->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	IceForming->SetRelativeLocation(FVector::ZeroVector);
 	IceForming->SetAutoActivate(false);
 	IceForming->SetSound(BuildupSound);

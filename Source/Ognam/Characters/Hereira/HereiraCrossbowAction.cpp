@@ -28,10 +28,11 @@ void UHereiraCrossbowAction::BeginPlay()
 	Super::BeginPlay();
 
 	ShotSound = NewObject<UAudioComponent>(GetOwner());
-	ShotSound->SetupAttachment(GetOwner()->GetRootComponent());
+	ShotSound->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	ShotSound->SetRelativeLocation(FVector::ZeroVector);
 	ShotSound->SetSound(ShotSoundCue);
 	ShotSound->SetAutoActivate(false);
+	ShotSound->RegisterComponent();
 }
 
 void UHereiraCrossbowAction::BeginChannel()

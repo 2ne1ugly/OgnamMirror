@@ -19,7 +19,7 @@ void UMaxwellVaultModifier::BeginModifier()
 	Super::BeginModifier();
 
 	UAudioComponent* JumpAudio = NewObject<UAudioComponent>(Target);
-	JumpAudio->SetupAttachment(Target->GetRootComponent());
+	JumpAudio->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	JumpAudio->SetRelativeLocation(FVector::ZeroVector);
 	JumpAudio->SetAutoActivate(false);
 	JumpAudio->SetSound(VaultCue);
