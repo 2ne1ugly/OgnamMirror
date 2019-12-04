@@ -233,6 +233,7 @@ protected:
 	float GetDamageAfterDefense(float Damage);
 	float GetSpeedFromVector(FVector Vector);
 	void UpdateCameraBlockingPlane();
+	void PlayerStateReady();
 
 	/*
 	**	Props

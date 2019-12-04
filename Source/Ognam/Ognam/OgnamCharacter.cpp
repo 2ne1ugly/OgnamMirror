@@ -239,51 +239,14 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AOgnamCharacter::OnRep_PlayerState()
 {
-	// Assign team color
-	UMaterialInstanceConstant* Material = nullptr;
-	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
-
-	if (!OgnamPlayerState)
-	{
-		return;
-	}
-
-	if (OgnamPlayerState->GetTeam() == TEXT("Green"))
-	{
-		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_GreenTeamBody.M_GreenTeamBody"));
-	}
-	else if (OgnamPlayerState->GetTeam() == TEXT("Blue"))
-	{
-		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_BlueTeamBody.M_BlueTeamBody"));
-	}
-
-	GetMesh()->SetMaterial(0, Material);
+	PlayerStateReady();
 }
 
 void AOgnamCharacter::PossessedBy(AController * aController)
 {
 	Super::PossessedBy(aController);
-	// Assign team color
-	UMaterialInstanceConstant* Material = nullptr;
+	PlayerStateReady();
 	AOgnamPlayerState* OgnamPlayerState = aController->GetPlayerState<AOgnamPlayerState>();
-
-	if (!OgnamPlayerState)
-	{
-		return;
-	}
-
-	if (OgnamPlayerState->GetTeam() == TEXT("Green"))
-	{
-		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_GreenTeamBody.M_GreenTeamBody"));
-	}
-	else if (OgnamPlayerState->GetTeam() == TEXT("Blue"))
-	{
-		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_BlueTeamBody.M_BlueTeamBody"));
-	}
-
-	GetMesh()->SetMaterial(0, Material);
-	OgnamPlayerState->SetPawnClass(GetClass());
-
 	NameTagComponent->SetOwningState(OgnamPlayerState);
 }
 
@@ -610,6 +573,39 @@ void AOgnamCharacter::UpdateCameraBlockingPlane()
 	{
 		bCameraBlocked = true;
 		CameraBlockingPlane = FPlane(CameraHits[0].ImpactPoint, CameraHits[0].ImpactNormal);
+	}
+}
+
+void AOgnamCharacter::PlayerStateReady()
+{
+	UMaterialInstanceConstant* Material = nullptr;
+	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
+
+	if (!OgnamPlayerState)
+	{
+		return;
+	}
+
+	if (OgnamPlayerState->GetTeam() == TEXT("Green"))
+	{
+		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_GreenTeamBody.M_GreenTeamBody"));
+	}
+	else if (OgnamPlayerState->GetTeam() == TEXT("Blue"))
+	{
+		Material = LoadObject<UMaterialInstanceConstant>(this, TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_BlueTeamBody.M_BlueTeamBody"));
+	}
+
+	GetMesh()->SetMaterial(0, Material);
+	APlayerController* ClientPlayerController = GetWorld()->GetFirstPlayerController();
+	AOgnamPlayerState* ClientPlayerState = nullptr;
+	if (ClientPlayerController && ClientPlayerController->IsLocalController())
+	{
+		ClientPlayerState = ClientPlayerController->GetPlayerState<AOgnamPlayerState>();
+	}
+
+	if (ClientPlayerState && ClientPlayerState->GetTeam() == OgnamPlayerState->GetTeam())
+	{
+		GetMesh()->SetRenderCustomDepth(true);
 	}
 }
 
