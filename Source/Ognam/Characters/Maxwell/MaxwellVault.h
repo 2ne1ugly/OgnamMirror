@@ -20,7 +20,4 @@ public:
 protected:
 	virtual void ActivateAbility() override;
 	virtual void ApplyModifier();
-
-private:
-	class USoundCue* VaultCue;
 };

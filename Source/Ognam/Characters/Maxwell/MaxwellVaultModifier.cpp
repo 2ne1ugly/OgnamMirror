@@ -4,10 +4,28 @@
 #include "MaxwellVaultModifier.h"
 #include "Ognam/OgnamCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "ConstructorHelpers.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 UMaxwellVaultModifier::UMaxwellVaultModifier()
 {
+	static ConstructorHelpers::FObjectFinder<USoundCue> VaultCueFinder(TEXT("SoundCue'/Game/Sounds/Maxwell/Maxwell_jump_Cue.Maxwell_jump_Cue'"));
+	VaultCue = VaultCueFinder.Object;
+}
 
+void UMaxwellVaultModifier::BeginModifier()
+{
+	Super::BeginModifier();
+
+	UAudioComponent* JumpAudio = NewObject<UAudioComponent>(Target);
+	JumpAudio->SetupAttachment(Target->GetRootComponent());
+	JumpAudio->SetRelativeLocation(FVector::ZeroVector);
+	JumpAudio->SetAutoActivate(false);
+	JumpAudio->SetSound(VaultCue);
+	JumpAudio->Activate();
+	JumpAudio->bAutoDestroy = true;
+	JumpAudio->RegisterComponent();
 }
 
 bool UMaxwellVaultModifier::ShouldEnd()

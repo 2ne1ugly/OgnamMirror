@@ -25,6 +25,11 @@ public:
 	virtual void StatusEffectApplied(EStatusEffect StatusEffect);
 	virtual void ActionTaken(EActionNotifier ActionType);
 
+	virtual void BeginModifier() override;
+
 protected:
 	bool bInterrupt;
+
+private:
+	class USoundCue* VaultCue;
 };

@@ -6,6 +6,9 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "JeraCrystalSpear.h"
 #include "Engine/World.h"
+#include "ConstructorHelpers.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 UJeraSuppressiveImpactAction::UJeraSuppressiveImpactAction()
 {
@@ -15,10 +18,21 @@ UJeraSuppressiveImpactAction::UJeraSuppressiveImpactAction()
 	PreDelayDuration = .3f;
 	ChannelDuration = .0f;
 	PostDelayDuration = .2f;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> BuildupSoundFinder(TEXT("SoundCue'/Game/Sounds/Jera/ice_forming_Cue.ice_forming_Cue'"));
+	BuildupSound = BuildupSoundFinder.Object;
 }
 
 void UJeraSuppressiveImpactAction::EndChannel()
 {
+	UAudioComponent* IceForming = NewObject<UAudioComponent>(Target);
+	IceForming->SetupAttachment(Target->GetRootComponent());
+	IceForming->SetRelativeLocation(FVector::ZeroVector);
+	IceForming->SetAutoActivate(false);
+	IceForming->SetSound(BuildupSound);
+	IceForming->Activate();
+	IceForming->bAutoDestroy = true;
+	IceForming->RegisterComponent();
 	if (!Target->HasAuthority())
 	{
 		return;
