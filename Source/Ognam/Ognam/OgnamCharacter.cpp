@@ -603,7 +603,7 @@ void AOgnamCharacter::PlayerStateReady()
 		ClientPlayerState = ClientPlayerController->GetPlayerState<AOgnamPlayerState>();
 	}
 
-	if (ClientPlayerState && ClientPlayerState->GetTeam() == OgnamPlayerState->GetTeam())
+	if (ClientPlayerState && ClientPlayerState != OgnamPlayerState && ClientPlayerState->GetTeam() == OgnamPlayerState->GetTeam())
 	{
 		GetMesh()->SetRenderCustomDepth(true);
 	}

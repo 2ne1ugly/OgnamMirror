@@ -148,6 +148,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Widgets")
 	TSubclassOf<class UUserWidget> WeaponHUDClass;
 
+	UPROPERTY()
 	UUserWidget* WeaponHUD;
 
 	float Spread;
