@@ -60,6 +60,14 @@ public:
 	void BasicReleased();
 	void SubPressed();
 	void SubReleased();
+	void MoveForwardAction();
+	void MoveBackwardAction();
+	void MoveRightAction();
+	void MoveLeftAction();
+	void MoveForwardActionRelease();
+	void MoveBackwardActionRelease();
+	void MoveRightActionRelease();
+	void MoveLeftActionRelease();
 
 	/*
 	**	Testing functions
@@ -245,8 +253,11 @@ protected:
 	bool bIsAlive;
 
 	FVector InputVector;
-	float	InputAmount;
-	int		NumInputs;
+
+	bool bForward;
+	bool bBackward;
+	bool bRight;
+	bool bLeft;
 
 	UPROPERTY(VisibleAnywhere)
 	class UWeapon* Weapon;

@@ -161,17 +161,15 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	GetCharacterMovement()->AirControl = AirControl;
 	GetCharacterMovement()->GravityScale = Gravity;
 
-	if (NumInputs > 0)
+	if (!InputVector.IsNearlyZero())
 	{
-		InputAmount /= NumInputs;
 		FVector Normal = InputVector.GetSafeNormal();
-		float InputSpeed = GetSpeedFromVector(Normal);
-		AddMovementInput(GetActorTransform().TransformVector(Normal), InputSpeed * InputAmount);
-
+		float Speed = GetSpeedFromVector(Normal);
+		AddMovementInput(GetActorTransform().TransformVector(Normal), Speed);
 	}
-	InputVector = FVector::ZeroVector;
-	InputAmount = 0;
-	NumInputs = 0;
+	//InputVector = FVector::ZeroVector;
+	//InputAmount = 0;
+	//NumInputs = 0;
 
 	//Find Camera blocking plane
 	if (HasAuthority() || (Controller && Controller->IsLocalPlayerController()))
@@ -214,11 +212,19 @@ void AOgnamCharacter::BeginPlay()
 void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveFoward", this, &AOgnamCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AOgnamCharacter::MoveRight);
+	//PlayerInputComponent->BindAxis("MoveFoward", this, &AOgnamCharacter::MoveForward);
+	//PlayerInputComponent->BindAxis("MoveRight", this, &AOgnamCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("CameraYaw", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("CameraPitch", this, &APawn::AddControllerPitchInput);
 
+	PlayerInputComponent->BindAction("MoveForward", IE_Pressed, this, &AOgnamCharacter::MoveForwardAction);
+	PlayerInputComponent->BindAction("MoveBackward", IE_Pressed, this, &AOgnamCharacter::MoveBackwardAction);
+	PlayerInputComponent->BindAction("MoveRight", IE_Pressed, this, &AOgnamCharacter::MoveRightAction);
+	PlayerInputComponent->BindAction("MoveLeft", IE_Pressed, this, &AOgnamCharacter::MoveLeftAction);
+	PlayerInputComponent->BindAction("MoveForward", IE_Released, this, &AOgnamCharacter::MoveForwardActionRelease);
+	PlayerInputComponent->BindAction("MoveBackward", IE_Released, this, &AOgnamCharacter::MoveBackwardActionRelease);
+	PlayerInputComponent->BindAction("MoveRight", IE_Released, this, &AOgnamCharacter::MoveRightActionRelease);
+	PlayerInputComponent->BindAction("MoveLeft", IE_Released, this, &AOgnamCharacter::MoveLeftActionRelease);
 	PlayerInputComponent->BindAction("Basic", IE_Pressed, this, &AOgnamCharacter::BasicPressed);
 	PlayerInputComponent->BindAction("Basic", IE_Released, this, &AOgnamCharacter::BasicReleased);
 	PlayerInputComponent->BindAction("Sub", IE_Pressed, this, &AOgnamCharacter::SubPressed);
@@ -347,14 +353,84 @@ void AOgnamCharacter::SetCamera(float ArmLength, FVector SocketOffset, float FOV
 	SpringArm->SocketOffset = SocketOffset;
 	Camera->FieldOfView = FOV;
 }
- 
+
+void AOgnamCharacter::MoveForwardAction()
+{
+	if (!bForward)
+	{
+		MoveForward(1.f);
+	}
+	bForward = true;
+}
+
+void AOgnamCharacter::MoveBackwardAction()
+{
+	if (!bBackward)
+	{
+		MoveForward(-1.f);
+	}
+	bBackward = true;
+}
+
+void AOgnamCharacter::MoveRightAction()
+{
+	if (!bRight)
+	{
+		MoveRight(1.f);
+	}
+	bRight = true;
+}
+
+void AOgnamCharacter::MoveLeftAction()
+{
+	if (!bLeft)
+	{
+		MoveRight(-1.f);
+	}
+	bLeft = true;
+}
+
+void AOgnamCharacter::MoveForwardActionRelease()
+{
+	if (bForward)
+	{
+		MoveForward(-1.f);
+	}
+	bForward = false;
+}
+
+void AOgnamCharacter::MoveBackwardActionRelease()
+{
+	if (bBackward)
+	{
+		MoveForward(1.f);
+	}
+	bBackward = false;
+}
+
+void AOgnamCharacter::MoveRightActionRelease()
+{
+	if (bRight)
+	{
+		MoveRight(-1.f);
+	}
+	bRight = false;
+}
+
+void AOgnamCharacter::MoveLeftActionRelease()
+{
+	if (bLeft)
+	{
+		MoveRight(1.f);
+	}
+	bLeft = false;
+}
+
 void AOgnamCharacter::MoveForward(float Amount)
 {
 	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted) && bCanMove)
 	{
 		InputVector += FVector::ForwardVector * Amount;
-		InputAmount += FMath::Abs(Amount);
-		NumInputs++;
 	}
 }
 
@@ -363,8 +439,6 @@ void AOgnamCharacter::MoveRight(float Amount)
 	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted) && bCanMove)
 	{
 		InputVector += FVector::RightVector * Amount;
-		InputAmount += FMath::Abs(Amount);
-		NumInputs++;
 	}
 }
 

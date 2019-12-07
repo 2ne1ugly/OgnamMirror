@@ -30,7 +30,7 @@ void UMaxwellShadowForm::BeginModifier()
 	Target->GetCharacterMovement()->Velocity.Z = 0.f;
 	Target->GetCharacterMovement()->MovementMode = MOVE_Falling;
 	ShiftSound = NewObject<UAudioComponent>(Target);
-	ShiftSound->SetupAttachment(Target->GetRootComponent());
+	ShiftSound->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	ShiftSound->SetRelativeLocation(FVector::ZeroVector);
 	ShiftSound->SetAutoActivate(false);
 	ShiftSound->SetSound(ShiftSoundCue);

@@ -19,4 +19,7 @@ public:
 
 protected:
 	virtual void EndChannel() override;
+
+private:
+	class USoundCue* BuildupSound;
 };

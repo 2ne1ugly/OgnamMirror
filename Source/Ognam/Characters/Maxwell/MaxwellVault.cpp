@@ -7,8 +7,6 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "ConstructorHelpers.h"
-#include "Sound/SoundCue.h"
-#include "Components/AudioComponent.h"
 
 UMaxwellVault::UMaxwellVault()
 {
@@ -18,8 +16,6 @@ UMaxwellVault::UMaxwellVault()
 	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Maxwell/Vault.Vault'"));
 	Icon = IconTexture.Object;
 
-	static ConstructorHelpers::FObjectFinder<USoundCue> VaultCueFinder(TEXT("SoundCue'/Game/Sounds/Maxwell/Maxwell_jump_Cue.Maxwell_jump_Cue'"));
-	VaultCue = VaultCueFinder.Object;
 }
 
 void UMaxwellVault::ActivateAbility()
@@ -34,12 +30,5 @@ void UMaxwellVault::ApplyModifier()
 {
 	NewObject<UMaxwellVaultModifier>(Target)->RegisterComponent();
 
-	UAudioComponent* JumpAudio = NewObject<UAudioComponent>(Target);
-	JumpAudio->SetupAttachment(Target->GetRootComponent());
-	JumpAudio->SetRelativeLocation(FVector::ZeroVector);
-	JumpAudio->SetAutoActivate(false);
-	JumpAudio->SetSound(VaultCue);
-	JumpAudio->Activate();
-	JumpAudio->bAutoDestroy = true;
-	JumpAudio->RegisterComponent();
+
 }
