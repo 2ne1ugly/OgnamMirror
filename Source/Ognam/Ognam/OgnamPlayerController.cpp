@@ -329,3 +329,25 @@ void AOgnamPlayerController::SetIsInMainMenu(bool bInMenu)
 {
 	bIsInMainMenu = bInMenu;
 }
+
+void AOgnamPlayerController::OnRep_PlayerState()
+{
+	if (OgnamHUDClass && IsLocalPlayerController())
+	{
+		if (!OgnamHUD)
+		{
+			OgnamHUD = CreateWidget<UUserWidget>(this, OgnamHUDClass);
+		}
+
+		//This part should be chosen properly
+		if (OgnamHUD && !OgnamHUD->IsInViewport())
+		{
+			OgnamHUD->AddToViewport();
+		}
+		else
+		{
+			OgnamHUD->RemoveFromViewport();
+			OgnamHUD->AddToViewport();
+		}
+	}
+}

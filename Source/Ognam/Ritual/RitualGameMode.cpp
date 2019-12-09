@@ -108,6 +108,7 @@ void ARitualGameMode::StartPreRound()
 	{
 		ARitualPlayerState* RitualPlayerState = PlayerController->GetPlayerState<ARitualPlayerState>();
 		PlayerController->PreRoundBegin();
+		RitualPlayerState->ClientStartPreRound();
 		if (!RitualPlayerState)
 		{
 			O_LOG(TEXT("No Playerstate bound to Player Controller"));
@@ -127,6 +128,14 @@ void ARitualGameMode::EndPreRound()
 	{
 		RestartPlayer(PlayerController);
 		PlayerController->PreRoundEnd();
+		ARitualPlayerState* State = PlayerController->GetPlayerState<ARitualPlayerState>();
+		State->ClientEndPreRound();
+	}
+	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
+	if (!RitualGameState)
+	{
+		O_LOG(TEXT("Not Ritual Gamestate"));
+		return;
 	}
 	BeginRound();
 }
@@ -138,6 +147,11 @@ void ARitualGameMode::BeginRound()
 	{
 		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
+	}
+	for (ARitualPlayerController* PlayerController : PlayerControllers)
+	{
+		ARitualPlayerState* State = PlayerController->GetPlayerState<ARitualPlayerState>();
+		State->ClientBeginRound();
 	}
 	RitualGameState->SetPreRoundStage(false);
 	RitualGameState->SetRoundEnding(false);
@@ -152,6 +166,11 @@ void ARitualGameMode::StartPostRound()
 		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
+	for (ARitualPlayerController* PlayerController : PlayerControllers)
+	{
+		ARitualPlayerState* State = PlayerController->GetPlayerState<ARitualPlayerState>();
+		State->ClientStartPostRound();
+	}
 	RitualGameState->SetRoundEnding(true);
 	RitualGameState->NetStartSlowMotion();
 	GetWorld()->GetTimerManager().SetTimer(PostRoundTimer, this, &ARitualGameMode::EndPostRound, PostRoundTime, false);
@@ -165,6 +184,11 @@ void ARitualGameMode::EndPostRound()
 		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
+	for (ARitualPlayerController* PlayerController : PlayerControllers)
+	{
+		ARitualPlayerState* State = PlayerController->GetPlayerState<ARitualPlayerState>();
+		State->ClientEndPostRound();
+	}
 	RitualGameState->NetEndSlowMotion();
 	EndRound();
 }
@@ -177,7 +201,11 @@ void ARitualGameMode::EndRound()
 		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
-
+	for (ARitualPlayerController* PlayerController : PlayerControllers)
+	{
+		ARitualPlayerState* State = PlayerController->GetPlayerState<ARitualPlayerState>();
+		State->ClientEndRound();
+	}
 	RitualGameState->DecideRoundWinner();
 
 	RitualGameState->NetEndSlowMotion();

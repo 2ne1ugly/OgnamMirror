@@ -62,3 +62,35 @@ FName ARitualPlayerState::GetSide() const
 	O_LOG(TEXT("Team name not valid!"));
 	return FName();
 }
+
+void ARitualPlayerState::ClientStartPreRound_Implementation()
+{
+	OnStartPreRound.Broadcast();
+}
+
+void ARitualPlayerState::ClientEndPreRound_Implementation()
+{
+	OnEndPreRound.Broadcast();
+}
+
+void ARitualPlayerState::ClientBeginRound_Implementation()
+{
+	O_LOG(TEXT("Beginning round"));
+
+	OnBeginRound.Broadcast();
+}
+
+void ARitualPlayerState::ClientStartPostRound_Implementation()
+{
+	OnStartPostRound.Broadcast();
+}
+
+void ARitualPlayerState::ClientEndPostRound_Implementation()
+{
+	OnEndPostRound.Broadcast();
+}
+
+void ARitualPlayerState::ClientEndRound_Implementation()
+{
+	OnEndRound.Broadcast();
+}

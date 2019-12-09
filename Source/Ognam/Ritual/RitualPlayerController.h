@@ -24,6 +24,7 @@ public:
 	virtual void BeginPlay() override;
 	//virtual void OnPawnDeath() override;
 	virtual void Tick(float DeltaTime) override;
+
 	/*
 	**	Getters, Setters
 	*/

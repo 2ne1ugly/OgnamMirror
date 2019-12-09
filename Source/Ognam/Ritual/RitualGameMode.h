@@ -6,14 +6,6 @@
 #include "Ognam/OgnamGameMode.h"
 #include "RitualGameMode.generated.h"
 
-/**
- *	Ritual mode is defense/offense mode where 
- *		offense has to kill all Acolytes
- *		defense has to protect the Acolytes, summon the boss, destroy enemy base with it.
- *
- *	There's two ways to end match. I'm trying to do it by calling the endmatch function from state.
- *	In the Actual game, they should be chosen team as they enter the session
- */
 UCLASS()
 class OGNAM_API ARitualGameMode : public AOgnamGameMode
 {

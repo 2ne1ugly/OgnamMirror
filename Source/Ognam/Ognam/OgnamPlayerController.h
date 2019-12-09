@@ -26,6 +26,7 @@ public:
 	virtual void ClientRestart_Implementation(APawn* NewPawn) override;
 	virtual void SetupInputComponent() override;
 	virtual void ReceivedPlayer() override;
+	virtual void OnRep_PlayerState() override;
 
 	UFUNCTION(Client, Unreliable)
 	void ClientFeedbackDamageDealt(AActor* Causer, AActor* Reciever, FVector Location, float Damage);

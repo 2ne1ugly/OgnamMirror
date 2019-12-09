@@ -165,4 +165,5 @@ protected:
 
 	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bIsShrineBeingCaptured;
+
 };
