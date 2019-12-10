@@ -54,7 +54,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Login(FString UserName, FString Password);
-
+		
 	void LoginResponse(TSharedPtr<class FJsonObject> Response);
 
 	UFUNCTION(BlueprintCallable)
