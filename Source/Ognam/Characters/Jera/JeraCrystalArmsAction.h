@@ -44,4 +44,19 @@ protected:
 	class UStaticMesh* DamageBoxMesh;
 
 	TSet<AOgnamCharacter*> StrikedCharacters;
+
+	UPROPERTY()
+	class UAudioComponent* PunchSound;
+
+	UPROPERTY()
+	class UAudioComponent* HitSound;
+
+	UPROPERTY()
+	class USoundCue* PunchSoundCue;
+
+	UPROPERTY()
+	class USoundCue* HitSoundCue;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetPlayHitSound();
 };

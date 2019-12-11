@@ -43,6 +43,7 @@ AHereiraMolotov::AHereiraMolotov()
 	MolotovBreakCue = MolotovBreakCueObject.Object;
 
 	InitialLifeSpan = 10.f;
+	bAutoDestroyWhenFinished = true;
 }
 
 void AHereiraMolotov::SetInitialVelocity(FVector Velocity)
@@ -78,7 +79,7 @@ void AHereiraMolotov::ProjectileStop(const FHitResult& ImpactResult)
 			Ember->SetReplicates(true);
 		}
 	}
-	Destroy();
+	Mesh->DestroyComponent();
 }
 
 void AHereiraMolotov::OnRep_CharacterVelocity()
@@ -94,9 +95,9 @@ void AHereiraMolotov::BeginPlay()
 
 	MolotovBreakSound = NewObject<UAudioComponent>(this);
 	MolotovBreakSound->SetSound(MolotovBreakCue);
-	MolotovBreakSound->SetupAttachment(RootComponent);
+	MolotovBreakSound->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 	MolotovBreakSound->SetRelativeLocation(FVector::ZeroVector);
 	MolotovBreakSound->SetAutoActivate(false);
-	MolotovBreakSound->SetIsReplicated(true);
+	MolotovBreakSound->RegisterComponent();
 }
 

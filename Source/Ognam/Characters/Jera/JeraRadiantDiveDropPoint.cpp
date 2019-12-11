@@ -11,6 +11,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "Ognam/OgnamMacro.h"
+#include "ConstructorHelpers.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AJeraRadiantDiveDropPoint::AJeraRadiantDiveDropPoint()
@@ -20,6 +23,13 @@ AJeraRadiantDiveDropPoint::AJeraRadiantDiveDropPoint()
 	PlaceHolder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//PlaceHolder->bHiddenInGame = false;
 	RootComponent = PlaceHolder;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> LandingSoundCue(TEXT("SoundCue'/Game/Sounds/Jera/Jera_Land_Cue.Jera_Land_Cue'"));
+	LandingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Sound"));
+	LandingSound->SetSound(LandingSoundCue.Object);
+	LandingSound->SetupAttachment(RootComponent);
+	LandingSound->SetRelativeLocation(FVector::ZeroVector);
+	LandingSound->SetAutoActivate(false);
 }
 
 void AJeraRadiantDiveDropPoint::BeginPlay()
@@ -37,6 +47,7 @@ void AJeraRadiantDiveDropPoint::BeginPlay()
 		O_LOG(TEXT("No player state"));
 		return;
 	}
+	LandingSound->Activate();
 
 	//Test Overlaps.
 	TArray<FOverlapResult> Overlaps;

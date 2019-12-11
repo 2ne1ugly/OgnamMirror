@@ -7,6 +7,9 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamPlayerstate.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
+#include "Ognam/OgnamMacro.h"
 
 UJeraCrystalArmsAction::UJeraCrystalArmsAction()
 {
@@ -16,8 +19,15 @@ UJeraCrystalArmsAction::UJeraCrystalArmsAction()
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Game/Material/DamageZone.DamageZone'"));
 	DamageBoxMaterial = Material.Object;
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
 	DamageBoxMesh = Mesh.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> PunchSoundCueFinder(TEXT("SoundCue'/Game/Sounds/Jera/Jera_punch_Cue.Jera_punch_Cue'"));
+	PunchSoundCue = PunchSoundCueFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundCueFinder(TEXT("SoundCue'/Game/Sounds/Jera/Jera_punch_connected_Cue.Jera_punch_connected_Cue'"));
+	HitSoundCue = HitSoundCueFinder.Object;
 }
 
 void UJeraCrystalArmsAction::BeginPlay()
@@ -33,15 +43,27 @@ void UJeraCrystalArmsAction::BeginPlay()
 	BoxTrigger->SetRelativeScale3D(FVector(2.5f));
 	BoxTrigger->SetMaterial(0, DamageBoxMaterial);
 	BoxTrigger->SetVisibility(false);
-
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BoxTrigger->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	BoxTrigger->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BoxTrigger->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	BoxTrigger->OnComponentBeginOverlap.AddDynamic(this, &UJeraCrystalArmsAction::BeginOverlap);
 	BoxTrigger->MoveIgnoreActors.Add(GetOwner());
-
 	BoxTrigger->RegisterComponent();
+
+	PunchSound = NewObject<UAudioComponent>(GetOwner());
+	PunchSound->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+	PunchSound->SetRelativeLocation(FVector::ZeroVector);
+	PunchSound->SetAutoActivate(false);
+	PunchSound->SetSound(PunchSoundCue);
+	PunchSound->RegisterComponent();
+
+	HitSound = NewObject<UAudioComponent>(GetOwner());
+	HitSound->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+	HitSound->SetRelativeLocation(FVector::ZeroVector);
+	HitSound->SetAutoActivate(false);
+	HitSound->SetSound(HitSoundCue);
+	HitSound->RegisterComponent();
 }
 
 void UJeraCrystalArmsAction::BeginChannel()
@@ -49,6 +71,7 @@ void UJeraCrystalArmsAction::BeginChannel()
 	StrikedCharacters.Empty();
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxTrigger->SetVisibility(true);
+	PunchSound->Activate();
 }
 
 void UJeraCrystalArmsAction::EndChannel()
@@ -99,6 +122,7 @@ void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 	if (PlayerState->GetTeam() != OtherPlayerState->GetTeam())
 	{
 		UGameplayStatics::ApplyDamage(Character, 50.f, Target->GetController(), Target, nullptr);
+		NetPlayHitSound();
 	}
 }
 
@@ -120,4 +144,9 @@ void UJeraCrystalArmsAction::ActionTaken(EActionNotifier ActionType)
 	{
 		Interrupt();
 	}
+}
+
+void UJeraCrystalArmsAction::NetPlayHitSound_Implementation()
+{
+	HitSound->Activate();
 }

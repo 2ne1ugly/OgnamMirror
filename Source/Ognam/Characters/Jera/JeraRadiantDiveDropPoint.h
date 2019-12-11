@@ -20,4 +20,8 @@ public:
 
 protected:
 	TSet<class AOgnamCharacter*> Affected;
+
+private:
+	UPROPERTY()
+	class UAudioComponent* LandingSound;
 };
