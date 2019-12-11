@@ -4,7 +4,8 @@
 #include "MaxwellSniperRifle.h"
 #include "MaxwellShadowShift.h"
 #include "MaxwellVault.h"
-//#include "MaxwellClaretStrike.h"
+#include "ConstructorHelpers.h"
+#include "Components/SkeletalMeshComponent.h"
 
 AMaxwell::AMaxwell()
 {
@@ -13,6 +14,16 @@ AMaxwell::AMaxwell()
 	BaseMaxHealth = 150.f;
 	MaxHealth = BaseMaxHealth;
 	Health = BaseMaxHealth;
+
+	static ConstructorHelpers::FObjectFinder<UClass> AnimBP(
+		TEXT("AnimBlueprint'/Game/Animation/Maxwell/MaxwellAnim.MaxwellAnim_C'"));
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkMesh(TEXT("SkeletalMesh'/Game/Meshes/Maxwell/Maxwell.Maxwell'"));
+	GetMesh()->SetSkeletalMesh(SkMesh.Object);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+
+	GetMesh()->SetAnimInstanceClass(AnimBP.Object);
 }
 
 void AMaxwell::BeginPlay()
