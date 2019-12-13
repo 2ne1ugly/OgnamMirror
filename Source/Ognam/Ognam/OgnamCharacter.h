@@ -209,6 +209,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FPlane CameraBlockingPlane;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UTexture2D* CharacterIcon;
+
+	UFUNCTION(BlueprintCallable)
+	class UTexture2D* GetIcon() const;
+
 	bool bCameraBlocked;
 
 	DECLARE_MULTICAST_DELEGATE(FActionDelegate)
@@ -297,5 +303,7 @@ protected:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetJumpLand();
+
+
 
 };

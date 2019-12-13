@@ -166,4 +166,9 @@ protected:
 	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bIsShrineBeingCaptured;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Replicated)
+	TArray<class ARitualPlayerState*> GreenTeam;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Replicated)
+	TArray<class ARitualPlayerState*> BlueTeam;
 };

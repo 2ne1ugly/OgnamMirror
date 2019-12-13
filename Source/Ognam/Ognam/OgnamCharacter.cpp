@@ -121,6 +121,9 @@ AOgnamCharacter::AOgnamCharacter()
 	JumpEnd->SetRelativeLocation(FVector::ZeroVector);
 	JumpEnd->SetSound(JumpEndCue.Object);
 	JumpEnd->SetAutoActivate(false);
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> PlayerIconTexture(TEXT("Texture2D'/Game/Mango.Mango'"));
+	CharacterIcon = PlayerIconTexture.Object;
 }
 
 void AOgnamCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -771,4 +774,9 @@ void AOgnamCharacter::NetJumpStart_Implementation()
 void AOgnamCharacter::NetJumpLand_Implementation()
 {
 	JumpEnd->Activate();
+}
+
+UTexture2D *AOgnamCharacter::GetIcon() const
+{
+	return CharacterIcon;
 }

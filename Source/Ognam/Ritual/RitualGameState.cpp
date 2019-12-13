@@ -51,6 +51,8 @@ void ARitualGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ARitualGameState, bRoundEnding);
 	DOREPLIFETIME(ARitualGameState, bPreRound);
 	DOREPLIFETIME(ARitualGameState, bIsShrineBeingCaptured);
+	DOREPLIFETIME(ARitualGameState, BlueTeam);
+	DOREPLIFETIME(ARitualGameState, GreenTeam);
 }
 
 FName ARitualGameState::GetCurrentOffenseTeam() const
@@ -258,6 +260,8 @@ void ARitualGameState::UpdateProperties()
 	int32 GreenAlive = 0;
 	int32 Blue = 0;
 	int32 BlueAlive = 0;
+	BlueTeam.Empty();
+	GreenTeam.Empty();
 	for (APlayerState* PlayerState : PlayerArray)
 	{
 		ARitualPlayerState* RitualPlayerState = Cast<ARitualPlayerState>(PlayerState);
@@ -269,6 +273,7 @@ void ARitualGameState::UpdateProperties()
 		FName Team = RitualPlayerState->GetTeam();
 		if (Team == GreenName)
 		{
+			GreenTeam.Add(RitualPlayerState);
 			RitualPlayerState->SetTeamIndex(Green);
 			Green++;
 			if (RitualPlayerState->IsAlive())
@@ -276,6 +281,7 @@ void ARitualGameState::UpdateProperties()
 		}
 		else if (Team == BlueName)
 		{
+			BlueTeam.Add(RitualPlayerState);
 			RitualPlayerState->SetTeamIndex(Blue);
 			Blue++;
 			if (RitualPlayerState->IsAlive())

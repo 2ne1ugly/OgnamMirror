@@ -48,7 +48,7 @@ public:
 	void SetPawnClass(UClass* Pawn);
 
 	UFUNCTION(BlueprintCallable)
-	void SetSelectedPawnClass(class UClass* Pawn);
+	void SetSelectedPawnClass(UClass* Pawn);
 
 	UFUNCTION(BlueprintCallable)
 	UClass* GetSelectedPawnClass() const;
@@ -74,5 +74,8 @@ public:
 
 	UPROPERTY(Transient, Replicated)
 	UClass* SelectedPawnClass;
+
+	UFUNCTION(BlueprintCallable)
+	AOgnamCharacter* GetDefaultOgnam() const;
 
 };

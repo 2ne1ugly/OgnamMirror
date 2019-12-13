@@ -142,7 +142,6 @@ void AOgnamPlayerState::ServerSendMessage_Implementation(const FString& Message)
 	GameState->NetReceiveMessage(Message, this);
 }
 
-
 UClass* AOgnamPlayerState::GetPawnClass() const
 {
 	return PawnClass;
@@ -156,4 +155,13 @@ void AOgnamPlayerState::SetPawnClass(UClass* Pawn)
 void AOgnamPlayerState::SetSelectedPawnClass(UClass* Pawn)
 {
 	SelectedPawnClass = Pawn;
+}
+
+AOgnamCharacter* AOgnamPlayerState::GetDefaultOgnam() const
+{
+	if (!PawnClass)
+	{
+		return nullptr;
+	}
+	return Cast<AOgnamCharacter>(PawnClass->GetDefaultObject());
 }

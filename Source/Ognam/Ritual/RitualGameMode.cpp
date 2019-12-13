@@ -130,6 +130,7 @@ void ARitualGameMode::EndPreRound()
 		PlayerController->PreRoundEnd();
 		ARitualPlayerState* State = PlayerController->GetPlayerState<ARitualPlayerState>();
 		State->ClientEndPreRound();
+		State->PawnClass = PlayerController->GetPawn()->GetClass();
 	}
 	ARitualGameState* RitualGameState = GetGameState<ARitualGameState>();
 	if (!RitualGameState)
