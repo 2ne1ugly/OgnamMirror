@@ -6,13 +6,12 @@
 #include "JeraRadiantDive.h"
 #include "JeraSuppressiveImpact.h"
 #include "Ognam/OgnamMacro.h"
+#include "Components/SkeletalMeshComponent.h"
 
 AJera::AJera()
 {
-	RootComponent->SetRelativeScale3D(FVector(1.1f));
+	GetMesh()->SetRelativeScale3D(FVector(1.1f));
 	BaseMaxHealth = 250.f;
-	MaxHealth = BaseMaxHealth;
-	Health = MaxHealth;
 
 	CharacterName = FText::FromString("Jera");
 

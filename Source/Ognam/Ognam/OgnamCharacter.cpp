@@ -206,6 +206,9 @@ void AOgnamCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MaxHealth = BaseMaxHealth;
+	Health = MaxHealth;
+
 	DamageInstance = UMaterialInstanceDynamic::Create(DamageRecievedMaterial, this);
 	Camera->PostProcessSettings.AddBlendable(DamageInstance, 1.f);
 	NameTagComponent->InitWidget();
