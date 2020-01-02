@@ -164,15 +164,12 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	GetCharacterMovement()->AirControl = AirControl;
 	GetCharacterMovement()->GravityScale = Gravity;
 
-	if (!InputVector.IsNearlyZero())
+	FVector InputVector = GetInputVector();
+	if (!InputVector.IsZero() && !HasStatusEffect(EStatusEffect::Rooted))
 	{
-		FVector Normal = InputVector.GetSafeNormal();
-		float Speed = GetSpeedFromVector(Normal);
-		AddMovementInput(GetActorTransform().TransformVector(Normal), Speed);
+		float Speed = GetSpeedFromVector(InputVector);
+		AddMovementInput(GetActorTransform().TransformVector(InputVector), Speed);
 	}
-	//InputVector = FVector::ZeroVector;
-	//InputAmount = 0;
-	//NumInputs = 0;
 
 	//Find Camera blocking plane
 	if (HasAuthority() || (Controller && Controller->IsLocalPlayerController()))
@@ -362,90 +359,42 @@ void AOgnamCharacter::SetCamera(float ArmLength, FVector SocketOffset, float FOV
 
 void AOgnamCharacter::MoveForwardAction()
 {
-	if (!bForward)
-	{
-		MoveForward(1.f);
-	}
 	bForward = true;
 }
 
 void AOgnamCharacter::MoveBackwardAction()
 {
-	if (!bBackward)
-	{
-		MoveForward(-1.f);
-	}
 	bBackward = true;
 }
 
 void AOgnamCharacter::MoveRightAction()
 {
-	if (!bRight)
-	{
-		MoveRight(1.f);
-	}
 	bRight = true;
 }
 
 void AOgnamCharacter::MoveLeftAction()
 {
-	if (!bLeft)
-	{
-		MoveRight(-1.f);
-	}
 	bLeft = true;
 }
 
 void AOgnamCharacter::MoveForwardActionRelease()
 {
-	if (bForward)
-	{
-		MoveForward(-1.f);
-	}
 	bForward = false;
 }
 
 void AOgnamCharacter::MoveBackwardActionRelease()
 {
-	if (bBackward)
-	{
-		MoveForward(1.f);
-	}
 	bBackward = false;
 }
 
 void AOgnamCharacter::MoveRightActionRelease()
 {
-	if (bRight)
-	{
-		MoveRight(-1.f);
-	}
 	bRight = false;
 }
 
 void AOgnamCharacter::MoveLeftActionRelease()
 {
-	if (bLeft)
-	{
-		MoveRight(1.f);
-	}
 	bLeft = false;
-}
-
-void AOgnamCharacter::MoveForward(float Amount)
-{
-	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted) && bCanMove)
-	{
-		InputVector += FVector::ForwardVector * Amount;
-	}
-}
-
-void AOgnamCharacter::MoveRight(float Amount)
-{
-	if (Controller != nullptr && Amount != 0.f && !HasStatusEffect(EStatusEffect::Rooted) && bCanMove)
-	{
-		InputVector += FVector::RightVector * Amount;
-	}
 }
 
 float AOgnamCharacter::GetHealth() const
@@ -505,6 +454,20 @@ UAbility* AOgnamCharacter::GetMobility() const
 
 FVector AOgnamCharacter::GetInputVector() const
 {
+	FVector InputVector = FVector::ZeroVector;
+	if (bLeft) {
+		InputVector += FVector::LeftVector;
+	}
+	if (bForward) {
+		InputVector += FVector::ForwardVector;
+	}
+	if (bRight) {
+		InputVector += FVector::RightVector;
+	}
+	if (bBackward) {
+		InputVector += FVector::BackwardVector;
+	}
+	InputVector = InputVector.GetSafeNormal();
 	return InputVector;
 }
 

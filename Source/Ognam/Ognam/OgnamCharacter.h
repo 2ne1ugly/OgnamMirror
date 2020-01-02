@@ -39,8 +39,6 @@ public:
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult & Hit) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
-	virtual void MoveForward(float amount);
-	virtual void MoveRight(float amount);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void PossessedBy(AController* aController) override;
@@ -257,8 +255,6 @@ protected:
 
 	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bIsAlive;
-
-	FVector InputVector;
 
 	bool bForward;
 	bool bBackward;
