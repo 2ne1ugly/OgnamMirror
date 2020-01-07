@@ -4,12 +4,13 @@
 #include "ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/Material.h"
-#include "Ognam/OgnamCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamPlayerstate.h"
 #include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
 #include "Ognam/OgnamMacro.h"
+#include "Ognam/OgnamStatics.h"
+#include "Ognam/OgnamEnum.h"
 
 UJeraCrystalArmsAction::UJeraCrystalArmsAction()
 {
@@ -88,40 +89,18 @@ void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 		return;
 	}
 
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(OtherActor);
+	APawn* Character = Cast<APawn>(OtherActor);
 	if (!Character || StrikedCharacters.Contains(Character))
 	{
 		return;
 	}
 	StrikedCharacters.Add(Character);
 
+	APawn* Owner = Cast<APawn>(GetOwner());
 	//Get owners playerState
-	AController* Controller = GetOwner()->GetInstigatorController();
-	if (!Controller)
+	if (UOgnamStatics::CanDamage(GetWorld(), Owner, Character, EDamageMethod::DamagesEnemy))
 	{
-		return;
-	}
-	AOgnamPlayerState* PlayerState = Controller->GetPlayerState<AOgnamPlayerState>();
-	if (!PlayerState)
-	{
-		return;
-	}
-
-	//Get affected Actor's playerState
-	AController* OtherController = Character->GetInstigatorController();
-	if (!OtherController)
-	{
-		return;
-	}
-	AOgnamPlayerState* OtherPlayerState = OtherController->GetPlayerState<AOgnamPlayerState>();
-	if (!OtherPlayerState)
-	{
-		return;
-	}
-
-	if (PlayerState->GetTeam() != OtherPlayerState->GetTeam())
-	{
-		UGameplayStatics::ApplyDamage(Character, 50.f, Target->GetController(), Target, nullptr);
+		UGameplayStatics::ApplyDamage(Character, 50.f, Owner->GetController(), Owner, nullptr);
 		NetPlayHitSound();
 	}
 }

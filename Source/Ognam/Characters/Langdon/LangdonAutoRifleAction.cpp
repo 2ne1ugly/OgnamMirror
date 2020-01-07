@@ -4,9 +4,10 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Ognam/Weapon.h"
-#include "Ognam/OgnamPlayerstate.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Ognam/OgnamEnum.h"
+#include "Ognam/OgnamStatics.h"
 
 ULangdonAutoRifleAction::ULangdonAutoRifleAction()
 {
@@ -63,23 +64,11 @@ void ULangdonAutoRifleAction::BeginChannel()
 	//{
 	//	Controller->ClientPlayCameraShake(UMaxwellSniperRifleRecoil::StaticClass());
 	//}
-
+	APawn* Pawn = Cast<APawn>(BulletHit.Actor);
 	//Get Target's player state
-	ACharacter* OtherCharacter = Cast<ACharacter>(BulletHit.Actor);
-	if (!OtherCharacter)
+	if (UOgnamStatics::CanDamage(GetWorld(), Target, Pawn, EDamageMethod::DamagesEnemy))
 	{
-		return;
-	}
-	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
-	AOgnamPlayerState* PlayerState = Target->GetPlayerState<AOgnamPlayerState>();
-	if (!OtherPlayerState || !PlayerState)
-	{
-		return;
-	}
-
-	if (OtherPlayerState->GetTeam() != PlayerState->GetTeam())
-	{
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		UGameplayStatics::ApplyPointDamage(Pawn, BaseDamage, Direction, BulletHit, Target->GetController(), Target, nullptr);
 	}
 }
 

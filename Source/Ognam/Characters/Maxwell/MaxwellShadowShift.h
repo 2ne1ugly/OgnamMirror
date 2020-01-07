@@ -39,4 +39,5 @@ protected:
 	float Cooldown;
 
 	FTimerHandle ShadowShiftCooldown;
+	UAnimMontage* RootMotion;
 };

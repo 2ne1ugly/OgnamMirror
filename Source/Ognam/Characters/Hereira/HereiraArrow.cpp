@@ -6,14 +6,11 @@
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "Components/BoxComponent.h"
-#include "UnrealNetwork.h"
-#include "Ognam/OgnamCharacter.h"
-#include "Ognam/OgnamPlayerstate.h"
-#include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Ognam/ImpactDamage.h"
 #include "Ognam/OgnamMacro.h"
+#include "Ognam/OgnamStatics.h"
+#include "Ognam/OgnamEnum.h"
 
 // Sets default values
 AHereiraArrow::AHereiraArrow()
@@ -49,32 +46,25 @@ AHereiraArrow::AHereiraArrow()
 	BaseDamage = 60.f;
 }
 
-void AHereiraArrow::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-}
-
 // Called when the game starts or when spawned
 void AHereiraArrow::BeginPlay()
 {
 	Super::BeginPlay();
-	Collision->MoveIgnoreActors.Add(Instigator);
+	Collision->MoveIgnoreActors.Add(GetInstigator());
 	GetWorldTimerManager().SetTimer(LifeSpan, this, &AHereiraArrow::EndLifeSpan, 3., false);
 }
 
 void AHereiraArrow::ProjectileStop(const FHitResult& ImpactResult)
 {
-	if (!Instigator)
+	APawn* Reciever = Cast<APawn>(ImpactResult.GetActor());
+	if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Reciever, EDamageMethod::DamagesEnemy))
 	{
-		O_LOG(TEXT("No Instigator!"));
-		return;
-	}
-
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(ImpactResult.GetActor());
-	if (Character)
-	{
-		OnCharacterHit(Character, ImpactResult);
+		OnCharacterHit(Reciever, ImpactResult);
 		Collision->AttachToComponent(ImpactResult.GetComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), ImpactResult.BoneName);
+	}
+	else
+	{
+		Destroy();
 	}
 }
 
@@ -83,20 +73,13 @@ void AHereiraArrow::EndLifeSpan()
 	Destroy();
 }
 
-void AHereiraArrow::OnCharacterHit(AOgnamCharacter* OtherCharacter, const FHitResult& SweepResult)
+void AHereiraArrow::OnCharacterHit(APawn* OtherCharacter, const FHitResult& SweepResult)
 {
-	if (!HasAuthority() || OtherCharacter == Instigator)
+	if (!HasAuthority())
 	{
 		return;
 	}
-	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
-	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
-	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
-	{
-		AController* Controller = Instigator->GetController();
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, Controller, this, UImpactDamage::StaticClass());
-	}
-	//Destroy();
+	UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, GetInstigatorController(), this, nullptr);
 }
 
 

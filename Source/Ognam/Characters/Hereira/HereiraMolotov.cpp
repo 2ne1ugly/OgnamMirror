@@ -66,7 +66,7 @@ void AHereiraMolotov::ProjectileStop(const FHitResult& ImpactResult)
 	{
 		FActorSpawnParameters SpawnParam;
 		SpawnParam.bNoFail = true;
-		SpawnParam.Instigator = Instigator;
+		SpawnParam.Instigator = GetInstigator();
 		for (int i = 0; i < 32; i++)
 		{
 			const float Theta = FMath::Min(FMath::Acos(FMath::Sqrt(FMath::FRand())), HALF_PI - DELTA);
@@ -91,7 +91,7 @@ void AHereiraMolotov::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Collision->MoveIgnoreActors.Add(Instigator);
+	Collision->MoveIgnoreActors.Add(GetInstigator());
 
 	MolotovBreakSound = NewObject<UAudioComponent>(this);
 	MolotovBreakSound->SetSound(MolotovBreakCue);

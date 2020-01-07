@@ -59,3 +59,18 @@ enum class EActionStage : uint64
 	PostDelay,
 	PostAction,
 };
+
+/*
+**	Damage method describes which players should be affected by the damage
+**	may have more entries on different gamemodes.
+**	may have more entries when adding destructible walls or such?
+*/
+UENUM()
+enum class EDamageMethod : uint64
+{
+	None = 0x0,
+	DamagesSelf = 0x1,
+	DamagesAlly = 0x2,	//Does not include yourself
+	DamagesEnemy = 0x4,
+};
+ENUM_CLASS_FLAGS(EDamageMethod)

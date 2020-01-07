@@ -13,8 +13,6 @@ UJeraSuppressiveImpact::UJeraSuppressiveImpact()
 
 	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Jera/icicle_throw.icicle_throw'"));
 	Icon = IconTexture.Object;
-
-
 }
 
 void UJeraSuppressiveImpact::ActivateAbility()

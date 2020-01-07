@@ -43,7 +43,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMesh* DamageBoxMesh;
 
-	TSet<AOgnamCharacter*> StrikedCharacters;
+	TSet<APawn*> StrikedCharacters;
 
 	UPROPERTY()
 	class UAudioComponent* PunchSound;

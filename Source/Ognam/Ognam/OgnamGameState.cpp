@@ -149,3 +149,31 @@ void AOgnamGameState::NetReset_Implementation()
 {
 
 }
+
+bool AOgnamGameState::CanDamage(AOgnamPlayerState* DamageInstigator, AOgnamPlayerState* Reciever, EDamageMethod DamageMethod) const
+{
+	if (!DamageInstigator || !Reciever)
+	{
+		return false;
+	}
+
+	if (DamageInstigator->GetTeam() != Reciever->GetTeam() &&
+		(DamageMethod & EDamageMethod::DamagesEnemy) != EDamageMethod::None)
+	{
+		return true;
+	}
+
+	if (DamageInstigator != Reciever &&
+		DamageInstigator->GetTeam() == Reciever->GetTeam() &&
+		(DamageMethod & EDamageMethod::DamagesAlly) != EDamageMethod::None)
+	{
+		return true;
+	}
+
+	if (DamageInstigator == Reciever &&
+		(DamageMethod & EDamageMethod::DamagesSelf) != EDamageMethod::None)
+	{
+		return true;
+	}
+	return false;
+}

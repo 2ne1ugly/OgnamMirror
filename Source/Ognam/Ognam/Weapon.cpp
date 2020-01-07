@@ -16,7 +16,7 @@ UWeapon::UWeapon()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	SetNetAddressable();
-	SetIsReplicated(true);
+	SetIsReplicatedByDefault(true);
 	BasicBlockingEffects |= EStatusEffect::Unarmed;
 	ReloadTime = 3.f;
 	bReloadOnNoAmmo = true;

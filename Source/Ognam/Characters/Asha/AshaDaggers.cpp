@@ -6,11 +6,9 @@
 #include "ConstructorHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Ognam/OgnamCharacter.h"
-#include "Ognam/OgnamPlayerstate.h"
-#include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamMacro.h"
-#include "Ognam/OgnamProjectileComponent.h"
+#include "Ognam/OgnamStatics.h"
+#include "Ognam/OgnamEnum.h"
 
 // Sets default values
 AAshaDaggers::AAshaDaggers()
@@ -50,7 +48,7 @@ AAshaDaggers::AAshaDaggers()
 void AAshaDaggers::BeginPlay()
 {
 	Super::BeginPlay();
-	Collision->MoveIgnoreActors.Add(Instigator);
+	Collision->MoveIgnoreActors.Add(GetInstigator());
 }
 
 void AAshaDaggers::ProjectileStop(const FHitResult& ImpactResult)
@@ -60,26 +58,12 @@ void AAshaDaggers::ProjectileStop(const FHitResult& ImpactResult)
 	{
 		return;
 	}
-	if (!Instigator)
-	{
-		O_LOG(TEXT("No Instigator!"));
-		return;
-	}
 
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(ImpactResult.GetActor());
-	if (!Character)
+	APawn* Reciever = Cast<APawn>(ImpactResult.GetActor());
+	if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Reciever, EDamageMethod::DamagesEnemy))
 	{
-		return;
+		UGameplayStatics::ApplyPointDamage(Reciever, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, GetInstigatorController(), this, nullptr);
 	}
-
-	AOgnamPlayerState* OtherPlayerState = Character->GetPlayerState<AOgnamPlayerState>();
-	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
-	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
-	{
-		AController* Controller = Instigator->GetController();
-		UGameplayStatics::ApplyPointDamage(Character, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, Controller, this, nullptr);
-	}
-
 }
 
 

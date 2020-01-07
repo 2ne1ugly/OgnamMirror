@@ -5,7 +5,6 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "Ognam/OgnamCharacter.h"
 
 UHereiraMolotovBurning::UHereiraMolotovBurning()
 {
@@ -24,7 +23,7 @@ void UHereiraMolotovBurning::SetInstigator(APawn* _Instigator)
 
 bool UHereiraMolotovBurning::ShouldEnd()
 {
-	return Target->HasAuthority() && Super::ShouldEnd();
+	return GetOwner()->HasAuthority() && Super::ShouldEnd();
 }
 
 void UHereiraMolotovBurning::BeginModifier()
@@ -35,8 +34,8 @@ void UHereiraMolotovBurning::BeginModifier()
 
 void UHereiraMolotovBurning::TickDamage()
 {
-	if (Target->HasAuthority())
+	if (GetOwner()->HasAuthority())
 	{
-		UGameplayStatics::ApplyDamage(Target, 10.f, Instigator->GetController(), nullptr, nullptr);
+		UGameplayStatics::ApplyDamage(GetOwner(), 10.f, Instigator->GetController(), nullptr, nullptr);
 	}
 }

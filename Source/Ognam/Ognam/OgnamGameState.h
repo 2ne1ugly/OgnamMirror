@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "OgnamEnum.h"
 #include "OgnamGameState.generated.h"
 
 /**
@@ -51,6 +52,8 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetReset();
 	virtual void NetReset_Implementation();
+
+	virtual bool CanDamage(class AOgnamPlayerState* DamageInstigator, class AOgnamPlayerState* Reciever, EDamageMethod DamageMethod) const;
 
 protected:
 	UPROPERTY(Transient, Replicated)

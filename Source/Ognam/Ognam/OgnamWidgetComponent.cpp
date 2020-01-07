@@ -9,7 +9,7 @@
 
 UOgnamWidgetComponent::UOgnamWidgetComponent()
 {
-	bReplicates = true;
+	SetIsReplicatedByDefault(true);
 }
 
 void UOgnamWidgetComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
