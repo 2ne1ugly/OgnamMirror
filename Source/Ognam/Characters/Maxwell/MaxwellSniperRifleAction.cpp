@@ -15,6 +15,8 @@
 #include "Ognam/OgnamPlayerstate.h"
 #include "Curves/CurveFloat.h"
 #include "Ognam/Weapon.h"
+#include "Ognam/OgnamStatics.h"
+#include "Ognam/OgnamEnum.h"
 
 UMaxwellSniperRifleAction::UMaxwellSniperRifleAction()
 {
@@ -101,20 +103,8 @@ void UMaxwellSniperRifleAction::BeginChannel()
 		Controller->ClientPlayCameraShake(UMaxwellSniperRifleRecoil::StaticClass());
 	}
 
-	//Get Target's player state
-	ACharacter* OtherCharacter = Cast<ACharacter>(BulletHit.Actor);
-	if (!OtherCharacter)
-	{
-		return;
-	}
-	AOgnamPlayerState* OtherPlayerState = OtherCharacter->GetPlayerState<AOgnamPlayerState>();
-	AOgnamPlayerState* PlayerState = Target->GetPlayerState<AOgnamPlayerState>();
-	if (!OtherPlayerState || !PlayerState)
-	{
-		return;
-	}
-
-	if (OtherPlayerState->GetTeam() != PlayerState->GetTeam())
+	APawn* OtherPawn = Cast<APawn>(BulletHit.Actor);
+	if (UOgnamStatics::CanDamage(GetWorld(), Target, OtherPawn, EDamageMethod::DamagesEnemy))
 	{
 		float Distance = (BulletTo - From).Size();
 		float Damage = DamageCurve->GetFloatValue(Distance);
@@ -123,7 +113,7 @@ void UMaxwellSniperRifleAction::BeginChannel()
 		{
 			Damage *= 1.5;
 		}
-		UGameplayStatics::ApplyPointDamage(OtherCharacter, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherPawn, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
 	}
 }
 

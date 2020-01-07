@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "OgnamEnum.h"
 #include "OgnamCharacter.generated.h"
+
+enum class EStatusEffect : uint64;
+enum class EActionNotifier : uint64;
 
 // Contains What's common between every Character.
 UCLASS()
@@ -66,6 +68,8 @@ public:
 	void MoveBackwardActionRelease();
 	void MoveRightActionRelease();
 	void MoveLeftActionRelease();
+	void TacticalPressed();
+	void TacticalReleased();
 
 	/*
 	**	Testing functions
@@ -256,10 +260,23 @@ protected:
 	UPROPERTY(Transient, VisibleAnywhere, Replicated)
 	bool bIsAlive;
 
+	UPROPERTY(Transient, VisibleAnywhere)
 	bool bForward;
+
+	UPROPERTY(Transient, VisibleAnywhere)
 	bool bBackward;
+
+	UPROPERTY(Transient, VisibleAnywhere)
 	bool bRight;
+
+	UPROPERTY(Transient, VisibleAnywhere)
 	bool bLeft;
+
+	UPROPERTY(Transient, VisibleAnywhere)
+	bool bTactical;
+
+	UPROPERTY(Transient, VisibleAnywhere)
+	float TacticalAmount;
 
 	UPROPERTY(VisibleAnywhere)
 	class UWeapon* Weapon;
@@ -276,8 +293,17 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UAbility* Special;
 
+	UPROPERTY(VisibleAnywhere)
 	class UMaterial* DamageRecievedMaterial;
+
+	UPROPERTY(VisibleAnywhere)
+	class UMaterial* TacticalModeMaterial;
+
+	UPROPERTY(VisibleAnywhere)
 	class UMaterialInstanceDynamic* DamageInstance;
+
+	UPROPERTY(VisibleAnywhere)
+	class UMaterialInstanceDynamic* TacticalInstance;
 
 	UPROPERTY(VisibleAnywhere)
 	class UTextBlock* NameTag;
@@ -296,10 +322,9 @@ protected:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetJumpStart();
+	virtual void NetJumpStart_Implementation();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetJumpLand();
-
-
-
+	virtual void NetJumpLand_Implementation();
 };

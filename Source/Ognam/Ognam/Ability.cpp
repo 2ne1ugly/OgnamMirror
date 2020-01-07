@@ -7,7 +7,7 @@
 UAbility::UAbility()
 {
 	SetNetAddressable();
-	SetIsReplicated(true);
+	SetIsReplicatedByDefault(true);
 }
 
 void UAbility::BeginPlay()

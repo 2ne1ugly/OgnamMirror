@@ -41,7 +41,7 @@ void UAshaFanofKnivesAction::BeginChannel()
 	FVector Direction = To - From;
 	Direction = Target->GetWeapon()->ApplyRandomSpread(Direction);
 
-	for (float Angle = -30.f; Angle <= 60.f; Angle + 10.f)
+	for (float Angle = -30.f; Angle <= 60.f; Angle += 10.f)
 	{
 
 	}

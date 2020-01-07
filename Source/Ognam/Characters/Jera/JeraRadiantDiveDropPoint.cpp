@@ -14,6 +14,8 @@
 #include "ConstructorHelpers.h"
 #include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
+#include "Ognam/OgnamStatics.h"
+#include "Ognam/OgnamEnum.h"
 
 // Sets default values
 AJeraRadiantDiveDropPoint::AJeraRadiantDiveDropPoint()
@@ -35,18 +37,7 @@ AJeraRadiantDiveDropPoint::AJeraRadiantDiveDropPoint()
 void AJeraRadiantDiveDropPoint::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!Instigator)
-	{
-		O_LOG(TEXT("No Instigator"));
-		return;
-	}
-	AOgnamPlayerState* PlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
-	if (!PlayerState)
-	{
 
-		O_LOG(TEXT("No player state"));
-		return;
-	}
 	LandingSound->Activate();
 
 	//Test Overlaps.
@@ -61,11 +52,9 @@ void AJeraRadiantDiveDropPoint::BeginPlay()
 		{
 			continue;
 		}
-		AOgnamPlayerState* OverlappedPlayerState = Character->GetPlayerState<AOgnamPlayerState>();
-		//if not on same team, push them up and deal damage
-		if ((!OverlappedPlayerState || OverlappedPlayerState->GetTeam() != PlayerState->GetTeam()) && !Affected.Contains(Character))
+		if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Character, EDamageMethod::DamagesEnemy))
 		{
-			UGameplayStatics::ApplyDamage(Character, 75.f, Instigator->GetController(), this, nullptr);
+			UGameplayStatics::ApplyDamage(Character, 75.f, GetInstigatorController(), this, nullptr);
 			if (Character->GetMesh()->IsSimulatingPhysics())
 			{
 				Character->GetMesh()->AddImpulse(FVector::UpVector * 50000.f);

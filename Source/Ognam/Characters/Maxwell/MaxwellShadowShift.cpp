@@ -7,6 +7,7 @@
 #include "ConstructorHelpers.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
+#include "Components/SkeletalMeshComponent.h"
 
 UMaxwellShadowShift::UMaxwellShadowShift()
 {
@@ -16,6 +17,9 @@ UMaxwellShadowShift::UMaxwellShadowShift()
 
 	static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Maxwell/shadow_walk.shadow_walk'"));
 	Icon = IconTexture.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> RootMotionCH(TEXT("AnimMontage'/Game/Animation/Maxwell/Maxwell_Dash.Maxwell_Dash'"));
+	RootMotion = RootMotionCH.Object;
 }
 
 
@@ -37,7 +41,8 @@ void UMaxwellShadowShift::ServerCastShadowShift_Implementation(FVector Direction
 		return;
 	}
 	Target->TakeAction(EActionNotifier::SpecialMovement);
-	NewObject<UMaxwellShadowForm>(Target)->RegisterComponent();
+	Target->PlayAnimMontage(RootMotion);
+	//NewObject<UMaxwellShadowForm>(Target)->RegisterComponent();
 	Target->GetWorldTimerManager().SetTimer(ShadowShiftCooldown, Cooldown, false);
 	ClientFeedbackShadowShift();
 }

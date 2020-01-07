@@ -29,6 +29,7 @@
 #include "OgnamWidgetComponent.h"
 #include "OgnamUserWidget.h"
 #include "Engine/ActorChannel.h"
+#include "OgnamEnum.h"
 
 // Sets default values
 AOgnamCharacter::AOgnamCharacter()
@@ -93,9 +94,14 @@ AOgnamCharacter::AOgnamCharacter()
 
 	CharacterName = FText::FromString("Ognam Character");
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> RecievedMaterial(TEXT("Material'/Game/PostProcess/DamageRecieved.DamageRecieved'"));
-	DamageRecievedMaterial = RecievedMaterial.Object;
+	//Post processings
+	static ConstructorHelpers::FObjectFinder<UMaterial> DamageRecievedMaterialCH(TEXT("Material'/Game/PostProcess/DamageRecieved.DamageRecieved'"));
+	DamageRecievedMaterial = DamageRecievedMaterialCH.Object;
 
+	static ConstructorHelpers::FObjectFinder<UMaterial> TacticalModeMaterialCH(TEXT("Material'/Game/Material/Tactical.Tactical'"));
+	TacticalModeMaterial = TacticalModeMaterialCH.Object;
+
+	//Name tags
 	static ConstructorHelpers::FClassFinder<UUserWidget> NameTagWidgetClass(TEXT("/Game/UI/NameTag"));
 	NameTagComponent = CreateDefaultSubobject<UOgnamWidgetComponent>(TEXT("Name Tag"));
 	NameTagComponent->SetupAttachment(RootComponent);
@@ -105,6 +111,7 @@ AOgnamCharacter::AOgnamCharacter()
 	NameTagComponent->SetWidgetClass(NameTagWidgetClass.Class);
 	NameTagComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	//Sounds
 	static ConstructorHelpers::FObjectFinder<USoundCue> WalkingCue(TEXT("/Game/Animation/Step_Cue.Step_Cue"));
 	WalkingSoundCue = WalkingCue.Object;
 
@@ -122,6 +129,7 @@ AOgnamCharacter::AOgnamCharacter()
 	JumpEnd->SetSound(JumpEndCue.Object);
 	JumpEnd->SetAutoActivate(false);
 
+	//Icons
 	static ConstructorHelpers::FObjectFinder<UTexture2D> PlayerIconTexture(TEXT("Texture2D'/Game/Mango.Mango'"));
 	CharacterIcon = PlayerIconTexture.Object;
 }
@@ -139,6 +147,33 @@ void AOgnamCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//Find Camera blocking plane
+	if (HasAuthority() || (Controller && Controller->IsLocalPlayerController()))
+	{
+		UpdateCameraBlockingPlane();
+	}
+
+	//TODO: make this modular
+	float DamageAmount = GetWorldTimerManager().IsTimerActive(DamageTimer) ? GetWorldTimerManager().GetTimerRemaining(DamageTimer) / 3.f : 0.f;
+		
+	DamageInstance->SetScalarParameterValue(TEXT("Amount"), DamageAmount);
+
+	FVector CamLoc = UGameplayStatics::GetPlayerCameraManager(this, 0)->GetCameraLocation();
+	FVector CompLoc = NameTagComponent->GetComponentLocation();
+
+	FRotator Rot = UKismetMathLibrary::FindLookAtRotation(CompLoc, CamLoc);
+	NameTagComponent->SetWorldRotation(FRotator(Rot.Pitch, Rot.Yaw, 0.f));
+
+	//Health Regen
+	if (IsAlive())
+	{
+		Health += HealthRegen * DeltaTime;
+	}
+	if (Health > MaxHealth)
+	{
+		Health = MaxHealth;
+	}
+
 	MaxHealth = BaseMaxHealth;
 	Defense = BaseDefense;
 	Speed = BaseSpeed;
@@ -146,6 +181,19 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	AirControl = BaseAirControl;
 	Gravity = BaseGravity;
 	HealthRegen = BaseHealthRegen;
+
+	//Tactical
+	if (bTactical)
+	{
+		TacticalAmount += DeltaTime;
+		Speed *= .5f;
+	}
+	else
+	{
+		TacticalAmount -= DeltaTime;
+	}
+	TacticalAmount = FMath::Clamp(TacticalAmount, 0.f, 1.f);
+	TacticalInstance->SetScalarParameterValue(TEXT("Amount"), TacticalAmount);
 
 	//Check ending conditions of Modiifers and apply tick.
 	for (int i = Modifiers.Num() - 1; i >= 0; i--)
@@ -170,33 +218,6 @@ void AOgnamCharacter::Tick(float DeltaTime)
 		float Speed = GetSpeedFromVector(InputVector);
 		AddMovementInput(GetActorTransform().TransformVector(InputVector), Speed);
 	}
-
-	//Find Camera blocking plane
-	if (HasAuthority() || (Controller && Controller->IsLocalPlayerController()))
-	{
-		UpdateCameraBlockingPlane();
-	}
-
-	//TODO: make this modular
-	float Amount = GetWorldTimerManager().IsTimerActive(DamageTimer) ? GetWorldTimerManager().GetTimerRemaining(DamageTimer) / 3.f : 0.f;
-
-	DamageInstance->SetScalarParameterValue(TEXT("Amount"), Amount);
-
-	FVector CamLoc = UGameplayStatics::GetPlayerCameraManager(this, 0)->GetCameraLocation();
-	FVector CompLoc = NameTagComponent->GetComponentLocation();
-
-	FRotator Rot = UKismetMathLibrary::FindLookAtRotation(CompLoc, CamLoc);
-	NameTagComponent->SetWorldRotation(FRotator(Rot.Pitch, Rot.Yaw, 0.f));
-
-	//Health Regen
-	if (IsAlive())
-	{
-		Health += HealthRegen * DeltaTime;
-	}
-	if (Health > MaxHealth)
-	{
-		Health = MaxHealth;
-	}
 }
 
 void AOgnamCharacter::BeginPlay()
@@ -206,8 +227,11 @@ void AOgnamCharacter::BeginPlay()
 	MaxHealth = BaseMaxHealth;
 	Health = MaxHealth;
 
+	TacticalInstance = UMaterialInstanceDynamic::Create(TacticalModeMaterial, this);
 	DamageInstance = UMaterialInstanceDynamic::Create(DamageRecievedMaterial, this);
+	Camera->PostProcessSettings.AddBlendable(TacticalInstance, 1.f);
 	Camera->PostProcessSettings.AddBlendable(DamageInstance, 1.f);
+
 	NameTagComponent->InitWidget();
 }
 
@@ -242,6 +266,8 @@ void AOgnamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Utility", IE_Released, this, &AOgnamCharacter::UtilityReleased);
 	PlayerInputComponent->BindAction("Special", IE_Pressed, this, &AOgnamCharacter::SpecialPressed);
 	PlayerInputComponent->BindAction("Special", IE_Released, this, &AOgnamCharacter::SpecialReleased);
+	PlayerInputComponent->BindAction("Tactical", IE_Pressed, this, &AOgnamCharacter::TacticalPressed);
+	PlayerInputComponent->BindAction("Tactical", IE_Released, this, &AOgnamCharacter::TacticalReleased);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AOgnamCharacter::Jump);
 }
@@ -318,6 +344,16 @@ void AOgnamCharacter::SpecialPressed()
 void AOgnamCharacter::SpecialReleased()
 {
 	OnSpecialReleased.Broadcast();
+}
+
+void AOgnamCharacter::TacticalPressed()
+{
+	bTactical = true;
+}
+
+void AOgnamCharacter::TacticalReleased()
+{
+	bTactical = false;
 }
 
 void AOgnamCharacter::ReloadPressed()

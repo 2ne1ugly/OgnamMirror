@@ -6,11 +6,11 @@
 #include "ConstructorHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Ognam/OgnamCharacter.h"
-#include "Ognam/OgnamPlayerstate.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Ognam/OgnamMacro.h"
+#include "Ognam/OgnamStatics.h"
+#include "Ognam/OgnamEnum.h"
 
 AJeraCrystalSpear::AJeraCrystalSpear()
 {
@@ -49,33 +49,21 @@ void AJeraCrystalSpear::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Collision->MoveIgnoreActors.Add(Instigator);
+	Collision->MoveIgnoreActors.Add(GetInstigator());
 }
 
 void AJeraCrystalSpear::ProjectileStop(const FHitResult& ImpactResult)
 {
-	if (!Instigator)
-	{
-		O_LOG(TEXT("No Instigator!"));
-		return;
-	}
-
-	AOgnamCharacter* Character = Cast<AOgnamCharacter>(ImpactResult.GetActor());
-	if (!Character)
-	{
-		return;
-	}
-	Collision->AttachToComponent(ImpactResult.GetComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), ImpactResult.BoneName);
+	Destroy();
 
 	if (!HasAuthority())
 	{
 		return;
 	}
-	AOgnamPlayerState* OtherPlayerState = Character->GetPlayerState<AOgnamPlayerState>();
-	AOgnamPlayerState* ControllerPlayerState = Instigator->GetPlayerState<AOgnamPlayerState>();
-	if (OtherPlayerState && ControllerPlayerState && OtherPlayerState->GetTeam() != ControllerPlayerState->GetTeam())
+
+	APawn* Reciever = Cast<APawn>(ImpactResult.GetActor());
+	if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Reciever, EDamageMethod::DamagesEnemy))
 	{
-		AController* Controller = Instigator->GetController();
-		UGameplayStatics::ApplyPointDamage(Character, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, Controller, this, nullptr);
+		UGameplayStatics::ApplyPointDamage(Reciever, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, GetInstigatorController(), this, nullptr);
 	}
 }
