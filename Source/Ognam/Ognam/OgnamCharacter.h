@@ -214,8 +214,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UTexture2D* CharacterIcon;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UTexture2D* CharacterImage;
+
 	UFUNCTION(BlueprintCallable)
 	class UTexture2D* GetIcon() const;
+
+	UFUNCTION(BlueprintCallable)
+	class UTexture2D* GetImage() const;
 
 	bool bCameraBlocked;
 

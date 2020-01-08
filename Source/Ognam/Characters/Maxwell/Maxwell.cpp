@@ -11,6 +11,9 @@ AMaxwell::AMaxwell()
 {
 	CharacterName = FText::FromString("Maxwell");
 
+	static ConstructorHelpers::FObjectFinder<UTexture2D> ImageTextureCH(TEXT("Texture2D'/Game/UI/CharacterIcon/Maxwell/Vault.Vault'"));
+	CharacterImage = ImageTextureCH.Object;
+
 	BaseMaxHealth = 150.f;
 	MaxHealth = BaseMaxHealth;
 	Health = BaseMaxHealth;
