@@ -14,14 +14,6 @@ UActionModifier::UActionModifier()
 	PreDelayDuration = 0.f;
 	ChannelDuration = 1.f;
 	PostDelayDuration = 0.f;
-
-	PreDelayStatusEffect = EStatusEffect::None;
-	ChannelStatusEffect = EStatusEffect::None;
-	PostDelayStatusEffect = EStatusEffect::None;
-
-	PreDelayAction = EActionNotifier::None;
-	ChannelAction = EActionNotifier::None;
-	PostDelayAction = EActionNotifier::None;
 }
 
 void UActionModifier::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -67,7 +59,6 @@ EActionStage UActionModifier::GetStage() const
 
 void UActionModifier::BeginModifier()
 {
-	ServerTimeDelay = GetWorld()->GetGameState()->GetServerWorldTimeSeconds() - ServerTimeStamp;
 	ExecutePreDelay();
 }
 
@@ -101,33 +92,20 @@ void UActionModifier::EndModifier()
 void UActionModifier::ExecutePreDelay()
 {
 	Stage = EActionStage::PreDelay;
-	StatusEffect = PreDelayStatusEffect;
-	if (StatusEffect != EStatusEffect::None)
-	{
-		Target->ApplyStatusEffect(StatusEffect);
-	}
+	SetStatusEffect(PreDelayStatusEffect);
 	if (PreDelayAction != EActionNotifier::None)
 	{
 		Target->TakeAction(PreDelayAction);
 	}
 	BeginPreDelay();
 
-	//Compensate server lag;
-	float Delay = PreDelayDuration - ServerTimeDelay;
-	ServerTimeDelay = 0;
-	if (Delay < 0)
-	{
-		ServerTimeDelay = -Delay;
-		Delay = 0;
-	}
-
-	if (Delay == 0)
+	if (PreDelayDuration == 0)
 	{
 		FinishPreDelay();
 	}
 	else
 	{
-		GetWorld()->GetTimerManager().SetTimer(PreDelayTimer, this, &UActionModifier::FinishPreDelay, Delay, false);
+		GetWorld()->GetTimerManager().SetTimer(PreDelayTimer, this, &UActionModifier::FinishPreDelay, PreDelayDuration, false);
 	}
 }
 
@@ -152,33 +130,20 @@ void UActionModifier::FinishPreDelay()
 void UActionModifier::ExecuteChannel()
 {
 	Stage = EActionStage::Channel;
-	StatusEffect = ChannelStatusEffect;
-	if (StatusEffect != EStatusEffect::None)
-	{
-		Target->ApplyStatusEffect(StatusEffect);
-	}
+	SetStatusEffect(ChannelStatusEffect);
 	if (ChannelAction != EActionNotifier::None)
 	{
 		Target->TakeAction(ChannelAction);
 	}
 	BeginChannel();
 
-	//Compensate server lag;
-	float Delay = ChannelDuration - ServerTimeDelay;
-	ServerTimeDelay = 0;
-	if (Delay < 0)
-	{
-		ServerTimeDelay = -Delay;
-		Delay = 0;
-	}
-
-	if (Delay == 0)
+	if (ChannelDuration == 0.f)
 	{
 		FinishChannel();
 	}
 	else
 	{
-		GetWorld()->GetTimerManager().SetTimer(ChannelTimer, this, &UActionModifier::FinishChannel, Delay, false);
+		GetWorld()->GetTimerManager().SetTimer(ChannelTimer, this, &UActionModifier::FinishChannel, ChannelDuration, false);
 	}
 }
 
@@ -203,11 +168,7 @@ void UActionModifier::FinishChannel()
 void UActionModifier::ExecutePostDelay()
 {
 	Stage = EActionStage::PostDelay;
-	StatusEffect = PostDelayStatusEffect;
-	if (StatusEffect != EStatusEffect::None)
-	{
-		Target->ApplyStatusEffect(StatusEffect);
-	}
+	SetStatusEffect(PostDelayStatusEffect);
 	if (PostDelayAction != EActionNotifier::None)
 	{
 		Target->TakeAction(PostDelayAction);
@@ -215,21 +176,13 @@ void UActionModifier::ExecutePostDelay()
 	BeginPostDelay();
 
 	//Compensate server lag;
-	float Delay = PostDelayDuration - ServerTimeDelay;
-	ServerTimeDelay = 0;
-	if (Delay < 0)
-	{
-		ServerTimeDelay = -Delay;
-		Delay = 0;
-	}
-
-	if (Delay == 0)
+	if (PostDelayDuration == 0)
 	{
 		FinishPostDelay();
 	}
 	else
 	{
-		GetWorld()->GetTimerManager().SetTimer(PostDelayTimer, this, &UActionModifier::FinishPostDelay, Delay, false);
+		GetWorld()->GetTimerManager().SetTimer(PostDelayTimer, this, &UActionModifier::FinishPostDelay, PostDelayDuration, false);
 	}
 }
 

@@ -4,10 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "OgnamEnum.h"
 #include "OgnamCharacter.generated.h"
-
-enum class EStatusEffect : uint64;
-enum class EActionNotifier : uint64;
 
 // Contains What's common between every Character.
 UCLASS()
@@ -141,9 +139,10 @@ public:
 		return nullptr;
 	}
 
-	bool HasStatusEffect(EStatusEffect StatusEffect);
+	bool HasStatusEffect(EStatusEffect Query) const;
 	void TakeAction(EActionNotifier ActionType);
-	void ApplyStatusEffect(EStatusEffect StatusEffect);
+	void ApplyStatusEffect(const TSet<EStatusEffect>& Effects);
+	void RemoveStatusEffect(const TSet<EStatusEffect>& Effects);
 	/*
 	**	Exported Props
 	*/
@@ -204,6 +203,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<class UModifier*> Modifiers;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TMap<EStatusEffect, int> StatusEffects;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FHitResult> CameraHits;

@@ -7,7 +7,7 @@
 
 UHereiraSprinting::UHereiraSprinting()
 {
-	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced;
+	SetStatusEffect({ EStatusEffect::Unarmed, EStatusEffect::Silenced });
 	Duration = 2.5f;
 }
 

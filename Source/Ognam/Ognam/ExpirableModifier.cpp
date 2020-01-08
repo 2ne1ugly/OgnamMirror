@@ -20,9 +20,8 @@ void UExpirableModifier::TickModifier(float DeltaTime)
 }
 
 void UExpirableModifier::BeginModifier()
-{
-	float CurrentSeconds = GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
-	GetWorld()->GetTimerManager().SetTimer(DurationTimer, CurrentSeconds - ServerTimeStamp + Duration, false);
+{	
+	GetWorld()->GetTimerManager().SetTimer(DurationTimer, Duration, false);
 }
 
 void UExpirableModifier::EndModifier()

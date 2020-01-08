@@ -10,7 +10,7 @@ ULangdonSteamBracersModifier::ULangdonSteamBracersModifier()
 	ChannelDuration = 6.f;
 	PostDelayDuration = .0f;
 
-	PreDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Silenced | EStatusEffect::Unarmed;
+	PreDelayStatusEffect = { EStatusEffect::Rooted, EStatusEffect::Silenced, EStatusEffect::Unarmed };
 }
 
 void ULangdonSteamBracersModifier::TickChannel(float DeltaTime)

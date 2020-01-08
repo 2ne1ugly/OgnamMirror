@@ -29,7 +29,8 @@ void UHereiraSprint::OnButtonPressed()
 {
 	if (Target->GetWorldTimerManager().IsTimerActive(SprintCooldown) ||
 		Target->GetModifier<UHereiraSprinting>() || 
-		Target->HasStatusEffect(EStatusEffect::Silenced | EStatusEffect::Rooted))
+		Target->HasStatusEffect(EStatusEffect::Silenced) ||
+		Target->HasStatusEffect(EStatusEffect::Rooted))
 	{
 		return;
 	}
@@ -45,7 +46,8 @@ void UHereiraSprint::ServerStartSprint_Implementation()
 {
 	if (Target->GetWorldTimerManager().IsTimerActive(SprintCooldown) ||
 		Target->GetModifier<UHereiraSprinting>() ||
-		Target->HasStatusEffect(EStatusEffect::Silenced | EStatusEffect::Rooted))
+		Target->HasStatusEffect(EStatusEffect::Silenced) ||
+		Target->HasStatusEffect(EStatusEffect::Rooted))
 	{
 		return;
 	}
@@ -70,7 +72,7 @@ void UHereiraSprint::ServerStopSprint_Implementation()
 void UHereiraSprint::StatusEffectApplied(EStatusEffect StatusEffect)
 {
 	//If status effect contains silenced
-	if ((StatusEffect & EStatusEffect::Rooted) != EStatusEffect::None &&
+	if (StatusEffect == EStatusEffect::Rooted &&
 		Target->GetModifier<UHereiraSprinting>())
 	{
 		ServerStopSprint_Implementation();
