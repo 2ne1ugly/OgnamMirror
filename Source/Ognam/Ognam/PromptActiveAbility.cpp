@@ -8,7 +8,7 @@
 #include "OgnamMacro.h"
 UPromptActiveAbility::UPromptActiveAbility()
 {
-	UnacceptedStatusEffects = EStatusEffect::Silenced;
+	UnacceptedStatusEffects = { EStatusEffect::Silenced };
 }
 
 bool UPromptActiveAbility::ShouldShowNumber() const
@@ -23,34 +23,45 @@ float UPromptActiveAbility::GetNumber() const
 
 void UPromptActiveAbility::OnButtonPressed()
 {
-	if (Target->GetWorldTimerManager().IsTimerActive(CooldownTimer) ||
-		Target->HasStatusEffect(UnacceptedStatusEffects))
+	if (Target->GetWorldTimerManager().IsTimerActive(CooldownTimer))
 	{
 		return;
+	}
+	for (const EStatusEffect& StatusEffect : UnacceptedStatusEffects)
+	{
+		if (Target->HasStatusEffect(StatusEffect))
+		{
+			return;
+		}
 	}
 	ServerOnButtonPressed();
 }
 
 void UPromptActiveAbility::ServerOnButtonPressed_Implementation()
 {
-	if (Target->GetWorldTimerManager().IsTimerActive(CooldownTimer) ||
-		Target->HasStatusEffect(UnacceptedStatusEffects))
+	if (Target->GetWorldTimerManager().IsTimerActive(CooldownTimer))
 	{
 		return;
 	}
+	for (const EStatusEffect& StatusEffect : UnacceptedStatusEffects)
+	{
+		if (Target->HasStatusEffect(StatusEffect))
+		{
+			return;
+		}
+	}
 	ActivateAbility();
 	Target->GetWorldTimerManager().SetTimer(CooldownTimer, Cooldown, false);
-	ClientFeedbackUsed(GetWorld()->GetTimeSeconds());
+	ClientFeedbackUsed();
 }
 
 void UPromptActiveAbility::ActivateAbility()
 {
 }
 
-void UPromptActiveAbility::ClientFeedbackUsed_Implementation(float TimeStamp)
+void UPromptActiveAbility::ClientFeedbackUsed_Implementation()
 {
-	O_LOG(TEXT("%f"), Cooldown - GetWorld()->GetGameState()->GetServerWorldTimeSeconds() + TimeStamp);
-	Target->GetWorldTimerManager().SetTimer(CooldownTimer, Cooldown - GetWorld()->GetGameState()->GetServerWorldTimeSeconds() + TimeStamp, false);
+	Target->GetWorldTimerManager().SetTimer(CooldownTimer, Cooldown, false);
 }
 
 	

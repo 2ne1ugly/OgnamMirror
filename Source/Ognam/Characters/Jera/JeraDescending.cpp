@@ -8,7 +8,7 @@
 
 UJeraDescending::UJeraDescending()
 {
-	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced;
+	SetStatusEffect({ EStatusEffect::Unarmed, EStatusEffect::Silenced });
 }
 
 bool UJeraDescending::ShouldEnd()

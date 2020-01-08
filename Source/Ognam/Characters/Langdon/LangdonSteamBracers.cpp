@@ -7,7 +7,7 @@ ULangdonSteamBracers::ULangdonSteamBracers()
 {
 	AbilityType = EAbilityType::Mobility;
 	Cooldown = 15.f;
-	UnacceptedStatusEffects |= EStatusEffect::Rooted;
+	UnacceptedStatusEffects.Add(EStatusEffect::Rooted);
 
 	//static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Jera/super_jump.super_jump'"));
 	//Icon = IconTexture.Object;

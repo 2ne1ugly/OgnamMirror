@@ -103,7 +103,7 @@ protected:
 	FDelegateHandle SubPressHandle;
 	FDelegateHandle SubReleaseHandle;
 
-	EStatusEffect BasicBlockingEffects;
+	TSet<EStatusEffect> BasicBlockingEffects;
 
 	//Actions
 	UPROPERTY(VisibleAnywhere)

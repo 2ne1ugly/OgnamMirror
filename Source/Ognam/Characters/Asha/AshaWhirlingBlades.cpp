@@ -13,7 +13,7 @@ UAshaWhirlingBlades::UAshaWhirlingBlades()
 {
 	AbilityType = EAbilityType::Mobility;
 	Cooldown = 4.f;
-	UnacceptedStatusEffects |= EStatusEffect::Rooted;
+	UnacceptedStatusEffects.Add(EStatusEffect::Rooted);
 
 	//static ConstructorHelpers::FObjectFinder<UTexture2D> IconTexture(TEXT("Texture2D'/Game/UI/CharacterIcon/Jera/super_jump.super_jump'"));
 	//Icon = IconTexture.Object;

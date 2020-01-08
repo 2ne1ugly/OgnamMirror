@@ -17,7 +17,7 @@ UWeapon::UWeapon()
 
 	SetNetAddressable();
 	SetIsReplicatedByDefault(true);
-	BasicBlockingEffects |= EStatusEffect::Unarmed;
+	BasicBlockingEffects.Add(EStatusEffect::Unarmed);
 	ReloadTime = 3.f;
 	bReloadOnNoAmmo = true;
 
@@ -286,9 +286,14 @@ void UWeapon::EndReload()
 
 bool UWeapon::CanBasic()
 {
-	return !Target->HasStatusEffect(BasicBlockingEffects) &&
-		!bReloading &&
-		(bInfiniteAmmo || Ammo > 0);
+	for (const EStatusEffect& StatusEffect : BasicBlockingEffects)
+	{
+		if (Target->HasStatusEffect(StatusEffect))
+		{
+			return false;
+		}
+	}
+	return !bReloading && (bInfiniteAmmo || Ammo > 0);
 }
 
 void UWeapon::InterruptReloading()

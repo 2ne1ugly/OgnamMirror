@@ -13,8 +13,9 @@
 
 UAshaFanofKnivesAction::UAshaFanofKnivesAction()
 {
-	PreDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Unarmed | EStatusEffect::Silenced;
-	PostDelayStatusEffect |= EStatusEffect::Rooted | EStatusEffect::Unarmed | EStatusEffect::Silenced;
+	PreDelayStatusEffect = {EStatusEffect::Rooted, EStatusEffect::Unarmed, EStatusEffect::Silenced};
+	ChannelStatusEffect = {EStatusEffect::Rooted, EStatusEffect::Unarmed, EStatusEffect::Silenced};
+	PostDelayStatusEffect = {EStatusEffect::Rooted, EStatusEffect::Unarmed, EStatusEffect::Silenced};
 
 	PreDelayDuration = .3f;
 	ChannelDuration = .0f;

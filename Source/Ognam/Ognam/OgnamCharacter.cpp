@@ -213,7 +213,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	GetCharacterMovement()->GravityScale = Gravity;
 
 	FVector InputVector = GetInputVector();
-	if (!InputVector.IsZero() && !HasStatusEffect(EStatusEffect::Rooted))
+	if (!InputVector.IsZero() && !HasStatusEffect({EStatusEffect::Rooted}))
 	{
 		float Speed = GetSpeedFromVector(InputVector);
 		AddMovementInput(GetActorTransform().TransformVector(InputVector), Speed);
@@ -540,16 +540,9 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	GetWorld()->LineTraceSingleByChannel(HitResult, RayFrom, RayTo, ECollisionChannel::ECC_GameTraceChannel1, Params);
 }
 
-bool AOgnamCharacter::HasStatusEffect(EStatusEffect StatusEffect)
+bool AOgnamCharacter::HasStatusEffect(EStatusEffect Query) const
 {
-	for (UModifier* Modifier : Modifiers)
-	{
-		if ((Modifier->GetStatusEffect() & StatusEffect) != EStatusEffect::None)
-		{
-			return true;
-		}
-	}
-	return false;
+	return StatusEffects.FindRef(Query) > 0;
 }
 
 void AOgnamCharacter::TakeAction(EActionNotifier ActionType)
@@ -584,41 +577,54 @@ void AOgnamCharacter::TakeAction(EActionNotifier ActionType)
 	}
 }
 
-void AOgnamCharacter::ApplyStatusEffect(EStatusEffect StatusEffect)
+void AOgnamCharacter::RemoveStatusEffect(const TSet<EStatusEffect>& Effects)
 {
-	//Give them a chance to dispell.
-	if (Weapon && Weapon->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+	for (const EStatusEffect& Effect : Effects)
 	{
-		Cast<IDispellable>(Weapon)->StatusEffectApplied(StatusEffect);
+		StatusEffects[Effect]--;
+		check(StatusEffects[Effect] >= 0);
 	}
-	if (Mobility && Mobility->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+}
+
+void AOgnamCharacter::ApplyStatusEffect(const TSet<EStatusEffect>& Effects)
+{
+	for (const EStatusEffect& Effect : Effects)
 	{
-		Cast<IDispellable>(Mobility)->StatusEffectApplied(StatusEffect);
-	}
-	if (Unique && Unique->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
-	{
-		Cast<IDispellable>(Unique)->StatusEffectApplied(StatusEffect);
-	}
-	if (Utility && Utility->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
-	{
-		Cast<IDispellable>(Utility)->StatusEffectApplied(StatusEffect);
-	}
-	if (Special && Special->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
-	{
-		Cast<IDispellable>(Special)->StatusEffectApplied(StatusEffect);
-	}
-	for (UModifier* Modifier : Modifiers)
-	{
-		if (Modifier && Modifier->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+		StatusEffects.FindOrAdd(Effect)++;
+		//Give them a chance to dispell.
+		if (Weapon && Weapon->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
 		{
-			Cast<IDispellable>(Modifier)->StatusEffectApplied(StatusEffect);
+			Cast<IDispellable>(Weapon)->StatusEffectApplied(Effect);
+		}
+		if (Mobility && Mobility->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+		{
+			Cast<IDispellable>(Mobility)->StatusEffectApplied(Effect);
+		}
+		if (Unique && Unique->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+		{
+			Cast<IDispellable>(Unique)->StatusEffectApplied(Effect);
+		}
+		if (Utility && Utility->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+		{
+			Cast<IDispellable>(Utility)->StatusEffectApplied(Effect);
+		}
+		if (Special && Special->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+		{
+			Cast<IDispellable>(Special)->StatusEffectApplied(Effect);
+		}
+		for (UModifier* Modifier : Modifiers)
+		{
+			if (Modifier && Modifier->GetClass()->ImplementsInterface(UDispellable::StaticClass()))
+			{
+				Cast<IDispellable>(Modifier)->StatusEffectApplied(Effect);
+			}
 		}
 	}
 }
 
 void AOgnamCharacter::ServerJump_Implementation()
 {
-	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted) || GetCharacterMovement()->Velocity.Z > 0.f)
+	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect({EStatusEffect::Rooted}) || GetCharacterMovement()->Velocity.Z > 0.f)
 	{
 		return;
 	}
@@ -690,7 +696,7 @@ void AOgnamCharacter::PlayerStateReady()
 
 void AOgnamCharacter::Jump()
 {
-	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted) || !bCanMove)
+	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect({EStatusEffect::Rooted}) || !bCanMove)
 	{
 		return;
 	}
@@ -714,7 +720,7 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float AppliedDamage = Damage;
-	if (HasStatusEffect(EStatusEffect::Unbreakable))
+	if (HasStatusEffect({EStatusEffect::Unbreakable}))
 	{
 		AppliedDamage = 0.f;
 	}

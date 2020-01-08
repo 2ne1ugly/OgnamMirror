@@ -21,13 +21,12 @@ class OGNAM_API UModifier : public UActorComponent
 public:
 	UModifier();
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool ShouldEnd();
 	virtual void TickModifier(float DeltaTime);
 	virtual void BeginPlay() override;
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
-	EStatusEffect GetStatusEffect() const;
+	const TSet<EStatusEffect> &GetStatusEffect() const;
 
 	void UpdateTimeStamp(); 
 
@@ -38,21 +37,16 @@ protected:
 	UFUNCTION()
 	virtual void ExecuteModifier();
 
-
-	void OnRep_TimeStamp();
+	virtual void SetStatusEffect(const TSet<EStatusEffect>& Effects);
 
 	/*
 	**	Props
 	*/
-	//UPROPERTY(VisibleAnywhere)
-	//Sprite propery to show through modifier list.
-
 	UPROPERTY(Transient, VisibleAnywhere)
 	class AOgnamCharacter* Target;
 
-	EStatusEffect StatusEffect;
+	bool bActivated;
 
-	//Creation time stamp
-	UPROPERTY(EditAnywhere, Replicated)
-	float ServerTimeStamp;
+private:
+	TSet<EStatusEffect> StatusEffects;
 };

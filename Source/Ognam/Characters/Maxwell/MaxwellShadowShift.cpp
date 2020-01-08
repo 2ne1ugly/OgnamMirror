@@ -26,7 +26,8 @@ UMaxwellShadowShift::UMaxwellShadowShift()
 void UMaxwellShadowShift::OnButtonPressed()
 {
 	if (Target->GetWorldTimerManager().IsTimerActive(ShadowShiftCooldown) ||
-		Target->HasStatusEffect(EStatusEffect::Rooted | EStatusEffect::Silenced))
+		Target->HasStatusEffect(EStatusEffect::Rooted) ||
+		Target->HasStatusEffect(EStatusEffect::Silenced))
 	{
 		return;
 	}
@@ -36,7 +37,8 @@ void UMaxwellShadowShift::OnButtonPressed()
 void UMaxwellShadowShift::ServerCastShadowShift_Implementation(FVector Direction)
 {
 	if (Target->GetWorldTimerManager().IsTimerActive(ShadowShiftCooldown) ||
-		Target->HasStatusEffect(EStatusEffect::Rooted | EStatusEffect::Silenced))
+		Target->HasStatusEffect(EStatusEffect::Rooted) ||
+		Target->HasStatusEffect(EStatusEffect::Silenced))
 	{
 		return;
 	}

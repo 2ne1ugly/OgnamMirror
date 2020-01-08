@@ -34,8 +34,8 @@ protected:
 	virtual void ActivateAbility();
 
 	UFUNCTION(Client, Unreliable)
-	void ClientFeedbackUsed(float TimeStamp);
-	void ClientFeedbackUsed_Implementation(float TimeStamp);
+	void ClientFeedbackUsed();
+	void ClientFeedbackUsed_Implementation();
 	/*
 	**	Props
 	*/
@@ -43,5 +43,5 @@ protected:
 
 	FTimerHandle CooldownTimer;
 
-	EStatusEffect UnacceptedStatusEffects;
+	TSet<EStatusEffect> UnacceptedStatusEffects;
 };

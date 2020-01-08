@@ -62,9 +62,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float PostDelayDuration;
 
-	EStatusEffect PreDelayStatusEffect;
-	EStatusEffect ChannelStatusEffect;
-	EStatusEffect PostDelayStatusEffect;
+	TSet<EStatusEffect> PreDelayStatusEffect;
+	TSet<EStatusEffect> ChannelStatusEffect;
+	TSet<EStatusEffect> PostDelayStatusEffect;
 
 	EActionNotifier PreDelayAction;
 	EActionNotifier ChannelAction;

@@ -4,21 +4,11 @@
 #include "Modifier.h"
 #include "OgnamCharacter.h"
 #include "Ognam/OgnamMacro.h"
-#include "UnrealNetwork.h"
-#include "CoreNet.h"
 
 UModifier::UModifier()
 {
 	SetIsReplicatedByDefault(true);
 }
-
-void UModifier::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME_CONDITION(UModifier, ServerTimeStamp, COND_InitialOnly);
-}
-
 bool UModifier::ShouldEnd()
 {
 	return false;
@@ -32,21 +22,14 @@ void UModifier::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!IsNetSimulating())
-	{
-		ServerTimeStamp = GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
-		ExecuteModifier();
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UModifier::ExecuteModifier);
-	}
+	bActivated = true;
+	ExecuteModifier();
 }
 
 void UModifier::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	if (!Target)
+	if (!bActivated)
 	{
 		O_LOG_E(TEXT("Destroying Modifier that wasn't started"));
 		return;
@@ -55,17 +38,14 @@ void UModifier::EndPlay(EEndPlayReason::Type EndPlayReason)
 	{
 		EndModifier();
 	}
+	bActivated = false;
 	Target->Modifiers.Remove(this);
+	Target->RemoveStatusEffect(StatusEffects);
 }
 
-EStatusEffect UModifier::GetStatusEffect() const
+const TSet<EStatusEffect>& UModifier::GetStatusEffect() const
 {
-	return StatusEffect;
-}
-
-void UModifier::UpdateTimeStamp()
-{
-	ServerTimeStamp = GetWorld()->GetTimeSeconds();
+	return StatusEffects;
 }
 
 void UModifier::BeginModifier()
@@ -78,22 +58,25 @@ void UModifier::EndModifier()
 
 void UModifier::ExecuteModifier()
 {
-	if (ServerTimeStamp == 0)
-	{
-		O_LOG(TEXT("%s Server Time Stamp not delivered"), *GetClass()->GetName());
-		ServerTimeStamp = GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
-	}
 	Target = Cast<AOgnamCharacter>(GetOwner());
 	if (!Target)
 	{
 		O_LOG_F(TEXT("Modifier applied to non-ognam character"));
 		return;
 	}
-	if (StatusEffect != EStatusEffect::None)
-	{
-		Target->ApplyStatusEffect(StatusEffect);
-	}
-
+	Target->ApplyStatusEffect(StatusEffects);
 	BeginModifier();
 	Target->Modifiers.Add(this);
+}
+
+void UModifier::SetStatusEffect(const TSet<EStatusEffect>& Effects)
+{
+	if (bActivated)
+	{
+		TSet<EStatusEffect> GoingOut = StatusEffects.Difference(Effects);
+		TSet<EStatusEffect> GoingIn = Effects.Difference(StatusEffects);
+		Target->RemoveStatusEffect(GoingOut);
+		Target->ApplyStatusEffect(GoingIn);
+	}
+	StatusEffects = Effects;
 }

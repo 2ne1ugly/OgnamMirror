@@ -11,7 +11,7 @@
 
 UMaxwellShadowForm::UMaxwellShadowForm()
 {
-	StatusEffect |= EStatusEffect::Unarmed | EStatusEffect::Silenced | EStatusEffect::Unbreakable;
+	SetStatusEffect({ EStatusEffect::Unarmed, EStatusEffect::Silenced, EStatusEffect::Unbreakable });
 	Duration = .4f;
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> ShiftSoundCueObject(TEXT("SoundCue'/Game/Sounds/Maxwell/Maxwell_dash_Cue.Maxwell_dash_Cue'"));
