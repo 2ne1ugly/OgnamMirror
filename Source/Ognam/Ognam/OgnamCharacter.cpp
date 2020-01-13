@@ -789,7 +789,7 @@ UTexture2D *AOgnamCharacter::GetIcon() const
 	return CharacterIcon;
 }
 
-UTexture2D* AOgnamCharacter::GetImage() const
+UTexture2D *AOgnamCharacter::GetImage() const
 {
 	return CharacterImage;
 }
