@@ -5,7 +5,7 @@
 #include "Ognam/OgnamCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Ognam/Weapon.h"
-#include "Ognam/OgnamPlayerstate.h"
+#include "Ognam/OgnamPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "AshaDaggers.h"

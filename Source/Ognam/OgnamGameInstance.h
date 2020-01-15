@@ -11,7 +11,7 @@
  * 
  */
 
-DECLARE_DELEGATE(DECLARE_DELEGATE_OneParam, FOnHostSessionCompleteDelegate)
+//DECLARE_DELEGATE(DECLARE_DELEGATE_OneParam, FOnHostSessionCompleteDelegate)
 
 UCLASS()
 class OGNAM_API UOgnamGameInstance : public UGameInstance
@@ -27,17 +27,17 @@ public:
 	//UFUNCTION(BlueprintCallable)
 	//bool CreateSession(FName SessionName, bool bIsLAN, int32 MaxNumPlayers, FString MapName);
 
-	virtual void CreateSessionComplete(FName SessionName, bool bWasSuccessful);
+	//virtual void CreateSessionComplete(FName SessionName, bool bWasSuccessful);
 
 	//void FindSessionComplete(bool bWasSuccessful);
 	//void JoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
-	TSharedPtr<class FOnlineSessionSettings> SessionSettings;
+	//TSharedPtr<class FOnlineSessionSettings> SessionSettings;
 
-	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
-	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
-	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
-	FDelegateHandle OnStartSessionCompleteDelegateHandle;
+	//FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	//FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
+	//FDelegateHandle OnCreateSessionCompleteDelegateHandle;
+	//FDelegateHandle OnStartSessionCompleteDelegateHandle;
 
 	//FDelegateHandle CreateSessionCompleteHandle;
 	//FDelegateHandle StartSessionCompleteHandle;

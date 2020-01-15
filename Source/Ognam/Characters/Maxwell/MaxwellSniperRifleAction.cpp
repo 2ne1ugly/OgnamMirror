@@ -12,7 +12,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Ognam/OgnamPlayerstate.h"
+#include "Ognam/OgnamPlayerState.h"
 #include "Curves/CurveFloat.h"
 #include "Ognam/Weapon.h"
 #include "Ognam/OgnamStatics.h"

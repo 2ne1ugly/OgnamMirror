@@ -3,7 +3,7 @@
 
 #include "JeraRadiantDiveDropPoint.h"
 #include "Ognam/OgnamCharacter.h"
-#include "Ognam/OgnamPlayerstate.h"
+#include "Ognam/OgnamPlayerState.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SkeletalMeshComponent.h"

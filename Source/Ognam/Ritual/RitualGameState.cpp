@@ -11,7 +11,6 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamMacro.h"
-#include "Ognam/OgnamMacro.h"
 
 ARitualGameState::ARitualGameState()
 {

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ognam/OgnamPlayerstate.h"
+#include "Ognam/OgnamPlayerState.h"
 #include "RitualPlayerState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRoundStageEvent);
