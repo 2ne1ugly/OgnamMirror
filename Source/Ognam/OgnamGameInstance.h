@@ -10,6 +10,9 @@
 /**
  * 
  */
+
+DECLARE_DELEGATE(DECLARE_DELEGATE_OneParam, FOnHostSessionCompleteDelegate)
+
 UCLASS()
 class OGNAM_API UOgnamGameInstance : public UGameInstance
 {
@@ -18,36 +21,32 @@ class OGNAM_API UOgnamGameInstance : public UGameInstance
 public:
 	UOgnamGameInstance(const FObjectInitializer& ObjectInitializer);
 
-	//Creates and starts session
-	UFUNCTION(BlueprintCallable)
-	bool CreateSession(FName SessionName, bool bIsLAN, int32 MaxNumPlayers, FString MapName);
+	bool CreateSession(FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
 
-	//Finds Session
-	UFUNCTION(BlueprintCallable)
-	void FindSession(bool bIsLAN, bool bIsPresence);
+	virtual void CreateSessionComplete(FName SessionName, bool bWasSuccessful);
 
-	void CreateSessionComplete(FName SessionName, bool bWasSuccessful);
-	void StartSessionComplete(FName SessionName, bool bWasSuccessful);
+	//void FindSessionComplete(bool bWasSuccessful);
+	//void JoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
-	void FindSessionComplete(bool bWasSuccessful);
-	void JoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+	TSharedPtr<class FOnlineSessionSettings> SessionSettings;
 
-	TSharedPtr<FOnlineSessionSearch> SessionSearch;
+	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
+	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
+	FDelegateHandle OnStartSessionCompleteDelegateHandle;
 
-	FOnCreateSessionCompleteDelegate OnCreateSessionComplete;
-	FOnFindSessionsCompleteDelegate OnFindSessionsComplete;
-	FOnStartSessionCompleteDelegate OnStartSessionComplete;
-	FOnJoinSessionCompleteDelegate OnJoinSessionComplete;
-
-	FDelegateHandle CreateSessionCompleteHandle;
-	FDelegateHandle StartSessionCompleteHandle;
-	FDelegateHandle FindSessionsCompleteHandle;
-	FDelegateHandle JoinSessionCompleteHandle;
+	//FDelegateHandle CreateSessionCompleteHandle;
+	//FDelegateHandle StartSessionCompleteHandle;
+	//FDelegateHandle FindSessionsCompleteHandle;
+	//FDelegateHandle JoinSessionCompleteHandle;
 
 	UFUNCTION(BlueprintCallable)
 	void SetPrefferedName(FString Name);
 
 	FString GetPrefferedName() const;
+
+	UFUNCTION(BlueprintCallable)
+	void HostSession();
 
 private:
 	FString PrefferedName;

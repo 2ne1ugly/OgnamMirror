@@ -56,7 +56,7 @@ AOgnamCharacter::AOgnamCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
 	GetMesh()->SetCustomDepthStencilValue(2);
-
+	GetMesh()->SetBoundsScale(100.f);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Overlap);
 
@@ -348,10 +348,22 @@ void AOgnamCharacter::SpecialReleased()
 
 void AOgnamCharacter::TacticalPressed()
 {
+	ServerTacticalPressed();
 	bTactical = true;
 }
 
 void AOgnamCharacter::TacticalReleased()
+{
+	ServerTacticalReleased();
+	bTactical = false;
+}
+
+void AOgnamCharacter::ServerTacticalPressed_Implementation()
+{
+	bTactical = true;
+}
+
+void AOgnamCharacter::ServerTacticalReleased_Implementation()
 {
 	bTactical = false;
 }
@@ -486,6 +498,11 @@ UAbility* AOgnamCharacter::GetSpecial() const
 UAbility* AOgnamCharacter::GetMobility() const
 {
 	return Mobility;
+}
+
+float AOgnamCharacter::GetTacticalAmount() const
+{
+	return TacticalAmount;
 }
 
 FVector AOgnamCharacter::GetInputVector() const
