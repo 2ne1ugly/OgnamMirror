@@ -7,6 +7,7 @@
 #include "Engine.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
+#include "ServerBrowser.h"
 
 UOgnamGameInstance::UOgnamGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -14,6 +15,11 @@ UOgnamGameInstance::UOgnamGameInstance(const FObjectInitializer& ObjectInitializ
 	OnFindSessionsComplete.BindUObject(this, &UOgnamGameInstance::FindSessionComplete);
 	OnStartSessionComplete.BindUObject(this, &UOgnamGameInstance::StartSessionComplete);
 	OnJoinSessionComplete.BindUObject(this, &UOgnamGameInstance::JoinSessionComplete);
+}
+
+void UOgnamGameInstance::Init()
+{
+	ServerBrowser = NewObject<UServerBrowser>(this);
 }
 
 bool UOgnamGameInstance::CreateSession(FName SessionName, bool bIsLAN, int32 MaxNumPlayers, FString MapName)
@@ -185,4 +191,9 @@ FString UOgnamGameInstance::GetPrefferedName() const
 void UOgnamGameInstance::SetPrefferedName(FString Name)
 {
 	PrefferedName = Name;
+}
+
+UServerBrowser* UOgnamGameInstance::GetServerBrowser() const
+{
+	return ServerBrowser;
 }

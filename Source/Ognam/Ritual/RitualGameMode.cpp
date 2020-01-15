@@ -12,6 +12,8 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamMacro.h"
+#include "OgnamGameInstance.h"
+#include "ServerBrowser.h"
 
 ARitualGameMode::ARitualGameMode()
 {
@@ -26,6 +28,17 @@ ARitualGameMode::ARitualGameMode()
 	if (GIsEditor)
 	{
 		CharacterSelectionTime = 5.f;
+	}
+}
+
+void ARitualGameMode::BeginPlay()
+{
+	UOgnamGameInstance* Instance = Cast<UOgnamGameInstance>(GetGameInstance());
+
+	if (Instance && IsRunningDedicatedServer())
+	{
+		Browser = Instance->GetServerBrowser();
+		Browser->RegisterServer(GetWorld()->URL.Port);
 	}
 }
 
@@ -101,6 +114,12 @@ void ARitualGameMode::StartPreRound()
 		O_LOG(TEXT("Not Ritual Gamestate"));
 		return;
 	}
+
+	if (IsRunningDedicatedServer())
+	{
+		Browser->UpdateServerInfo(PlayerControllers.Num(), GetWorld()->GetName(), RitualGameState->GetCurrentRound());
+	}
+
 	RitualGameState->SetPreRoundStage(true);
 	RitualGameState->UpdateProperties();
 	RitualGameState->NetReset();
@@ -391,4 +410,14 @@ UClass* ARitualGameMode::GetDefaultPawnClassForController_Implementation(AContro
 {
 	ARitualPlayerState* PlayerState = InController->GetPlayerState<ARitualPlayerState>();
 	return PlayerState->GetSelectedPawnClass();
+}
+
+void ARitualGameMode::HandleMatchAborted()
+{
+	Browser->Unregister();
+}
+
+void ARitualGameMode::HandleMatchHasEnded()
+{
+	Browser->Unregister();
 }

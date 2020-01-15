@@ -19,6 +19,8 @@ public:
 	*/
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void BeginPlay() override;
+
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual void PostLogin(class APlayerController* NewPlayer) override;
@@ -31,6 +33,8 @@ public:
 
 	//We Handle this here bc we want to make sure that this is called only from server.
 	virtual void HandleMatchHasStarted() override;
+	virtual void HandleMatchAborted() override;
+	virtual	void HandleMatchHasEnded() override;
 
 	virtual void Logout(class AController* Controller) override;
 
@@ -85,4 +89,7 @@ public:
 	bool bRoundEnded;
 	float PostRoundTime;
 	float CharacterSelectionTime;
+
+private:
+	class UServerBrowser* Browser;
 };

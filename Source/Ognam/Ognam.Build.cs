@@ -10,7 +10,9 @@ public class Ognam : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Niagara", "Core", "CoreUObject", "Engine", "InputCore", "UMG", "Slate", "SlateCore", "OnlineSubsystem", "OnlineSubsystemUtils", "Sockets" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "Projects" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "Http", "Json", "JsonUtilities" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "Projects" });
 
         MinFilesUsingPrecompiledHeaderOverride = 1;
         bFasterWithoutUnity = true;
