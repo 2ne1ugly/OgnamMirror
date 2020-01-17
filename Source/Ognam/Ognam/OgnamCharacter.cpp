@@ -488,6 +488,11 @@ UAbility* AOgnamCharacter::GetMobility() const
 	return Mobility;
 }
 
+const FCharacterInfo& AOgnamCharacter::GetInfo() const
+{
+	return Info;
+}
+
 FVector AOgnamCharacter::GetInputVector() const
 {
 	FVector InputVector = FVector::ZeroVector;

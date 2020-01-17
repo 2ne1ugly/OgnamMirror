@@ -11,7 +11,7 @@ AMaxwell::AMaxwell()
 {
 	CharacterName = FText::FromString("Maxwell");
 
-	static ConstructorHelpers::FObjectFinder<UTexture2D> ImageTextureCH(TEXT("Texture2D'/Game/UI/CharacterIcon/Maxwell/Vault.Vault'"));
+	static ConstructorHelpers::FObjectFinder<UTexture2D> ImageTextureCH(TEXT("Texture2D'/Game/UI/CharacterImage/Maxwellmage.Maxwellmage'"));
 	CharacterImage = ImageTextureCH.Object;
 
 	BaseMaxHealth = 150.f;
@@ -27,6 +27,18 @@ AMaxwell::AMaxwell()
 
 
 	GetMesh()->SetAnimInstanceClass(AnimBP.Object);
+
+	Info.CharacterImage = CharacterImage;
+	Info.CharacterName = CharacterName;
+	Info.CharacterDescription = FText::FromString("Wraith Sniper - uses a rifle that deals more damage on headshots.");
+	Info.MobilityDes = FText::FromString("Turn into a shadow and dashes a short distance.");
+	Info.MobilityIcon = Cast<UAbility>(UMaxwellShadowShift::StaticClass()->GetDefaultObject())->GetIcon();
+	Info.SpecialDes = FText::FromString("");
+	Info.SpecialIcon = nullptr;
+	Info.UniqueDes = FText::FromString("Turns into a shadow and jumps vertically.");
+	Info.UniqueIcon = Cast<UAbility>(UMaxwellVault::StaticClass()->GetDefaultObject())->GetIcon();
+	Info.UtilityDes = FText::FromString("");
+	Info.UtilityIcon = nullptr;
 }
 
 void AMaxwell::BeginPlay()

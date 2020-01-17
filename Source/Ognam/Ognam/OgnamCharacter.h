@@ -7,6 +7,47 @@
 #include "OgnamEnum.h"
 #include "OgnamCharacter.generated.h"
 
+USTRUCT(Blueprintable)
+struct FCharacterInfo {
+	GENERATED_USTRUCT_BODY()
+	// character name
+	UPROPERTY(BlueprintReadWrite)
+	FText	CharacterName;
+	// character image
+	UPROPERTY(BlueprintReadWrite)
+	class UTexture2D*	CharacterImage;
+	//character description
+
+	UPROPERTY(BlueprintReadWrite)
+	FText	CharacterDescription;
+	// ability icons
+
+	UPROPERTY(BlueprintReadWrite)
+	class UTexture2D*	MobilityIcon;
+
+	UPROPERTY(BlueprintReadWrite)
+	class UTexture2D*	UniqueIcon;
+
+	UPROPERTY(BlueprintReadWrite)
+	class UTexture2D*	SpecialIcon;
+
+	UPROPERTY(BlueprintReadWrite)
+	class UTexture2D*	UtilityIcon;
+
+	// ability descriptions
+	UPROPERTY(BlueprintReadWrite)
+	FText	MobilityDes;
+
+	UPROPERTY(BlueprintReadWrite)
+	FText	UniqueDes;
+
+	UPROPERTY(BlueprintReadWrite)
+	FText	SpecialDes;
+
+	UPROPERTY(BlueprintReadWrite)
+	FText	UtilityDes;
+};
+
 // Contains What's common between every Character.
 UCLASS()
 class OGNAM_API AOgnamCharacter : public ACharacter
@@ -104,6 +145,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	class UAbility* GetMobility() const;
+
+	UFUNCTION(BlueprintCallable)
+	const FCharacterInfo& GetInfo() const;
+
+	FCharacterInfo Info;
 
 	UFUNCTION(BlueprintCallable)
 	bool CanMove() const;
@@ -300,6 +346,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	class UAbility* Special;
+
 
 	UPROPERTY(VisibleAnywhere)
 	class UMaterial* DamageRecievedMaterial;

@@ -53,6 +53,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UClass* GetSelectedPawnClass() const;
 
+	UFUNCTION(BlueprintCallable)
+	AOgnamCharacter* GetDefaultOgnam() const;
+
+	UFUNCTION(BlueprintCallable)
+	AOgnamCharacter* GetSelectedDefaultOgnam() const;
+
 	UFUNCTION(Server, Unreliable)
 	void ServerSendMessage(const FString& Message);
 	void ServerSendMessage_Implementation(const FString& Message);
@@ -74,8 +80,4 @@ public:
 
 	UPROPERTY(Transient, Replicated)
 	UClass* SelectedPawnClass;
-
-	UFUNCTION(BlueprintCallable)
-	AOgnamCharacter* GetDefaultOgnam() const;
-
 };

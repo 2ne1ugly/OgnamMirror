@@ -15,8 +15,23 @@ AJera::AJera()
 
 	CharacterName = FText::FromString("Jera");
 
+	static ConstructorHelpers::FObjectFinder<UTexture2D> ImageTextureCH(TEXT("Texture2D'/Game/UI/CharacterIcon/Maxwell/Vault.Vault'"));
+	CharacterImage = ImageTextureCH.Object;
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> WalkingCue(TEXT("SoundCue'/Game/Sounds/Jera/Jera_walk_Cue.Jera_walk_Cue'"));
 	WalkingSoundCue = WalkingCue.Object;
+
+	Info.CharacterImage = CharacterImage;
+	Info.CharacterName = CharacterName;
+	Info.CharacterDescription = FText::FromString("Frost Elemental - Uses melee attacks, and a secondary attack that launches a spear of ice. Has more health, allowing him to be used as a tank.");
+	Info.MobilityDes = FText::FromString("Leaps forward dealing damage on impact.");
+	Info.MobilityIcon = Cast<UAbility>(UJeraRadiantDive::StaticClass()->GetDefaultObject())->GetIcon();
+	Info.SpecialDes = FText::FromString("");
+	Info.SpecialIcon = nullptr;
+	Info.UniqueDes = FText::FromString("Launches a large spear of ice.");
+	Info.UniqueIcon = Cast<UAbility>(UJeraSuppressiveImpact::StaticClass()->GetDefaultObject())->GetIcon();
+	Info.UtilityDes = FText::FromString("");
+	Info.UtilityIcon = nullptr;
 }
 
 void AJera::BeginPlay()

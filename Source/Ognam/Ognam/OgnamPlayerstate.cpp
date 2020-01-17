@@ -165,3 +165,12 @@ AOgnamCharacter* AOgnamPlayerState::GetDefaultOgnam() const
 	}
 	return Cast<AOgnamCharacter>(PawnClass->GetDefaultObject());
 }
+
+AOgnamCharacter* AOgnamPlayerState::GetSelectedDefaultOgnam() const
+{
+	if (!SelectedPawnClass)
+	{
+		return nullptr;
+	}
+	return Cast<AOgnamCharacter>(SelectedPawnClass->GetDefaultObject());
+}
