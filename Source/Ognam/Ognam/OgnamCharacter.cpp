@@ -505,6 +505,11 @@ float AOgnamCharacter::GetTacticalAmount() const
 	return TacticalAmount;
 }
 
+const FCharacterInfo& AOgnamCharacter::GetInfo() const
+{
+	return Info;
+}
+
 FVector AOgnamCharacter::GetInputVector() const
 {
 	FVector InputVector = FVector::ZeroVector;
@@ -804,4 +809,9 @@ void AOgnamCharacter::NetJumpLand_Implementation()
 UTexture2D *AOgnamCharacter::GetIcon() const
 {
 	return CharacterIcon;
+}
+
+UTexture2D *AOgnamCharacter::GetImage() const
+{
+	return CharacterImage;
 }
