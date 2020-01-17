@@ -12,6 +12,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamMacro.h"
+#include "CreateSessionCallbackProxy.h"
 
 ARitualGameMode::ARitualGameMode()
 {
