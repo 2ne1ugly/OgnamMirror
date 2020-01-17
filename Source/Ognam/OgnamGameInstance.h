@@ -9,10 +9,7 @@
 
 /**
  * 
- */ 
-
-DECLARE_DELEGATE_OneParam(FOnHostSessionCompleteDelegate, bool)
-
+ */
 UCLASS()
 class OGNAM_API UOgnamGameInstance : public UGameInstance
 {
