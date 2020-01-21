@@ -15,7 +15,7 @@ AJera::AJera()
 
 	CharacterName = FText::FromString("Jera");
 
-	static ConstructorHelpers::FObjectFinder<UTexture2D> ImageTextureCH(TEXT("Texture2D'/Game/UI/CharacterIcon/Maxwell/Vault.Vault'"));
+	static ConstructorHelpers::FObjectFinder<UTexture2D> ImageTextureCH(TEXT("Texture2D'/Game/UI/CharacterImage/JeraImage.JeraImage'"));
 	CharacterImage = ImageTextureCH.Object;
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> WalkingCue(TEXT("SoundCue'/Game/Sounds/Jera/Jera_walk_Cue.Jera_walk_Cue'"));

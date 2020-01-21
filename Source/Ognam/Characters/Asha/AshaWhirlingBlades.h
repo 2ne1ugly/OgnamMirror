@@ -9,6 +9,7 @@
 /**
  * 
  */
+
 UCLASS()
 class OGNAM_API UAshaWhirlingBlades : public UPromptActiveAbility
 {
@@ -18,6 +19,5 @@ public:
 	UAshaWhirlingBlades();
 
 protected:
-	//Server Call
 	virtual void ActivateAbility() override;
 };

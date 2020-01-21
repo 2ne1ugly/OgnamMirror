@@ -13,10 +13,6 @@
 
 UAshaFanofKnivesAction::UAshaFanofKnivesAction()
 {
-	PreDelayStatusEffect = {EStatusEffect::Rooted, EStatusEffect::Unarmed, EStatusEffect::Silenced};
-	ChannelStatusEffect = {EStatusEffect::Rooted, EStatusEffect::Unarmed, EStatusEffect::Silenced};
-	PostDelayStatusEffect = {EStatusEffect::Rooted, EStatusEffect::Unarmed, EStatusEffect::Silenced};
-
 	PreDelayDuration = .3f;
 	ChannelDuration = .0f;
 	PostDelayDuration = .2f;
@@ -40,15 +36,15 @@ void UAshaFanofKnivesAction::BeginChannel()
 		To = Aim.TraceEnd;
 
 	FVector Direction = To - From;
-	Direction = Target->GetWeapon()->ApplyRandomSpread(Direction);
-
-	for (float Angle = -30.f; Angle <= 60.f; Angle += 10.f)
-	{
-
-	}
 
 	FActorSpawnParameters Params;
 	Params.bNoFail = true;
 	Params.Instigator = Target;
-	GetWorld()->SpawnActor<AAshaDaggers>(From, Direction.Rotation(), Params)->SetReplicates(true);
+
+	float Angle = -5.f;
+	for (int i = 0; i < 5; i++, Angle += 2.5f)
+	{
+		FVector ZAxisRotatedVector = Direction.RotateAngleAxis(Angle, FVector(0, 0, 1));
+		GetWorld()->SpawnActor<AAshaDaggers>(From, ZAxisRotatedVector.Rotation(), Params)->SetReplicates(true);
+	}
 }
