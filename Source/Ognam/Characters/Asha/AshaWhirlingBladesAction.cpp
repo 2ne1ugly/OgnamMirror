@@ -14,7 +14,7 @@ UAshaWhirlingBladesAction::UAshaWhirlingBladesAction()
 {
 	PreDelayDuration = .2f;
 	ChannelDuration = .25f;
-	PostDelayDuration = .2f;
+	PostDelayDuration = .3f;
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Game/Material/DamageZone.DamageZone'"));
 	DamageBoxMaterial = Material.Object;
@@ -94,6 +94,6 @@ void UAshaWhirlingBladesAction::BeginOverlap(UPrimitiveComponent* OverlappedComp
 	//Get owners playerState
 	if (UOgnamStatics::CanDamage(GetWorld(), Owner, Character, EDamageMethod::DamagesEnemy))
 	{
-		UGameplayStatics::ApplyDamage(Character, 50.f, Owner->GetController(), Owner, nullptr);
+		UGameplayStatics::ApplyDamage(Character, 30.f, Owner->GetController(), Owner, nullptr);
 	}
 }

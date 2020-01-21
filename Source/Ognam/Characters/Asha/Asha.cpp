@@ -20,7 +20,7 @@ AAsha::AAsha()
 
 	Info.CharacterImage = CharacterImage;
 	Info.CharacterName = CharacterName;
-	Info.CharacterDescription = FText::FromString("Left Hand of Fort Kyo - Asha is an assassin. Her throwing knives deal low damage, but her skills are powerful.");
+	Info.CharacterDescription = FText::FromString("Left Hand of Kyo - Asha is an assassin. Her throwing knives deal low damage, but her skills are powerful.");
 	Info.MobilityDes = FText::FromString("Dashes forward, slicing enemies with her blade.");
 	Info.MobilityIcon = Cast<UAbility>(UAshaWhirlingBlades::StaticClass()->GetDefaultObject())->GetIcon();
 	Info.SpecialDes = FText::FromString("");

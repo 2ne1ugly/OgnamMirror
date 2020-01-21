@@ -13,11 +13,11 @@
 
 UAshaFanofKnivesAction::UAshaFanofKnivesAction()
 {
-	PreDelayDuration = .3f;
-	ChannelDuration = .0f;
+	PreDelayDuration = .1f;
+	ChannelDuration = .1f;
 	PostDelayDuration = .2f;
 }
-
+	
 void UAshaFanofKnivesAction::BeginChannel()
 {
 	if (!GetOwner()->HasAuthority())
