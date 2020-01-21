@@ -110,6 +110,16 @@ public:
 	void TacticalPressed();
 	void TacticalReleased();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerTacticalPressed();
+	bool ServerTacticalPressed_Validate() { return true; };
+	void ServerTacticalPressed_Implementation();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerTacticalReleased();
+	bool ServerTacticalReleased_Validate() { return true; };
+	void ServerTacticalReleased_Implementation();
+
 	/*
 	**	Testing functions
 	*/
@@ -145,6 +155,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	class UAbility* GetMobility() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetTacticalAmount() const;
 
 	UFUNCTION(BlueprintCallable)
 	const FCharacterInfo& GetInfo() const;

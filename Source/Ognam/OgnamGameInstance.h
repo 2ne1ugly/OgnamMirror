@@ -18,35 +18,10 @@ class OGNAM_API UOgnamGameInstance : public UGameInstance
 public:
 	UOgnamGameInstance(const FObjectInitializer& ObjectInitializer);
 
-	//Creates and starts session
-	UFUNCTION(BlueprintCallable)
-	bool CreateSession(FName SessionName, bool bIsLAN, int32 MaxNumPlayers, FString MapName);
-
-	//Finds Session
-	UFUNCTION(BlueprintCallable)
-	void FindSession(bool bIsLAN, bool bIsPresence);
-
-	void CreateSessionComplete(FName SessionName, bool bWasSuccessful);
-	void StartSessionComplete(FName SessionName, bool bWasSuccessful);
-
-	void FindSessionComplete(bool bWasSuccessful);
-	void JoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-
-	TSharedPtr<FOnlineSessionSearch> SessionSearch;
-
-	FOnCreateSessionCompleteDelegate OnCreateSessionComplete;
-	FOnFindSessionsCompleteDelegate OnFindSessionsComplete;
-	FOnStartSessionCompleteDelegate OnStartSessionComplete;
-	FOnJoinSessionCompleteDelegate OnJoinSessionComplete;
-
-	FDelegateHandle CreateSessionCompleteHandle;
-	FDelegateHandle StartSessionCompleteHandle;
-	FDelegateHandle FindSessionsCompleteHandle;
-	FDelegateHandle JoinSessionCompleteHandle;
-
 	UFUNCTION(BlueprintCallable)
 	void SetPrefferedName(FString Name);
 
+	UFUNCTION(BlueprintCallable)
 	FString GetPrefferedName() const;
 
 private:
