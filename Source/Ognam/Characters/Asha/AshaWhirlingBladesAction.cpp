@@ -12,7 +12,7 @@
 
 UAshaWhirlingBladesAction::UAshaWhirlingBladesAction()
 {
-	PreDelayDuration = .2f;
+	PreDelayDuration = .08f;
 	ChannelDuration = .25f;
 	PostDelayDuration = .3f;
 
@@ -94,6 +94,6 @@ void UAshaWhirlingBladesAction::BeginOverlap(UPrimitiveComponent* OverlappedComp
 	//Get owners playerState
 	if (UOgnamStatics::CanDamage(GetWorld(), Owner, Character, EDamageMethod::DamagesEnemy))
 	{
-		UGameplayStatics::ApplyDamage(Character, 30.f, Owner->GetController(), Owner, nullptr);
+		UGameplayStatics::ApplyDamage(Character, 50.f, Owner->GetController(), Owner, nullptr);
 	}
 }

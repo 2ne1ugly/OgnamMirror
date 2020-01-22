@@ -7,3 +7,8 @@ AMainMenuPlayerController::AMainMenuPlayerController()
 {
 	bShowMouseCursor = true;
 }
+
+void AMainMenuPlayerController::JoinGame(FString Address)
+{
+	ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+}

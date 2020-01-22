@@ -33,6 +33,9 @@ protected:
 	void ClientFeedbackShadowShift();
 	void ClientFeedbackShadowShift_Implementation();
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetFeedbackShadowShift();
+	void NetFeedbackShadowShift_Implementation();
 	/*
 	**	Props
 	*/

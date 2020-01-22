@@ -29,6 +29,7 @@ public:
 	UFUNCTION()
 	virtual void ProjectileStop(const FHitResult& ImpactResult);
 
+protected:
 	/*
 	**	Props
 	*/

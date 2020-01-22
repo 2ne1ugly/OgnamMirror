@@ -47,8 +47,8 @@ void AJeraRadiantDiveDropPoint::BeginPlay()
 	GetWorld()->OverlapMultiByObjectType(Overlaps, GetActorLocation(), FQuat(), ECollisionChannel::ECC_Pawn, Shape);
 	for (FOverlapResult& Result : Overlaps)
 	{
-		AOgnamCharacter* Character = Cast<AOgnamCharacter>(Result.Actor);
-		if (!Character)
+		ACharacter* Character = Cast<ACharacter>(Result.Actor);
+		if (!Character || Affected.Contains(Character))
 		{
 			continue;
 		}

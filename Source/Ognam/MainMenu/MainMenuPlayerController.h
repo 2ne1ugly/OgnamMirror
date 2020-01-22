@@ -16,4 +16,7 @@ class OGNAM_API AMainMenuPlayerController : public APlayerController
 
 public:
     AMainMenuPlayerController();
+
+    UFUNCTION(BlueprintCallable)
+    void JoinGame(FString Address);
 };
