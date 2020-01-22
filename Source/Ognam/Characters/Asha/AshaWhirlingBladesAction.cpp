@@ -62,7 +62,6 @@ void UAshaWhirlingBladesAction::BeginPreDelay()
 
 void UAshaWhirlingBladesAction::BeginChannel()
 {
-	O_LOG(TEXT("Begin Channnel"))
 	StrikedCharacters.Empty();
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxTrigger->SetVisibility(true);
@@ -70,7 +69,6 @@ void UAshaWhirlingBladesAction::BeginChannel()
 
 void UAshaWhirlingBladesAction::EndChannel()
 {
-	O_LOG(TEXT("End	 Channnel"))
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BoxTrigger->SetVisibility(false);
 }

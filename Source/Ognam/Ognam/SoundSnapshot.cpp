@@ -39,6 +39,9 @@ void ASoundSnapshot::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AOgnamCharacter* Character = Cast<AOgnamCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (!Character) {
+		return;
+	}
 	float TacticalAmount = Character->GetTacticalAmount();
 	SnapshotDynamicMaterial->SetScalarParameterValue(TEXT("Lifespan"), GetLifeSpan() / 0.5f * TacticalAmount);
 }

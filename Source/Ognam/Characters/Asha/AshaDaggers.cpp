@@ -41,7 +41,7 @@ AAshaDaggers::AAshaDaggers()
 
 	InitialLifeSpan = 5.f;
 
-	BaseDamage = 30.f;
+	BaseDamage = 25.f;
 }
 
 void AAshaDaggers::BeginPlay()
