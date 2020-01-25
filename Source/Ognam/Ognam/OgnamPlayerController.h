@@ -53,9 +53,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetSensitivity(float Sens);
 
-	UFUNCTION(BlueprintCallable)
-	void JoinGame(FString Address);
-
 	UFUNCTION(Client, Reliable)
 	void ClientGameStarted();
 	void ClientGameStarted_Implementation();

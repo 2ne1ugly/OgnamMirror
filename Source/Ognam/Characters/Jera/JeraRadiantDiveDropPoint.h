@@ -19,7 +19,7 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
-	TSet<class AOgnamCharacter*> Affected;
+	TSet<class ACharacter*> Affected;
 
 private:
 	UPROPERTY()

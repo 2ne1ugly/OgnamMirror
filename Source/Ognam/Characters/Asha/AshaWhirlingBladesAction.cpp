@@ -12,7 +12,7 @@
 
 UAshaWhirlingBladesAction::UAshaWhirlingBladesAction()
 {
-	PreDelayDuration = .2f;
+	PreDelayDuration = .08f;
 	ChannelDuration = .25f;
 	PostDelayDuration = .3f;
 
@@ -62,7 +62,6 @@ void UAshaWhirlingBladesAction::BeginPreDelay()
 
 void UAshaWhirlingBladesAction::BeginChannel()
 {
-	O_LOG(TEXT("Begin Channnel"))
 	StrikedCharacters.Empty();
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxTrigger->SetVisibility(true);
@@ -70,7 +69,6 @@ void UAshaWhirlingBladesAction::BeginChannel()
 
 void UAshaWhirlingBladesAction::EndChannel()
 {
-	O_LOG(TEXT("End	 Channnel"))
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BoxTrigger->SetVisibility(false);
 }
@@ -94,6 +92,6 @@ void UAshaWhirlingBladesAction::BeginOverlap(UPrimitiveComponent* OverlappedComp
 	//Get owners playerState
 	if (UOgnamStatics::CanDamage(GetWorld(), Owner, Character, EDamageMethod::DamagesEnemy))
 	{
-		UGameplayStatics::ApplyDamage(Character, 30.f, Owner->GetController(), Owner, nullptr);
+		UGameplayStatics::ApplyDamage(Character, 50.f, Owner->GetController(), Owner, nullptr);
 	}
 }

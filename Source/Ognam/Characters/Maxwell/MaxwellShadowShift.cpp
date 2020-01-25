@@ -43,7 +43,7 @@ void UMaxwellShadowShift::ServerCastShadowShift_Implementation(FVector Direction
 		return;
 	}
 	Target->TakeAction(EActionNotifier::SpecialMovement);
-	Target->PlayAnimMontage(RootMotion);
+	NetFeedbackShadowShift();
 	//NewObject<UMaxwellShadowForm>(Target)->RegisterComponent();
 	Target->GetWorldTimerManager().SetTimer(ShadowShiftCooldown, Cooldown, false);
 	ClientFeedbackShadowShift();
@@ -52,6 +52,11 @@ void UMaxwellShadowShift::ServerCastShadowShift_Implementation(FVector Direction
 void UMaxwellShadowShift::ClientFeedbackShadowShift_Implementation()
 {
 	Target->GetWorldTimerManager().SetTimer(ShadowShiftCooldown, Cooldown, false);
+}
+
+void UMaxwellShadowShift::NetFeedbackShadowShift_Implementation()
+{
+	Target->PlayAnimMontage(RootMotion);
 }
 
 bool UMaxwellShadowShift::ShouldShowNumber() const

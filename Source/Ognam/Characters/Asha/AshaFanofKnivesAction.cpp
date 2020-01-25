@@ -4,7 +4,7 @@
 #include "AshaFanofKnivesAction.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "AshaDaggers.h"
+#include "AshaFanDaggers.h"
 #include "Engine/World.h"
 #include "ConstructorHelpers.h"
 #include "Sound/SoundCue.h"
@@ -13,7 +13,7 @@
 
 UAshaFanofKnivesAction::UAshaFanofKnivesAction()
 {
-	PreDelayDuration = .1f;
+	PreDelayDuration = .05f;
 	ChannelDuration = .1f;
 	PostDelayDuration = .2f;
 }
@@ -45,6 +45,6 @@ void UAshaFanofKnivesAction::BeginChannel()
 	for (int i = 0; i < 5; i++, Angle += 2.5f)
 	{
 		FVector ZAxisRotatedVector = Direction.RotateAngleAxis(Angle, FVector(0, 0, 1));
-		GetWorld()->SpawnActor<AAshaDaggers>(From, ZAxisRotatedVector.Rotation(), Params)->SetReplicates(true);
+		GetWorld()->SpawnActor<AAshaFanDaggers>(From, ZAxisRotatedVector.Rotation(), Params)->SetReplicates(true);
 	}
 }
