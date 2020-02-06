@@ -47,6 +47,7 @@ void UJeraCrystalArmsAction::BeginPlay()
 	BoxTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BoxTrigger->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	BoxTrigger->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	BoxTrigger->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap);
 	BoxTrigger->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	BoxTrigger->OnComponentBeginOverlap.AddDynamic(this, &UJeraCrystalArmsAction::BeginOverlap);
 	BoxTrigger->MoveIgnoreActors.Add(GetOwner());
@@ -90,17 +91,19 @@ void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 	}
 
 	APawn* Character = Cast<APawn>(OtherActor);
-	if (!Character || StrikedCharacters.Contains(Character))
+	IKillable* Killable = Cast<IKillable>(OtherActor);
+	if (!Killable || StrikedCharacters.Contains(Killable))
 	{
 		return;
 	}
-	StrikedCharacters.Add(Character);
+	StrikedCharacters.Add(Killable);
 
 	APawn* Owner = Cast<APawn>(GetOwner());
 	//Get owners playerState
-	if (UOgnamStatics::CanDamage(GetWorld(), Owner, Character, EDamageMethod::DamagesEnemy))
+	if (UOgnamStatics::CanDamage(GetWorld(), Owner, Killable, EDamageMethod::DamagesEnemy))
 	{
-		UGameplayStatics::ApplyDamage(Character, 50.f, Owner->GetController(), Owner, nullptr);
+		AActor* Reciever = Cast<AActor>(Killable);
+		UGameplayStatics::ApplyDamage(Reciever, 50.f, Owner->GetController(), Owner, nullptr);
 		NetPlayHitSound();
 	}
 }

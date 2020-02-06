@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Ognam/ActionModifier.h"
 #include "Interfaces/Dispellable.h"
+#include "Interfaces/Killable.h"
 #include "AshaWhirlingBladesAction.generated.h"
 
 /**
@@ -39,5 +40,5 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMesh* DamageBoxMesh;
 
-	TSet<APawn*> StrikedCharacters;
+	TSet<IKillable*> StrikedCharacters;
 };

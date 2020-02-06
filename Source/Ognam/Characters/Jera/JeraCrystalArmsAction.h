@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Ognam/WeaponActionModifier.h"
 #include "Interfaces/Dispellable.h"
+#include "Interfaces/Killable.h"
 #include "JeraCrystalArmsAction.generated.h"
 
 /**
@@ -43,7 +44,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMesh* DamageBoxMesh;
 
-	TSet<APawn*> StrikedCharacters;
+	TSet<IKillable*> StrikedCharacters;
 
 	UPROPERTY()
 	class UAudioComponent* PunchSound;

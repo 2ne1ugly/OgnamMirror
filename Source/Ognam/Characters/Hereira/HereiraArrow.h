@@ -38,6 +38,7 @@ protected:
 	*/
 	virtual void EndLifeSpan();
 	virtual void OnCharacterHit(class APawn* OtherCharacter, const FHitResult& SweepResult);
+	virtual void OnCharacterHit(class IKillable* OtherCharacter, const FHitResult& SweepResult);
 
 	/*
 	**	Props

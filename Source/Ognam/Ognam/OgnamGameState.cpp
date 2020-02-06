@@ -2,6 +2,7 @@
 
 
 #include "OgnamGameState.h"
+#include "BreakableStructure.h"
 #include "OgnamMacro.h"
 #include "OgnamPlayerState.h"
 #include "OgnamCharacter.h"
@@ -147,14 +148,27 @@ void AOgnamGameState::DisplayMessage(const FString& Message, APlayerState* Sende
 
 void AOgnamGameState::NetReset_Implementation()
 {
-
+	for (TActorIterator<ABreakableStructure> Itr(GetWorld()); Itr; ++Itr)
+	{
+		Itr->Reset();
+	}
 }
 
 bool AOgnamGameState::CanDamage(AOgnamPlayerState* DamageInstigator, AOgnamPlayerState* Reciever, EDamageMethod DamageMethod) const
 {
-	if (!DamageInstigator || !Reciever)
+	//if (!DamageInstigator || !Reciever)
+	//{
+	//	return false;
+	//}
+
+	if (!DamageInstigator)
 	{
 		return false;
+	}
+
+	if (!Reciever && (DamageMethod & EDamageMethod::DamagesEnemy) != EDamageMethod::None)
+	{
+		return true;
 	}
 
 	if (DamageInstigator->GetTeam() != Reciever->GetTeam() &&

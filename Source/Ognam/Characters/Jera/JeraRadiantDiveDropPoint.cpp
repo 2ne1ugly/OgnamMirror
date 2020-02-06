@@ -44,26 +44,39 @@ void AJeraRadiantDiveDropPoint::BeginPlay()
 	TArray<FOverlapResult> Overlaps;
 	FCollisionShape Shape;
 	Shape.SetSphere(300.f);
-	GetWorld()->OverlapMultiByObjectType(Overlaps, GetActorLocation(), FQuat(), ECollisionChannel::ECC_Pawn, Shape);
+
+	FCollisionObjectQueryParams Params;
+	Params.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn); 
+	Params.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
+
+	GetWorld()->OverlapMultiByObjectType(Overlaps, GetActorLocation(), FQuat(), Params, Shape);
 	for (FOverlapResult& Result : Overlaps)
 	{
 		ACharacter* Character = Cast<ACharacter>(Result.Actor);
-		if (!Character || Affected.Contains(Character))
+		IKillable* Killable = Cast<IKillable>(Result.Actor);
+		if (!Killable || Affected.Contains(Killable))
 		{
 			continue;
 		}
-		if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Character, EDamageMethod::DamagesEnemy))
+		if (Killable)
 		{
-			UGameplayStatics::ApplyDamage(Character, 75.f, GetInstigatorController(), this, nullptr);
-			if (Character->GetMesh()->IsSimulatingPhysics())
+			if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Killable, EDamageMethod::DamagesEnemy))
 			{
-				Character->GetMesh()->AddImpulse(FVector::UpVector * 50000.f);
+				AActor* KillableActor = Cast<AActor>(Killable);
+				UGameplayStatics::ApplyDamage(KillableActor, 75.f, GetInstigatorController(), this, nullptr);
+				if (Character)
+				{
+					if (Character->GetMesh()->IsSimulatingPhysics())
+					{
+						Character->GetMesh()->AddImpulse(FVector::UpVector * 50000.f);
+					}
+					else if (HasAuthority())
+					{
+						Character->GetCharacterMovement()->AddImpulse(FVector::UpVector * 100000.f);
+					}
+				}
+				Affected.Add(Killable);
 			}
-			else if (HasAuthority())
-			{
-				Character->GetCharacterMovement()->AddImpulse(FVector::UpVector * 100000.f);
-			}
-			Affected.Add(Character);
 		}
 	}
 }

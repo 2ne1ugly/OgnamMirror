@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "OgnamEnum.h"
+#include "Interfaces/Killable.h"
 #include "OgnamCharacter.generated.h"
 
 USTRUCT(Blueprintable)
@@ -50,7 +51,7 @@ struct FCharacterInfo {
 
 // Contains What's common between every Character.
 UCLASS()
-class OGNAM_API AOgnamCharacter : public ACharacter
+class OGNAM_API AOgnamCharacter : public ACharacter, public IKillable
 {
 	GENERATED_BODY()
 
@@ -84,6 +85,8 @@ public:
 	virtual void OnRep_PlayerState() override;
 	virtual void PossessedBy(AController* aController) override;
 	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
+
+	virtual bool CanBeKilledBy(class AOgnamPlayerState* DamageInstigator, EDamageMethod DamageMethod) override;
 
 	void MobilityPressed();
 	void MobilityReleased();

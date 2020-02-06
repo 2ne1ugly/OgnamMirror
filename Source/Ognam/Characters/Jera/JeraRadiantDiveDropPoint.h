@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Interfaces/Killable.h"
 #include "GameFramework/Actor.h"
 #include "JeraRadiantDiveDropPoint.generated.h"
 
@@ -19,7 +20,7 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
-	TSet<class ACharacter*> Affected;
+	TSet<IKillable*> Affected;
 
 private:
 	UPROPERTY()

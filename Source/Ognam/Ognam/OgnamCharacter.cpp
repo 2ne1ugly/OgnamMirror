@@ -15,7 +15,7 @@
 #include "Weapon.h"
 #include "Ability.h"
 #include "Modifier.h"
-#include "OgnamPlayerstate.h"
+#include "OgnamPlayerState.h"
 #include "Interfaces/Dispellable.h"
 #include "OverwallHidden.h"
 #include "OverwallTransparency.h"
@@ -304,6 +304,14 @@ bool AOgnamCharacter::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bun
 	}
 
 	return WroteSomething;
+}
+
+bool AOgnamCharacter::CanBeKilledBy(AOgnamPlayerState* DamageInstigator, EDamageMethod DamageMethod)
+{
+	AOgnamPlayerState* OgnamPlayerState = GetPlayerState<AOgnamPlayerState>();
+	AOgnamGameState* OgnamGameState = GetWorld()->GetGameState<AOgnamGameState>();
+
+	return OgnamGameState->CanDamage(DamageInstigator, OgnamPlayerState, DamageMethod);
 }
 
 void AOgnamCharacter::MobilityPressed()

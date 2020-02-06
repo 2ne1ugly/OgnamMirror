@@ -70,5 +70,7 @@ enum class EDamageMethod : uint64
 	DamagesSelf = 0x1,
 	DamagesAlly = 0x2,	//Does not include yourself
 	DamagesEnemy = 0x4,
+	DamagesEntity = 0x8,
 };
 ENUM_CLASS_FLAGS(EDamageMethod)
+

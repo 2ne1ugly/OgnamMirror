@@ -18,6 +18,8 @@
 #include "Ognam/OgnamStatics.h"
 #include "Ognam/OgnamEnum.h"
 
+#include "OgnamEntity.h"
+
 UMaxwellSniperRifleAction::UMaxwellSniperRifleAction()
 {
 	ConstructorHelpers::FObjectFinder<USoundCue> SniperShotCue(TEXT("SoundCue'/Game/Sounds/Maxwell/maxwell_shot_cue2.maxwell_shot_cue2'"));
@@ -103,17 +105,23 @@ void UMaxwellSniperRifleAction::BeginChannel()
 		Controller->ClientPlayCameraShake(UMaxwellSniperRifleRecoil::StaticClass());
 	}
 
-	APawn* OtherPawn = Cast<APawn>(BulletHit.Actor);
-	if (UOgnamStatics::CanDamage(GetWorld(), Target, OtherPawn, EDamageMethod::DamagesEnemy))
+	//If Character
+	AActor* OtherActor = BulletHit.Actor.Get();
+	IKillable* Killable = Cast<IKillable>(BulletHit.Actor.Get());
+	if (Killable)
 	{
-		float Distance = (BulletTo - From).Size();
-		float Damage = DamageCurve->GetFloatValue(Distance);
-
-		if (BulletHit.BoneName == TEXT("Head"))
+		if (UOgnamStatics::CanDamage(GetWorld(), Target, Killable, EDamageMethod::DamagesEnemy))
 		{
-			Damage *= 1.5;
+			float Distance = (BulletTo - From).Size();
+			float Damage = DamageCurve->GetFloatValue(Distance);
+
+			if (BulletHit.BoneName == TEXT("Head"))
+			{
+				Damage *= 1.5;
+			}
+			UGameplayStatics::ApplyPointDamage(OtherActor, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
 		}
-		UGameplayStatics::ApplyPointDamage(OtherPawn, Damage, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		return;
 	}
 }
 

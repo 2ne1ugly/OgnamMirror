@@ -57,14 +57,18 @@ void AHereiraArrow::BeginPlay()
 void AHereiraArrow::ProjectileStop(const FHitResult& ImpactResult)
 {
 	APawn* Reciever = Cast<APawn>(ImpactResult.GetActor());
-	if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Reciever, EDamageMethod::DamagesEnemy))
+	IKillable* Killable = Cast<IKillable>(ImpactResult.GetActor());
+	if (Killable)
 	{
-		OnCharacterHit(Reciever, ImpactResult);
-		Collision->AttachToComponent(ImpactResult.GetComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), ImpactResult.BoneName);
-	}
-	else
-	{
-		Destroy();
+		if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Killable, EDamageMethod::DamagesEnemy))
+		{
+			OnCharacterHit(Killable, ImpactResult);
+			Collision->AttachToComponent(ImpactResult.GetComponent(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), ImpactResult.BoneName);
+		}
+		else
+		{
+			Destroy();
+		}
 	}
 }
 
@@ -82,4 +86,16 @@ void AHereiraArrow::OnCharacterHit(APawn* OtherCharacter, const FHitResult& Swee
 	UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, GetInstigatorController(), this, nullptr);
 }
 
+void AHereiraArrow::OnCharacterHit(IKillable* Killable, const FHitResult& SweepResult)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
 
+	AActor* OtherCharacter = Cast<AActor>(Killable);
+	if (OtherCharacter)
+	{
+		UGameplayStatics::ApplyPointDamage(OtherCharacter, BaseDamage, SweepResult.ImpactNormal, SweepResult, GetInstigatorController(), this, nullptr);
+	}
+}

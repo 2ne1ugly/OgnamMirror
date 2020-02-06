@@ -329,6 +329,7 @@ void ARitualGameState::NetStartSlowMotion_Implementation()
 
 void ARitualGameState::NetReset_Implementation()
 {
+	Super::NetReset_Implementation();
 	for (TActorIterator<ARitualShrine> Itr(GetWorld()); Itr; ++Itr)
 	{
 		Itr->Reset();

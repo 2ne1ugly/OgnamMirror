@@ -12,16 +12,20 @@
 #include "OgnamMacro.h"
 #include "OgnamCharacter.h"
 
-bool UOgnamStatics::CanDamage(const UObject* WorldContextObject, AOgnamPlayerState* DamageInstigator, AOgnamPlayerState* Reciever, EDamageMethod DamageMethod)
+bool UOgnamStatics::CanDamage(const UObject* WorldContextObject, AOgnamPlayerState* DamageInstigator, IKillable* Reciever, EDamageMethod DamageMethod)
 {
-	return Cast<AOgnamGameState>(UGameplayStatics::GetGameState(WorldContextObject))->CanDamage(DamageInstigator, Reciever, DamageMethod);
+	return Reciever->CanBeKilledBy(DamageInstigator, DamageMethod);
+
+	//return Cast<AOgnamGameState>(UGameplayStatics::GetGameState(WorldContextObject))->CanDamage(DamageInstigator, Reciever, DamageMethod);
 }
 
-bool UOgnamStatics::CanDamage(const UObject* WorldContextObject, APawn* DamageInstigator, APawn* Reciever, EDamageMethod DamageMethod)
+bool UOgnamStatics::CanDamage(const UObject* WorldContextObject, APawn* DamageInstigator, IKillable* Reciever, EDamageMethod DamageMethod)
 {
 	AOgnamPlayerState* InstigatorPlayerState = DamageInstigator ? DamageInstigator->GetPlayerState<AOgnamPlayerState>() : nullptr;
-	AOgnamPlayerState* RecieverPlayerState = Reciever ? Reciever->GetPlayerState<AOgnamPlayerState>() : nullptr;
-	return Cast<AOgnamGameState>(UGameplayStatics::GetGameState(WorldContextObject))->CanDamage(InstigatorPlayerState, RecieverPlayerState, DamageMethod);
+
+	return Reciever->CanBeKilledBy(InstigatorPlayerState, DamageMethod);
+	//AOgnamPlayerState* RecieverPlayerState = Reciever ? Reciever->CanBeKilledBy() : nullptr;
+	//return Cast<AOgnamGameState>(UGameplayStatics::GetGameState(WorldContextObject))->CanDamage(InstigatorPlayerState, RecieverPlayerState, DamageMethod);
 }
 
 void UOgnamStatics::PlaySnapshotableSoundAtLocation(const UObject* WorldContextObject, class USoundBase* Sound, FVector Location, FRotator Rotation, float VolumeMultiplier, float PitchMultiplier, float StartTime, class USoundAttenuation* AttenuationSettings, class USoundConcurrency* ConcurrencySettings, AActor* OwningActor)
@@ -39,11 +43,12 @@ void UOgnamStatics::PlaySnapshotableSoundAtLocation(const UObject* WorldContextO
 		return;
 	}
 	AOgnamCharacter* MyCharacter = Cast<AOgnamCharacter>(MyPlayerController->GetPawn());
+	AOgnamPlayerState* MyPlayerState = Cast<AOgnamPlayerState>(MyPlayerController->GetPawn());
 
 	//Use it only for enemies (only for pawns for now)
 	if (OwningActor && MyCharacter &&
 		MyCharacter->GetTacticalAmount() > 0.5f &&
-		CanDamage(WorldContextObject, MyCharacter, Cast<APawn>(OwningActor), EDamageMethod::DamagesEnemy))
+		CanDamage(WorldContextObject, MyPlayerState, Cast<IKillable>(OwningActor), EDamageMethod::DamagesEnemy))
 	{
 		USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(OwningActor->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 

@@ -65,10 +65,14 @@ void ULangdonAutoRifleAction::BeginChannel()
 	//	Controller->ClientPlayCameraShake(UMaxwellSniperRifleRecoil::StaticClass());
 	//}
 	APawn* Pawn = Cast<APawn>(BulletHit.Actor);
+	IKillable* Killable = Cast<IKillable>(BulletHit.Actor);
 	//Get Target's player state
-	if (UOgnamStatics::CanDamage(GetWorld(), Target, Pawn, EDamageMethod::DamagesEnemy))
+	if (Killable)
 	{
-		UGameplayStatics::ApplyPointDamage(Pawn, BaseDamage, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		if (UOgnamStatics::CanDamage(GetWorld(), Target, Killable, EDamageMethod::DamagesEnemy))
+		{
+			UGameplayStatics::ApplyPointDamage(Pawn, BaseDamage, Direction, BulletHit, Target->GetController(), Target, nullptr);
+		}
 	}
 }
 

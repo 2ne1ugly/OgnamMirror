@@ -61,9 +61,14 @@ void AJeraCrystalSpear::ProjectileStop(const FHitResult& ImpactResult)
 		return;
 	}
 
-	APawn* Reciever = Cast<APawn>(ImpactResult.GetActor());
-	if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Reciever, EDamageMethod::DamagesEnemy))
+	IKillable* Killable = Cast<IKillable>(ImpactResult.GetActor());
+	if (Killable)
 	{
-		UGameplayStatics::ApplyPointDamage(Reciever, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, GetInstigatorController(), this, nullptr);
+		if (UOgnamStatics::CanDamage(GetWorld(), GetInstigator(), Killable, EDamageMethod::DamagesEnemy))
+		{
+			AActor* Reciever = Cast<AActor>(Killable);
+			UGameplayStatics::ApplyPointDamage(Reciever, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, GetInstigatorController(), this, nullptr);
+		}
 	}
+	
 }
