@@ -1,0 +1,9 @@
+[submodule "Plugins/InfraworldRuntime"]
+	path = Plugins/InfraworldRuntime
+	url = https://github.com/vizor-games/InfraworldRuntime.git
+[submodule "Cornerstone"]
+	path = Cornerstone
+	url = https://github.com/2ne1ugly/infraworld-cornerstone.git
+[submodule "Proto"]
+	path = Proto
+	url = https://github.com/2ne1ugly/Ognam-Layton-Protobuf.git

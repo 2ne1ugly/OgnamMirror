@@ -12,5 +12,5 @@ public class OgnamEditorTarget : TargetRules
         //BuildEnvironment = TargetBuildEnvironment.Unique;
 
         ExtraModuleNames.AddRange( new string[] { "Ognam" } );
-    }
+	}
 }

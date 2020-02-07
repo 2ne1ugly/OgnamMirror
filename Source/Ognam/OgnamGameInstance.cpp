@@ -15,7 +15,7 @@ UOgnamGameInstance::UOgnamGameInstance(const FObjectInitializer& ObjectInitializ
 
 FString UOgnamGameInstance::GetPrefferedName() const
 {
-	return PrefferedName;
+	//LaytonClient = NewObject<ULaytonClient>();
 }
 //
 //void UOgnamGameInstance::HostSession(FOnHostSessionCompleteDelegate& Delegate)

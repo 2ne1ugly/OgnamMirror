@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "OgnamGameInstance.generated.h"
 
 /**
@@ -26,5 +25,4 @@ public:
 
 private:
 	FString PrefferedName;
-
 };
