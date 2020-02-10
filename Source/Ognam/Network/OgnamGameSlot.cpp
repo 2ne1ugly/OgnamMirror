@@ -3,17 +3,17 @@
 
 #include "OgnamGameSlot.h"
 
-UOgnamGameSlot::UOgnamGameSlot()
-{
+//UOgnamGameSlot::UOgnamGameSlot()
+//{
+//
+//}
 
-}
-
-void UOgnamGameSlot::SetSession(FBlueprintSessionResult _Session)
-{
-	Session = _Session;
-}
-
-FBlueprintSessionResult UOgnamGameSlot::GetSession() const
-{
-	return Session;
-}
+//void UOgnamGameSlot::SetSession(FBlueprintSessionResult _Session)
+//{
+//	Session = _Session;
+//}
+//
+//FBlueprintSessionResult UOgnamGameSlot::GetSession() const
+//{
+//	return Session;
+//}

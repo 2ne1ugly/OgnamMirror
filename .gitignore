@@ -18,4 +18,4 @@ Content/StarterContent
 enc_temp_folder
 *_BuiltData.uasset
 
-Source/Ognam/Layton/*
+Source/Ognam/Layton/*.pb.cc

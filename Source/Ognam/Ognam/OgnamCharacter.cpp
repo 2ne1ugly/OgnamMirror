@@ -215,8 +215,8 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	FVector InputVector = GetInputVector();
 	if (!InputVector.IsZero() && !HasStatusEffect({EStatusEffect::Rooted}))
 	{
-		float Speed = GetSpeedFromVector(InputVector);
-		AddMovementInput(GetActorTransform().TransformVector(InputVector), Speed);
+		float CharacterSpeed = GetSpeedFromVector(InputVector);
+		AddMovementInput(GetActorTransform().TransformVector(InputVector), CharacterSpeed);
 	}
 }
 

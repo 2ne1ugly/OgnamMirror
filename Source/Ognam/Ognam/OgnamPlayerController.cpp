@@ -2,10 +2,9 @@
 
 
 #include "OgnamPlayerController.h"
-#include "OnlineSubsystem.h"
-#include "Interfaces/OnlineFriendsInterface.h"
-#include "Interfaces/OnlineIdentityInterface.h"
-#include "OnlineSubsystemTypes.h"
+//#include "Interfaces/OnlineFriendsInterface.h"
+//#include "Interfaces/OnlineIdentityInterface.h"
+//#include "OnlineSubsystemTypes.h"
 #include "GameFramework/PlayerState.h"
 #include "Runtime/UMG/Public/UMG.h"
 #include "Slate.h"
@@ -21,7 +20,6 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Ognam/OgnamGameState.h"
 #include "OgnamGameInstance.h"
-#include "OnlineSubsystem.h"
 
 AOgnamPlayerController::AOgnamPlayerController()
 {
@@ -100,11 +98,11 @@ void AOgnamPlayerController::ReceivedPlayer()
 
 void AOgnamPlayerController::ServerSendName_Implementation(const FString& Name)
 {
-	IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
-	if (Name != "" && *Sub->GetOnlineServiceName().ToString() == NULL_SUBSYSTEM)
-	{
-		PlayerState->SetPlayerName(Name);
-	}
+	//IOnlineSubsystem* Sub = IOnlineSubsystem::Get();
+	//if (Name != "" && *Sub->GetOnlineServiceName().ToString() == NULL_SUBSYSTEM)
+	//{
+	//	PlayerState->SetPlayerName(Name);
+	//}
 }
 
 void AOgnamPlayerController::ClientFeedbackDamageDealt_Implementation(AActor* Causer, AActor* Reciever, FVector Location, float Damage)

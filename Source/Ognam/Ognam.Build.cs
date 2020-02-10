@@ -16,18 +16,21 @@ public class Ognam : ModuleRules
            "UMG",
            "Slate",
            "SlateCore",
-           "InfraworldRuntime"
+           "InfraworldRuntime",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Projects" });
 
         MinFilesUsingPrecompiledHeaderOverride = 1;
 
+        AddEngineThirdPartyPrivateStaticDependencies(Target, "OpenSSL");
+        AddEngineThirdPartyPrivateStaticDependencies(Target, "zlib");
+
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
         // Uncomment if you are using online features
-        DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
+        //DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
 
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
     }

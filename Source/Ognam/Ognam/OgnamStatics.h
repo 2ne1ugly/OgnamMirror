@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "SubclassOf.h"
 #include "OgnamStatics.generated.h"
 
 enum class EDamageMethod : uint64;
@@ -22,4 +23,8 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Audio", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "3", UnsafeDuringActorConstruction = "true", Keywords = "play"))
     static void PlaySnapshotableSoundAtLocation(const UObject* WorldContextObject, class USoundBase* Sound, FVector Location, FRotator Rotation, float VolumeMultiplier = 1.f, float PitchMultiplier = 1.f, float StartTime = 0.f, class USoundAttenuation* AttenuationSettings = nullptr, class USoundConcurrency* ConcurrencySettings = nullptr, AActor* OwningActor = nullptr);
+
+    UFUNCTION(BlueprintCallable)
+    static UUserWidget* TransitionUI(class UWidget* CurrentWidget, class APlayerController* PlayerController, TSubclassOf<UUserWidget> Class);
+
 };

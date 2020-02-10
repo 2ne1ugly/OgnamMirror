@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "GrpcIncludesBegin.h"
+#include "grpcpp/grpcpp.h"
+#include "GrpcIncludesEnd.h"
 #include "OgnamGameInstance.generated.h"
 
 /**
@@ -17,11 +20,16 @@ class OGNAM_API UOgnamGameInstance : public UGameInstance
 public:
 	UOgnamGameInstance(const FObjectInitializer& ObjectInitializer);
 
+	virtual void Init() override;
+
 	UFUNCTION(BlueprintCallable)
 	void SetPrefferedName(FString Name);
 
 	UFUNCTION(BlueprintCallable)
 	FString GetPrefferedName() const;
+
+	UPROPERTY(BlueprintReadOnly)
+	class ULaytonRpcClient* LaytonClient;
 
 private:
 	FString PrefferedName;

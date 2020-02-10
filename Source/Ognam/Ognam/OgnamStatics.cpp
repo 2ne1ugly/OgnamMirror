@@ -10,6 +10,7 @@
 #include "SoundSnapshot.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "OgnamMacro.h"
+#include "UserWidget.h"
 #include "OgnamCharacter.h"
 
 bool UOgnamStatics::CanDamage(const UObject* WorldContextObject, AOgnamPlayerState* DamageInstigator, AOgnamPlayerState* Reciever, EDamageMethod DamageMethod)
@@ -51,4 +52,12 @@ void UOgnamStatics::PlaySnapshotableSoundAtLocation(const UObject* WorldContextO
 		ASoundSnapshot* SnapshotActor = WorldContextObject->GetWorld()->SpawnActor<ASoundSnapshot>();
 		SnapshotActor->Snapshot(SkeletalMesh);
 	}
+}
+
+UUserWidget* UOgnamStatics::TransitionUI(UWidget* CurrentWidget, APlayerController* PlayerController, TSubclassOf<UUserWidget> Class)
+{
+	CurrentWidget->RemoveFromParent();
+	UUserWidget* Widget = CreateWidget(PlayerController, Class);
+	Widget->AddToViewport();
+	return Widget;
 }

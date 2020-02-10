@@ -6,10 +6,6 @@
 #include "OgnamPlayerState.h"
 #include "OgnamCharacter.h"
 #include "KillFeed.h"
-#include "Subsystem.h"
-#include "OnlineSubsystem.h"
-#include "Sockets.h"
-#include "SocketSubsystem.h"
 #include "UnrealNetwork.h"
 #include "TimerManager.h"
 #include "OgnamPlayerController.h"
@@ -31,11 +27,11 @@ void AOgnamGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
-	bool bCanBind;
+	//bool bCanBind;
 	if (HasAuthority())
 	{
-		TSharedRef<FInternetAddr> LocalIP = ISocketSubsystem::Get()->GetLocalHostAddr(*GLog, bCanBind);
-		ServerAddress = FString::Printf(TEXT("%s:%d"), *(LocalIP->ToString(false)), GetWorld()->URL.Port);
+		//TSharedRef<FInternetAddr> LocalIP = ISocketSubsystem::Get()->GetLocalHostAddr(*GLog, bCanBind);
+		//ServerAddress = FString::Printf(TEXT("%s:%d"), *(LocalIP->ToString(false)), GetWorld()->URL.Port);
 	}
 }
 
