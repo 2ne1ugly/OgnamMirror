@@ -4,6 +4,7 @@
 #include "AshaDaggers.h"
 #include "Components/SphereComponent.h"
 #include "ConstructorHelpers.h"
+#include "AshaDaggersImpact.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Ognam/OgnamMacro.h"
@@ -22,13 +23,13 @@ AAshaDaggers::AAshaDaggers()
 	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Block);
 	RootComponent = Collision;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> DaggerMeshCH(TEXT("StaticMesh'/Engine/BasicShapes/Cylinder.Cylinder'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DaggerMeshCH(TEXT("StaticMesh'/Game/Meshes/Asha_knife_basic.Asha_knife_basic'"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Collision);
 	Mesh->SetStaticMesh(DaggerMeshCH.Object);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh->SetRelativeScale3D(FVector(.1f, .1f, .8f));
-	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator(-90.f, 0.f, 0.f));
+	Mesh->SetRelativeScale3D(FVector(1.f, 1.f, 1.f));
+	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator(0.f, 0.f, 0.f));
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->bInterpMovement = true;
@@ -57,7 +58,8 @@ void AAshaDaggers::ProjectileStop(const FHitResult& ImpactResult)
 	{
 		return;
 	}
-
+	FVector ImpactLocation = ImpactResult.ImpactPoint;
+	NetPlayFeedback_Implementation(ImpactLocation);
 	IKillable* Killable = Cast<IKillable>(ImpactResult.GetActor());
 	if (Killable)
 	{
@@ -67,6 +69,11 @@ void AAshaDaggers::ProjectileStop(const FHitResult& ImpactResult)
 			UGameplayStatics::ApplyPointDamage(Reciever, BaseDamage, ImpactResult.ImpactNormal, ImpactResult, GetInstigatorController(), this, nullptr);
 		}
 	}
+}
+
+void AAshaDaggers::NetPlayFeedback_Implementation(FVector ImpactLocation)
+{
+	AAshaDaggersImpact* Impact = GetWorld()->SpawnActor<AAshaDaggersImpact>(ImpactLocation, FRotator::ZeroRotator);
 }
 
 

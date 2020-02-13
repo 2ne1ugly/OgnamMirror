@@ -7,6 +7,7 @@
 #include "ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "MaxwellSniperTrail.h"
+#include "MaxwellBulletImpact.h"
 #include "MaxwellSniperRifleRecoil.h"
 #include "Ognam/OgnamCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -77,8 +78,6 @@ void UMaxwellSniperRifleAction::BeginChannel()
 	else
 		To = HitResult.TraceEnd;
 
-	NetPlayShotSound();
-
 	//find direction to shoot bullets
 	FVector Direction = To - From;
 	Direction = Direction.GetSafeNormal();
@@ -96,7 +95,7 @@ void UMaxwellSniperRifleAction::BeginChannel()
 		BulletTo = BulletHit.ImpactPoint;
 	else
 		BulletTo = BulletHit.TraceEnd;
-	NetDrawTrajectory(From, BulletTo);
+	NetPlayFeedback(From, BulletTo);
 
 	//Feedback recoil
 	APlayerController* Controller = Target->GetController<APlayerController>();
@@ -130,13 +129,20 @@ void UMaxwellSniperRifleAction::TickPostDelay(float DeltaTime)
 	Target->Speed *= .75f;
 }
 
-void UMaxwellSniperRifleAction::NetDrawTrajectory_Implementation(FVector From, FVector To)
+void UMaxwellSniperRifleAction::NetPlayFeedback_Implementation(FVector From, FVector To)
 {
+	//Trajectory
 	AMaxwellSniperTrail* Trail = GetWorld()->SpawnActor<AMaxwellSniperTrail>(From, (To - From).Rotation());
 	Trail->SetActorScale3D(FVector((To - From).Size() / 95.f, 1.f, 1.f));
+
+	//Sound
+	ShotSound->Activate(true);
+
+	//Impact particle effect
+	//* from code fairy *//
+	AMaxwellBulletImpact* Impact = GetWorld()->SpawnActor<AMaxwellBulletImpact>(To, FRotator::ZeroRotator);
+
+
 }
 
-void UMaxwellSniperRifleAction::NetPlayShotSound_Implementation()
-{
-	ShotSound->Activate(true);
-}
+//at impact point spawn MaxwellBulletImpact

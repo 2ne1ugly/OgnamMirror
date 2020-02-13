@@ -21,6 +21,10 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetPlayFeedback(FVector ImpactLocation);
+	void NetPlayFeedback_Implementation(FVector ImpactLocation);
+
 protected:
 	virtual void BeginChannel() override;
 	virtual void EndChannel() override;

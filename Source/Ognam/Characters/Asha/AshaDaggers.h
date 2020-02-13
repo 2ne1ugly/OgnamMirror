@@ -29,6 +29,10 @@ public:
 	UFUNCTION()
 	virtual void ProjectileStop(const FHitResult& ImpactResult);
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetPlayFeedback(FVector ImpactLocation);
+	void NetPlayFeedback_Implementation(FVector ImpactLocation);
+
 protected:
 	/*
 	**	Props

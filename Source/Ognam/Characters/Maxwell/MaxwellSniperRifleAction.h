@@ -24,12 +24,8 @@ protected:
 	virtual void TickPostDelay(float DeltaTime) override;
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void NetDrawTrajectory(FVector From, FVector To);
-	void NetDrawTrajectory_Implementation(FVector From, FVector To);
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void NetPlayShotSound();
-	void NetPlayShotSound_Implementation();
+	void NetPlayFeedback(FVector From, FVector To);
+	void NetPlayFeedback_Implementation(FVector From, FVector To);
 
 	/*
 	**	Props

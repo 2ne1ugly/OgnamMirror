@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "JeraCrystalArmsAction.h"
+#include "JeraPunchImpact.h"
 #include "ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/Material.h"
@@ -68,6 +69,11 @@ void UJeraCrystalArmsAction::BeginPlay()
 	HitSound->RegisterComponent();
 }
 
+void UJeraCrystalArmsAction::NetPlayFeedback_Implementation(FVector ImpactLocation)
+{
+	AJeraPunchImpact* Impact = GetWorld()->SpawnActor<AJeraPunchImpact>(ImpactLocation, FRotator::ZeroRotator);
+}
+
 void UJeraCrystalArmsAction::BeginChannel()
 {
 	StrikedCharacters.Empty();
@@ -100,6 +106,9 @@ void UJeraCrystalArmsAction::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 
 	APawn* Owner = Cast<APawn>(GetOwner());
 	//Get owners playerState
+
+	FVector ImpactLocation = BoxTrigger->GetComponentLocation();
+	NetPlayFeedback(ImpactLocation);
 	if (UOgnamStatics::CanDamage(GetWorld(), Owner, Killable, EDamageMethod::DamagesEnemy))
 	{
 		AActor* Reciever = Cast<AActor>(Killable);

@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "Components/BoxComponent.h"
+#include "HereiraBulletImpact.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Ognam/OgnamMacro.h"
@@ -56,6 +57,8 @@ void AHereiraArrow::BeginPlay()
 
 void AHereiraArrow::ProjectileStop(const FHitResult& ImpactResult)
 {
+	FVector ImpactLocation = ImpactResult.ImpactPoint;
+	NetPlayFeedback_Implementation(ImpactLocation);
 	APawn* Reciever = Cast<APawn>(ImpactResult.GetActor());
 	IKillable* Killable = Cast<IKillable>(ImpactResult.GetActor());
 	if (Killable)
@@ -70,6 +73,11 @@ void AHereiraArrow::ProjectileStop(const FHitResult& ImpactResult)
 			Destroy();
 		}
 	}
+}
+
+void AHereiraArrow::NetPlayFeedback_Implementation(FVector ImpactLocation)
+{
+	AHereiraBulletImpact* Impact = GetWorld()->SpawnActor<AHereiraBulletImpact>(ImpactLocation, FRotator::ZeroRotator);
 }
 
 void AHereiraArrow::EndLifeSpan()

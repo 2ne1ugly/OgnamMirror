@@ -27,6 +27,10 @@
 		{
 			"Name": "AdvancedSessions",
 			"Enabled": true
+		},
+		{
+			"Name": "NiagaraExtras",
+			"Enabled": true
 		}
 	]
 }
