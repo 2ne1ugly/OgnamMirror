@@ -2,7 +2,7 @@
 
 
 #include "OgnamChatMessage.h"
-#include "OgnamPlayerstate.h"
+#include "OgnamPlayerState.h"
 
 FString UOgnamChatMessage::GetFormattedMessage()
 {

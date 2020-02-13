@@ -7,6 +7,6 @@ public class OgnamServerTarget : TargetRules   // Change this line as shown prev
     public OgnamServerTarget(TargetInfo Target) : base(Target)  // Change this line as shown previously
     {
         Type = TargetType.Server;
-        ExtraModuleNames.Add("Ognam");    // Change this line as shown previously
+        ExtraModuleNames.AddRange(new string[] { "Ognam" });    // Change this line as shown previously
     }
 }

@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "GrpcIncludesBegin.h"
-#include "grpcpp/grpcpp.h"
-#include "GrpcIncludesEnd.h"
 #include "OgnamGameInstance.generated.h"
 
 /**
@@ -28,8 +25,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString GetPrefferedName() const;
 
-	UPROPERTY(BlueprintReadOnly)
-	class ULaytonRpcClient* LaytonClient;
+	//UPROPERTY(BlueprintReadOnly)
+	//class ULaytonRpcClient* LaytonClient;
 
 private:
 	FString PrefferedName;

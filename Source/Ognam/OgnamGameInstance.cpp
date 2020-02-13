@@ -7,7 +7,11 @@
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
 #include "Ognam/OgnamMacro.h"
-#include "Layton.h"
+
+#include "GrpcIncludesBegin.h"
+#include "grpcpp/create_channel.h"
+#include "GrpcIncludesEnd.h"
+//#include "Layton.h"
 
 UOgnamGameInstance::UOgnamGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -20,8 +24,10 @@ FString UOgnamGameInstance::GetPrefferedName() const
 
 void UOgnamGameInstance::Init()
 {
-	LaytonClient = NewObject<ULaytonRpcClient>(this);
-	LaytonClient->Init("10.10.151.75:50051", UChannelCredentials::MakeInsecureChannelCredentials());
+
+	grpc::CreateChannel("", nullptr);
+	//LaytonClient = NewObject<ULaytonRpcClient>(this);
+	//LaytonClient->Init("10.10.151.75:50051", UChannelCredentials::MakeInsecureChannelCredentials());
 }
 
 void UOgnamGameInstance::SetPrefferedName(FString Name)

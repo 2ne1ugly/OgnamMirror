@@ -5,7 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Materials/Material.h"
 #include "Kismet/GameplayStatics.h"
-#include "Ognam/OgnamPlayerstate.h"
+#include "Ognam/OgnamPlayerState.h"
 #include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
 #include "Ognam/OgnamMacro.h"

@@ -3,9 +3,9 @@
 
 #include "OgnamStatics.h"
 #include "OgnamEnum.h"
-#include "OgnamPlayerstate.h"
+#include "OgnamPlayerState.h"
 #include "OgnamGameState.h"
-#include "kismet/GameplayStatics.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "SoundSnapshot.h"
 #include "Components/SkeletalMeshComponent.h"

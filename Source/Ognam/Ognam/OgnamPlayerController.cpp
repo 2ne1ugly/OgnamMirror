@@ -14,7 +14,7 @@
 #include "OgnamCharacter.h"
 #include "Engine/World.h"
 #include "DamageText.h"
-#include "OgnamPlayerstate.h"
+#include "OgnamPlayerState.h"
 #include "Sound/SoundCue.h"
 #include "Ognam/OgnamMacro.h"
 #include "Materials/MaterialInstanceDynamic.h"

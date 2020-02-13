@@ -15,7 +15,7 @@
 #include "Weapon.h"
 #include "Ability.h"
 #include "Modifier.h"
-#include "OgnamPlayerstate.h"
+#include "OgnamPlayerState.h"
 #include "Interfaces/Dispellable.h"
 #include "OverwallHidden.h"
 #include "OverwallTransparency.h"
@@ -213,7 +213,7 @@ void AOgnamCharacter::Tick(float DeltaTime)
 	GetCharacterMovement()->GravityScale = Gravity;
 
 	FVector InputVector = GetInputVector();
-	if (!InputVector.IsZero() && !HasStatusEffect({EStatusEffect::Rooted}))
+	if (!InputVector.IsZero() && !HasStatusEffect(EStatusEffect::Rooted))
 	{
 		float CharacterSpeed = GetSpeedFromVector(InputVector);
 		AddMovementInput(GetActorTransform().TransformVector(InputVector), CharacterSpeed);
@@ -551,7 +551,7 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	}
 
 	//shoot ray from camera to see where it should land.
-	FVector RayFrom = ActiveCamera->GetComponentLocation() + near;
+	FVector RayFrom = ActiveCamera->GetComponentLocation() + near; 
 	FVector RayTo = RayFrom + ActiveCamera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	Params.AddIgnoredActor(this);
@@ -646,7 +646,7 @@ void AOgnamCharacter::ApplyStatusEffect(const TSet<EStatusEffect>& Effects)
 
 void AOgnamCharacter::ServerJump_Implementation()
 {
-	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect({EStatusEffect::Rooted}) || GetCharacterMovement()->Velocity.Z > 0.f)
+	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted) || GetCharacterMovement()->Velocity.Z > 0.f)
 	{
 		return;
 	}
@@ -718,7 +718,7 @@ void AOgnamCharacter::PlayerStateReady()
 
 void AOgnamCharacter::Jump()
 {
-	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect({EStatusEffect::Rooted}) || !bCanMove)
+	if (!GetCharacterMovement()->IsMovingOnGround() || HasStatusEffect(EStatusEffect::Rooted) || !bCanMove)
 	{
 		return;
 	}
@@ -742,7 +742,7 @@ void AOgnamCharacter::Landed(const FHitResult& FHit)
 float AOgnamCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float AppliedDamage = Damage;
-	if (HasStatusEffect({EStatusEffect::Unbreakable}))
+	if (HasStatusEffect(EStatusEffect::Unbreakable))
 	{
 		AppliedDamage = 0.f;
 	}
