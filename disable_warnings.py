@@ -9,7 +9,7 @@ include_enable_warnings = '#include "GrpcIncludesEnd.h"'
 
 def WrapHeader(Source):
     print("parsing " + str(Source))
-    SourceDisc = open(Source, 'r')
+    SourceDisc = open(Source, 'r', errors="ignore")
     if (SourceDisc is None):
         print("Failed to read ")
         return
@@ -34,9 +34,8 @@ def WrapHeader(Source):
     print("Success to regenerate the code for UE4")
 
 def Generate(Dir):
-    result = list(Path(Dir).rglob("**/*.pb.cc"))
+    result = list(Path(Dir).rglob("**/*.cc"))
     for ccfile in result:
         WrapHeader(ccfile)
 
-Generate("Plugins\InfraworldRuntime\Source\InfraworldRuntime\layton")
-    
+Generate("Plugins\InfraworldRuntime\Source\InfraworldRuntime\Layton")

@@ -25,8 +25,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString GetPrefferedName() const;
 
-	//UPROPERTY(BlueprintReadOnly)
-	//class ULaytonRpcClient* LaytonClient;
+	UPROPERTY(BlueprintReadOnly)
+	class UOgnamLaytonClient* LaytonClient;
 
 private:
 	FString PrefferedName;

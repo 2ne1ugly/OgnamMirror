@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"CoreUObject",
-				"UMG"
+				"UMG",
+				"InfraworldRuntime"
 			]
 		}
 	],
@@ -141,11 +142,7 @@
 		},
 		{
 			"Name": "OnlineSubsystemUtils",
-			"Enabled": false
-		},
-		{
-			"Name": "OnlineSubsystem",
-			"Enabled": false
+			"Enabled": true
 		},
 		{
 			"Name": "OculusVR",
