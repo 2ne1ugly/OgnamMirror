@@ -6,11 +6,8 @@
 #include "Layton/Layton.h"
 #include "OgnamLaytonClient.generated.h"
 
-USTRUCT(Blueprintable)
 struct FLaytonAccount
 {
-    GENERATED_BODY()
-
     std::string Username;
     std::string AuthToken;
 };
@@ -26,11 +23,7 @@ class OGNAM_API UOgnamLaytonClient : public ULaytonClientRpcClient
 public:
     TSharedPtr<FLaytonAccount> Account;
 
-    UFUNCTION(BlueprintPure)
-    UGrpcClientContext* CreateClientContext();
-
-    UFUNCTION(BlueprintCallable)
-    void SetAccount(const FString& Username, const TArray<uint8>& AuthToken);
+    void InitializeClientContext(grpc::ClientContext& ClientContext);
 
     void SetAccount(const std::string& Username, const std::string& AuthToken);
 };

@@ -36,33 +36,32 @@ public:
     UFUNCTION(BlueprintPure, Meta=(WorldContext="WorldContextObject"))
     static class UOgnamLaytonClient* GetLaytonClient(UObject* WorldContextObject);
 
-    UFUNCTION(BlueprintCallable, Meta=(ExpandEnumAsExecs="Result"))
-    static void ProcessGrpcStatus(UGrpcStatus* Status, FString& ErrorMsg, EBlueprintParameterCheck& Result);
-
-    /*
-    **  Identity
-    */
-    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
-    static void ProcessLoginResponse(const FLaytonLoginResponse& Response, UGrpcStatus* Status, const FLaytonLoginRequest& Request,  UOgnamLaytonClient* Client, FString& Reason, EBlueprintExecutionResult& Result);
-
-    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
-    static void ProcessCreateAccountResponse(const FLaytonResult& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
-
-    /*
-    **  Session
-    */
-    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
-    static void ProcessCreateLobbyResponse(const FLaytonCreateLobbyResponse& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
-
-    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result", WorldContext = "WorldContextObject"), Category = "Ognam Studios|RPC Response|Layton")
-    static void ProcessFindLobbiesResponse(UObject* WorldContextObject, const FLaytonFindLobbiesResponse& Response, UGrpcStatus* Status, TArray<ULaytonLobby*>& OutSessions, FString& Reason, EBlueprintExecutionResult& Result);
-
-    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
-    static void ProcessLeaveLobbyResponse(const FLaytonResult& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
-
-    //UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
-    //static void ProcessStartSessionResponse(const FLaytonResult& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
-    
-protected:
-    static void ProcessLaytonResultDefault(const FLaytonResult& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
+    static bool CheckGrpcStatus(const grpc::Status& Status, FString& ErrorMsg);
+//
+//    /*
+//    **  Identity
+//    */
+//    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
+//    static void ProcessLoginResponse(const FLaytonLoginResponse& Response, UGrpcStatus* Status, const FLaytonLoginRequest& Request,  UOgnamLaytonClient* Client, FString& Reason, EBlueprintExecutionResult& Result);
+//
+//    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
+//    static void ProcessCreateAccountResponse(const FLaytonResult& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
+//
+//    /*
+//    **  Session
+//    */
+//    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
+//    static void ProcessCreateLobbyResponse(const FLaytonCreateLobbyResponse& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
+//
+//    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result", WorldContext = "WorldContextObject"), Category = "Ognam Studios|RPC Response|Layton")
+//    static void ProcessFindLobbiesResponse(UObject* WorldContextObject, const FLaytonFindLobbiesResponse& Response, UGrpcStatus* Status, TArray<ULaytonLobby*>& OutSessions, FString& Reason, EBlueprintExecutionResult& Result);
+//
+//    UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
+//    static void ProcessLeaveLobbyResponse(const FLaytonResult& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
+//
+//    //UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Result"), Category = "Ognam Studios|RPC Response|Layton")
+//    //static void ProcessStartSessionResponse(const FLaytonResult& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
+//    
+//protected:
+//    static void ProcessLaytonResultDefault(const FLaytonResult& Response, UGrpcStatus* Status, FString& Reason, EBlueprintExecutionResult& Result);
 };

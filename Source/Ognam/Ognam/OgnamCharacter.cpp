@@ -551,7 +551,7 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	}
 
 	//shoot ray from camera to see where it should land.
-	FVector RayFrom = ActiveCamera->GetComponentLocation() + near; 
+	FVector RayFrom = ActiveCamera->GetComponentLocation() + near;
 	FVector RayTo = RayFrom + ActiveCamera->GetForwardVector() * far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	Params.AddIgnoredActor(this);
