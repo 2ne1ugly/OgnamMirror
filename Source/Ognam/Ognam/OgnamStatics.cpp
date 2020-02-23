@@ -47,6 +47,7 @@ void UOgnamStatics::PlaySnapshotableSoundAtLocation(const UObject* WorldContextO
 	//Use it only for enemies (only for pawns for now)
 	if (MyCharacter &&
 		MyCharacter->GetTacticalAmount() > 0.5f &&
+		FVector::Distance(MyCharacter->GetActorLocation(), OwningActor->GetActorLocation()) < 1000.f &&
 		CanDamage(WorldContextObject, MyPlayerState, Cast<IKillable>(OwningActor), EDamageMethod::DamagesEnemy))
 	{
 		USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(OwningActor->GetComponentByClass(USkeletalMeshComponent::StaticClass()));

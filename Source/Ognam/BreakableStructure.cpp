@@ -12,7 +12,7 @@
 
 ABreakableStructure::ABreakableStructure()
 {
-	MaxHealth = 300;
+	MaxHealth = 150;
 	Health = MaxHealth;
 	bIsAlive = true;
 
@@ -21,6 +21,7 @@ ABreakableStructure::ABreakableStructure()
 	Mesh->SetStaticMesh(MeshCH.Object);
 	Mesh->SetCollisionProfileName(TEXT("BlockAll"));
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
 	SetReplicates(true);
 }
 

@@ -23,6 +23,7 @@ class OGNAM_API ABreakableStructure : public AOgnamEntity, public IKillable
 
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* Mesh;
+
 public:
 	// Sets default values for this actor's properties
 	ABreakableStructure();
