@@ -43,10 +43,9 @@ void UOgnamStatics::PlaySnapshotableSoundAtLocation(const UObject* WorldContextO
 		return;
 	}
 	AOgnamCharacter* MyCharacter = Cast<AOgnamCharacter>(MyPlayerController->GetPawn());
-	AOgnamPlayerState* MyPlayerState = Cast<AOgnamPlayerState>(MyPlayerController->GetPawn());
-
+	AOgnamPlayerState* MyPlayerState = MyPlayerController->GetPlayerState<AOgnamPlayerState>();
 	//Use it only for enemies (only for pawns for now)
-	if (OwningActor && MyCharacter &&
+	if (MyCharacter &&
 		MyCharacter->GetTacticalAmount() > 0.5f &&
 		CanDamage(WorldContextObject, MyPlayerState, Cast<IKillable>(OwningActor), EDamageMethod::DamagesEnemy))
 	{
