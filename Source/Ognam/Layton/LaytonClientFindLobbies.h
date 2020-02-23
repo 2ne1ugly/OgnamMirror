@@ -27,5 +27,5 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintInternalUseOnly, Category = "Layton Client", meta = (WorldContext = "WorldContextObject"))
     static ULaytonClientFindLobbies* LaytonClientFindLobbies(UObject* WorldContextObject);
 
-    virtual void OnResponseReceived() override;
+    virtual void OnResponseReceived(bool Ok) override;
 };

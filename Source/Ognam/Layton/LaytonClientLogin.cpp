@@ -14,7 +14,7 @@ ULaytonClientLogin* ULaytonClientLogin::LaytonClientLogin(UObject* WorldContextO
 	return Proxy;
 }
 
-void ULaytonClientLogin::OnResponseReceived()
+void ULaytonClientLogin::OnResponseReceived(bool Ok)
 {
 	FString ErrorMsg;
 	if (!ULaytonBlueprintLibrary::CheckGrpcStatus(Status, ErrorMsg))

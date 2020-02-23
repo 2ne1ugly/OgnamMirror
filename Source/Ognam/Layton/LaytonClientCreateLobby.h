@@ -6,6 +6,8 @@
 #include "Layton/Layton.h"
 #include "LaytonClientCreateLobby.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLobbyDelegate, const TArray<uint8>&, LobbyUuid);
+
 /**
  * 
  */
@@ -16,7 +18,7 @@ class OGNAM_API ULaytonClientCreateLobby : public ULaytonClientCreateLobbyBase
 
 public:
     UPROPERTY(BlueprintAssignable)
-    FMessageDelegate OnSuccess;
+    FLobbyDelegate OnSuccess;
 
     UPROPERTY(BlueprintAssignable)
     FMessageDelegate OnFailure;
@@ -24,5 +26,5 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintInternalUseOnly, Category = "Layton Client", meta = (WorldContext = "WorldContextObject"))
     static ULaytonClientCreateLobby* LaytonClientCreateLobby(UObject* WorldContextObject, const FString& LobbyName, const FString& MapName, int32 MaxPlayers);
 
-    virtual void OnResponseReceived() override;
+    virtual void OnResponseReceived(bool Ok) override;
 };

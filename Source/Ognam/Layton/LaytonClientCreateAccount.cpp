@@ -14,7 +14,7 @@ ULaytonClientCreateAccount* ULaytonClientCreateAccount::LaytonClientCreateAccoun
 	return Proxy;
 }
 
-void ULaytonClientCreateAccount::OnResponseReceived()
+void ULaytonClientCreateAccount::OnResponseReceived(bool Ok)
 {
 	FString ErrorMsg;
 	if (!ULaytonBlueprintLibrary::CheckGrpcStatus(Status, ErrorMsg))

@@ -23,6 +23,9 @@ class OGNAM_API UOgnamLaytonClient : public ULaytonClientRpcClient
 public:
     TSharedPtr<FLaytonAccount> Account;
 
+    UPROPERTY(BlueprintReadWrite)
+    class ULaytonClientLobbyStream* StreamedLobby;
+
     void InitializeClientContext(grpc::ClientContext& ClientContext);
 
     void SetAccount(const std::string& Username, const std::string& AuthToken);

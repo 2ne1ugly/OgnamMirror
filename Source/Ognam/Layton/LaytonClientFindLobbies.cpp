@@ -14,7 +14,7 @@ ULaytonClientFindLobbies* ULaytonClientFindLobbies::LaytonClientFindLobbies(UObj
 	return Proxy;
 }
 
-void ULaytonClientFindLobbies::OnResponseReceived()
+void ULaytonClientFindLobbies::OnResponseReceived(bool Ok)
 {
 	FString ErrorMsg;
 	if (!ULaytonBlueprintLibrary::CheckGrpcStatus(Status, ErrorMsg))

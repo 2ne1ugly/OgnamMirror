@@ -24,5 +24,5 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintInternalUseOnly, Category = "Layton Client", meta = (WorldContext = "WorldContextObject"))
     static ULaytonClientLogin* LaytonClientLogin(UObject* WorldContextObject, const FString& Username);
 
-    virtual void OnResponseReceived() override;
+    virtual void OnResponseReceived(bool Ok) override;
 };

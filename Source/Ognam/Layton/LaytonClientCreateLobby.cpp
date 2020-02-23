@@ -4,6 +4,7 @@
 #include "LaytonClientCreateLobby.h"
 #include "LaytonBlueprintLibrary.h"
 #include "OgnamLaytonClient.h"
+#include "LaytonLobby.h"
 
 ULaytonClientCreateLobby* ULaytonClientCreateLobby::LaytonClientCreateLobby(UObject* WorldContextObject, const FString& LobbyName, const FString& MapName, int32 MaxPlayers)
 {
@@ -17,7 +18,7 @@ ULaytonClientCreateLobby* ULaytonClientCreateLobby::LaytonClientCreateLobby(UObj
 	return Proxy;
 }
 
-void ULaytonClientCreateLobby::OnResponseReceived()
+void ULaytonClientCreateLobby::OnResponseReceived(bool Ok)
 {
 	FString ErrorMsg;
 	if (!ULaytonBlueprintLibrary::CheckGrpcStatus(Status, ErrorMsg))
@@ -29,7 +30,7 @@ void ULaytonClientCreateLobby::OnResponseReceived()
 	switch (casts::Proto_Cast<ELaytonResultCode>(Response.result_code()))
 	{
 	case ELaytonResultCode::RC_SUCCESS:
-		OnSuccess.Broadcast("Create Lobby Successful");
+		OnSuccess.Broadcast(casts::Proto_Cast<TArray<uint8>>(Response.lobby_uuid()));
 		return;
 	case ELaytonResultCode::RC_ERROR:
 		OnFailure.Broadcast("Error");
