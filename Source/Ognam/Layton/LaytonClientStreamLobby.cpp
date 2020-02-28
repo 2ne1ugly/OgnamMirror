@@ -12,8 +12,8 @@
 void ULaytonClientLobbyStream::SendChatMessage(const FString& ChatMessage, UTagDelegateWrapper* Delegate)
 {
 	lgrpc::LobbyStreamClient Message;
-	Message.mutable_chat_message()->set_message(casts::Proto_Cast<std::string>(ChatMessage));
-	SendMessage(Message, Delegate);
+	Message.mutable_send_chat_message()->set_message(casts::Proto_Cast<std::string>(ChatMessage));
+	QueueSendMessage(Message, Delegate);
 }
 
 void ULaytonClientLobbyStream::OnMessageSent(bool Ok, lgrpc::LobbyStreamClient Request)
@@ -24,13 +24,13 @@ void ULaytonClientLobbyStream::OnMessageSent(bool Ok, lgrpc::LobbyStreamClient R
 
 void ULaytonClientLobbyStream::OnMessageReceived(bool Ok, lgrpc::LobbyStreamServer* Response)
 {
-	Super::OnMessageReceived(Ok, Response);
+	UE_LOG(LogTemp, Warning, TEXT("Message Received!"));
 	switch (Response->message_case())
 	{
 	case lgrpc::LobbyStreamServer::MessageCase::kInit:
 		if (Response->init().result_code() != lgrpc::ResultCode::RC_SUCCESS)
 		{
-			return;
+			break;
 		}
 		UE_LOG(LogTemp, Warning, TEXT("INIT!!!"));
 		LobbyName = casts::Proto_Cast<FString>(Response->init().lobby_name());
@@ -46,7 +46,18 @@ void ULaytonClientLobbyStream::OnMessageReceived(bool Ok, lgrpc::LobbyStreamServ
 		}
 		UE_LOG(LogTemp, Warning, TEXT("players: %d"), Players.Num());
 		break;
+	case lgrpc::LobbyStreamServer::MessageCase::kReceiveChatMessage:
+		UE_LOG(LogTemp, Warning, TEXT("%s: %s"),
+			*casts::Proto_Cast<FString>(Response->receive_chat_message().username()),
+			*casts::Proto_Cast<FString>(Response->receive_chat_message().message())
+		)
+		OnChatMessageReceived.Broadcast(
+			casts::Proto_Cast<FString>(Response->receive_chat_message().username()),
+			casts::Proto_Cast<FString>(Response->receive_chat_message().message())
+		);
+		break;
 	}
+	Super::OnMessageReceived(Ok, Response);
 }
 
 ULaytonClientStartLobbyStream* ULaytonClientStartLobbyStream::LaytonClientStartLobbyStream(UObject* WorldContextObject, const TArray<uint8>& Lobby)
@@ -92,6 +103,8 @@ void ULaytonClientStartLobbyStream::OnFirstMessage(bool Ok)
 	}
 	switch (casts::Proto_Cast<ELaytonResultCode>(FirstMessage.init().result_code())) {
 	case ELaytonResultCode::RC_SUCCESS:
+		Client->StreamedLobby->StartSendTaskHandler();
+		Client->StreamedLobby->StartReceiveTaskHandler();
 		OnSuccess.Broadcast("");
 		break;
 	default:
@@ -113,7 +126,7 @@ void ULaytonClientLobbyStreamSendChat::Activate()
 {
 	Delegate = NewObject<UTagDelegateWrapper>(this);
 	Delegate->Delegate.AddUObject(this, &ULaytonClientLobbyStreamSendChat::OnChatSent);
-	Client->StreamedLobby->SendChatMessage(ChatMessage, Delegate);
+	Client->StreamedLobby->SendChatMessage(ChatMessage, Delegate);	//Message sent twice (because binding?)
 }
 
 void ULaytonClientLobbyStreamSendChat::OnChatSent(bool Ok)

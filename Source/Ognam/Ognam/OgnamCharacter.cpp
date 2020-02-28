@@ -529,7 +529,7 @@ FVector AOgnamCharacter::GetInputVector() const
 	return InputVector;
 }
 
-void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float far)
+void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float Near, float Far)
 {
 	TArray<UCameraComponent*> Cameras;
 	GetComponents(Cameras);
@@ -551,8 +551,8 @@ void AOgnamCharacter::GetAimHitResult(FHitResult& HitResult, float near, float f
 	}
 
 	//shoot ray from camera to see where it should land.
-	FVector RayFrom = ActiveCamera->GetComponentLocation() + near; 
-	FVector RayTo = RayFrom + ActiveCamera->GetForwardVector() * far; 
+	FVector RayFrom = ActiveCamera->GetComponentLocation() + Near;
+	FVector RayTo = RayFrom + ActiveCamera->GetForwardVector() * Far;
 	FCollisionQueryParams Params(TEXT("cameraPath"), true, this);
 	Params.AddIgnoredActor(this);
 	for (FHitResult& Hit : CameraHits)

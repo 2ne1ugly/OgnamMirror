@@ -182,7 +182,7 @@ public:
 	void NetDie();
 	virtual void NetDie_Implementation();
 
-	void GetAimHitResult(FHitResult& HitResult, float near, float far);
+	void GetAimHitResult(FHitResult& HitResult, float Near, float Far);
 
 	template<typename T>
 	T* GetModifier()

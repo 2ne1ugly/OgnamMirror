@@ -6,6 +6,8 @@
 #include "Layton/Layton.h"
 #include "LaytonClientStreamLobby.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChatMessageReceived, FString, Username, FString, ChatMessage);
+
 /**
  * 
  */
@@ -15,6 +17,9 @@ class OGNAM_API ULaytonClientLobbyStream : public ULaytonClientLobbyStreamBase
 	GENERATED_BODY()
 
 public:
+    UPROPERTY(BlueprintAssignable)
+    FOnChatMessageReceived OnChatMessageReceived;
+
     UPROPERTY(BlueprintReadWrite)
     FString LobbyName;
 
