@@ -6,10 +6,10 @@
 #include "MaxwellSniperRifleAimDown.h"
 UMaxwellSniperRifle::UMaxwellSniperRifle()
 {
-	MaxAmmo = 8;
+	MaxAmmo = 6;
 	Ammo = MaxAmmo;
 	//RoundsPerSecond = 2.5f;
-	ReloadTime = 3.5f;
+	ReloadTime = 2.0f;
 
 	bBindSub = true;
 	WeaponActionClass = UMaxwellSniperRifleAction::StaticClass();
